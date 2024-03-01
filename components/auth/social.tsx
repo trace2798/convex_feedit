@@ -3,7 +3,6 @@
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-// import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 export const Social = () => {
   const searchParams = useSearchParams();
@@ -16,7 +15,7 @@ export const Social = () => {
   };
 
   return (
-    <div className="flex items-center w-full gap-x-2">
+    <div className="flex items-center w-full gap-x-2 max-sm:space-y-5 flex-col md:flex-row">
       <Button
         size="lg"
         className="w-[200px]"
