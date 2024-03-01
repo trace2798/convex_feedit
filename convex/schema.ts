@@ -52,4 +52,5 @@ export default defineSchema({
     id_token: v.optional(v.string()),
     session_state: v.optional(v.string()),
   }).index("by_provider_account_id", ["providerAccountId"]),
+
 });

@@ -1,11 +1,10 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
-export const authUserRoles = v.union(
+export const memberRoles = v.union(
   v.literal("User"),
   v.literal("Mod"),
-  v.literal("Admin"),
-  v.literal("Developer"),
+  v.literal("Admin")
 );
 
 /**
@@ -23,7 +22,6 @@ export default defineSchema({
     name: v.optional(v.string()),
     emailVerified: v.optional(v.string()),
     image: v.optional(v.string()),
-    aiCount: v.number(),
   }).index("by_user_email", ["email"]),
   /**
    * * Session table
@@ -53,22 +51,14 @@ export default defineSchema({
     id_token: v.optional(v.string()),
     session_state: v.optional(v.string()),
   }).index("by_provider_account_id", ["providerAccountId"]),
-  snippets: defineTable({
+  posts: defineTable({
     title: v.string(),
-    userId: v.id("users"),
     content: v.optional(v.string()),
-    notes: v.optional(v.string()),
-    backgroundColor: v.string(),
-    isPublic: v.boolean(),
-    language: v.string(),
-    padding: v.string(),
-    textSize: v.string(),
-    theme: v.optional(v.string()),
-    viewCount: v.optional(v.number()),
-  }).index("userId", ["userId"]),
-  aiactivity: defineTable({
     userId: v.id("users"),
-    snippetId: v.id("snippets"),
-    ai_answer: v.string(),
-  }).index("userId", ["userId"]),
+    isArchived: v.boolean(),
+    isPublished: v.boolean(),
+    isPublic: v.boolean(),
+    publishedAt: v.string(),
+    updatedAt: v.string(),
+  }).index("by_user", ["userId"]),
 });

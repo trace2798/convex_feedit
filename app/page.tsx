@@ -3,13 +3,15 @@ import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import UserButton from "@/components/user-button";
 import { useLoginModal } from "@/store/use-login-modal";
+import { useTagModal } from "@/store/use-tag-modal";
 import { ArrowRight } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 export default function Home() {
   const { onOpen } = useLoginModal();
-  const { status } = useSession();
+  const { data, status } = useSession();
+  const { onOpen: TagOpen } = useTagModal();
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-50">
@@ -27,6 +29,9 @@ export default function Home() {
               </Link>
             </Button>
             <UserButton />
+            <Button onClick={() => TagOpen("", "")}>
+              Create Tag
+            </Button>
           </>
         )}
         {status === "unauthenticated" && (
