@@ -23,8 +23,8 @@ export const create = mutation({
     }
 
     const tag = await ctx.db.insert("tags", {
-      name: args.name,
       userId: args.userId as Id<"users">,
+      name: args.name,
     });
 
     return tag;

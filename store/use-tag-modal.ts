@@ -1,25 +1,24 @@
 import { create } from "zustand";
 
-const defaultValues = { id: "", name: "" };
+// const defaultValues = { id: "", name: "" };
 
 interface ITagModal {
   isOpen: boolean;
-  initialValues: typeof defaultValues;
-  onOpen: (id: string, name: string) => void;
+//   initialValues: typeof defaultValues;
+  onOpen: () => void;
   onClose: () => void;
 }
 
 export const useTagModal = create<ITagModal>((set) => ({
   isOpen: false,
-  onOpen: (id, name) =>
+  onOpen: () =>
     set({
       isOpen: true,
-      initialValues: { id, name },
     }),
   onClose: () =>
     set({
       isOpen: false,
-      initialValues: defaultValues,
+    //   initialValues: defaultValues,
     }),
-  initialValues: defaultValues,
+//   initialValues: defaultValues,
 }));

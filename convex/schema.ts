@@ -52,5 +52,21 @@ export default defineSchema({
     id_token: v.optional(v.string()),
     session_state: v.optional(v.string()),
   }).index("by_provider_account_id", ["providerAccountId"]),
-
+  posts: defineTable({
+    title: v.string(),
+    content: v.optional(v.string()),
+    userId: v.id("users"),
+    isArchived: v.boolean(),
+    isPublished: v.boolean(),
+    isPublic: v.boolean(),
+    publishedAt: v.string(),
+    updatedAt: v.string(),
+    tags: v.array(v.id("tag")),
+  })
+    .index("by_user", ["userId"])
+    .index("by_tag", ["tags"]),
+  tags: defineTable({
+    userId: v.id("users"),
+    name: v.string(),
+  }),
 });

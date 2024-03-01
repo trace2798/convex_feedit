@@ -1,36 +1,32 @@
 "use client";
 
-import { FormEventHandler, useEffect, useState } from "react";
+import { FormEventHandler, useState } from "react";
 import { toast } from "sonner";
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogHeader,
-  DialogClose,
   DialogFooter,
+  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useApiMutation } from "@/hooks/use-api-mutation";
+import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
-import { useSession } from "next-auth/react";
+import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useTagModal } from "@/store/use-tag-modal";
+import { useSession } from "next-auth/react";
 
 export const TagModal = () => {
   const { data } = useSession();
   const { mutate, pending } = useApiMutation(api.tag.create);
 
-  const { isOpen, onClose, initialValues } = useTagModal();
+  const { isOpen, onClose } = useTagModal();
 
-  const [name, setName] = useState(initialValues.name);
-
-  useEffect(() => {
-    setName(initialValues.name);
-  }, [initialValues.name]);
+  const [name, setName] = useState("");
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -40,11 +36,11 @@ export const TagModal = () => {
       userId: data?.user.id,
     })
       .then(() => {
-        toast.success("Snippet renamed");
+        toast.success("Tag created");
         onClose();
       })
-      //   .catch(() => toast.error("Failed to rename snippet"));
-      .catch((error) => console.log(error));
+      .catch(() => toast.error("Failed to create tag"));
+    //   .catch((error) => console.log(error));
   };
 
   return (
@@ -60,8 +56,8 @@ export const TagModal = () => {
             required
             maxLength={60}
             value={name}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Snippet title"
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Tag name"
           />
           <DialogFooter>
             <DialogClose asChild>

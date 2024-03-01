@@ -29,9 +29,7 @@ export default function Home() {
               </Link>
             </Button>
             <UserButton />
-            <Button onClick={() => TagOpen("", "")}>
-              Create Tag
-            </Button>
+            <Button onClick={() => TagOpen()}>Create Tag</Button>
           </>
         )}
         {status === "unauthenticated" && (
