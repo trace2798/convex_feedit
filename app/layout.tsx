@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-providers";
 import { SessionProvider } from "next-auth/react";
 import ConvexClientProvider from "@/providers/convex-client-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { ModalProvider } from "@/providers/modal-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +30,8 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+              <Toaster />
+              <ModalProvider />
               {children}
             </ThemeProvider>
           </ConvexClientProvider>

@@ -1,16 +1,15 @@
 "use client";
-import { signOut } from "@/auth";
-import { Social } from "@/components/auth/social";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import UserButton from "@/components/user-button";
+import { useLoginModal } from "@/store/use-login-modal";
 import { ArrowRight } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { onOpen } = useLoginModal();
+  const { status } = useSession();
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-50">
@@ -27,10 +26,14 @@ export default function Home() {
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Link>
             </Button>
-            <UserButton/>
+            <UserButton />
           </>
         )}
-        {status === "unauthenticated" && <Social />}
+        {status === "unauthenticated" && (
+          <Button onClick={() => onOpen()} className="p-3 cursor-pointer">
+            Login
+          </Button>
+        )}
       </div>
     </main>
   );
