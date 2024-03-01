@@ -1,7 +1,9 @@
-'use client'
+"use client";
+import { signOut } from "@/auth";
 import { Social } from "@/components/auth/social";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
+import UserButton from "@/components/user-button";
 import { ArrowRight } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -18,12 +20,15 @@ export default function Home() {
           </div>
         )}
         {status === "authenticated" && (
-          <Button asChild className="w-[180px] z-50">
-            <Link href="/dashboard">
-              Dashboard
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Link>
-          </Button>
+          <>
+            <Button asChild className="w-[180px] z-50">
+              <Link href="/dashboard">
+                Dashboard
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </Button>
+            <UserButton/>
+          </>
         )}
         {status === "unauthenticated" && <Social />}
       </div>
