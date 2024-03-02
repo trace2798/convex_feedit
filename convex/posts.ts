@@ -6,6 +6,7 @@ export const create = mutation({
   args: {
     userId: v.string(),
     title: v.string(),
+    groupId: v.string(),
   },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
@@ -26,6 +27,7 @@ export const create = mutation({
       tags: [],
       updatedAt: new Date().getTime(),
       userId: args.userId as Id<"users">,
+      groupId: args.groupId as Id<"group">,
     });
 
     return post;

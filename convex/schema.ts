@@ -52,18 +52,30 @@ export default defineSchema({
     id_token: v.optional(v.string()),
     session_state: v.optional(v.string()),
   }).index("by_provider_account_id", ["providerAccountId"]),
+  group: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    userId: v.id("users"),
+  })
+    .index("by_user", ["userId"])
+    .searchIndex("search_name", {
+      searchField: "name",
+      filterFields: ["name"],
+    }),
   posts: defineTable({
     title: v.string(),
     content: v.optional(v.string()),
     userId: v.id("users"),
+    groupId: v.id("group"),
     isArchived: v.boolean(),
     isPublished: v.boolean(),
     isPublic: v.boolean(),
     publishedAt: v.union(v.null(), v.number()),
     updatedAt: v.union(v.null(), v.number()),
-    tags: v.array(v.id("tag")),
+    tags: v.optional(v.array(v.id("tag"))),
   })
     .index("by_user", ["userId"])
+    .index("by_group", ["groupId"])
     .index("by_tag", ["tags"]),
   tags: defineTable({
     userId: v.id("users"),
