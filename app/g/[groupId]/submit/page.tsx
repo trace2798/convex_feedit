@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
+import { useMemo } from "react";
 
 interface pageProps {
   params: {
@@ -15,7 +17,10 @@ const page = ({ params }: pageProps) => {
   const group = useQuery(api.group.getById, {
     groupId: params.groupId as Id<"group">,
   });
-
+  const Editor = useMemo(
+    () => dynamic(() => import("@/components/editor"), { ssr: false }),
+    []
+  );
   //   if (!group) return notFound();
 
   return (
@@ -32,10 +37,10 @@ const page = ({ params }: pageProps) => {
         </div>
       </div>
 
-      {/* form */}
-      {/* <Editor subredditId={subreddit.id} /> */}
-      <h1>Editor</h1>
-      <div className="w-full flex justify-end">
+      <div className="w-full py-5 rounded-lg border min-h-[40vh]">
+        <Editor onChange={() => {}} initialContent={""} editable={true} />
+      </div>
+      <div className="w-full flex justify-end pb-5">
         <Button type="submit" className="w-full" form="subreddit-post-form">
           Post
         </Button>
