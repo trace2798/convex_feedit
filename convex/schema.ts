@@ -59,8 +59,8 @@ export default defineSchema({
     isArchived: v.boolean(),
     isPublished: v.boolean(),
     isPublic: v.boolean(),
-    publishedAt: v.string(),
-    updatedAt: v.string(),
+    publishedAt: v.union(v.null(), v.number()),
+    updatedAt: v.union(v.null(), v.number()),
     tags: v.array(v.id("tag")),
   })
     .index("by_user", ["userId"])

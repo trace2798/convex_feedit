@@ -6,6 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import ConvexClientProvider from "@/providers/convex-client-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { ModalProvider } from "@/providers/modal-provider";
+import { Navbar } from "@/components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
             >
               <Toaster />
               <ModalProvider />
+              <Navbar />
               {children}
             </ThemeProvider>
           </ConvexClientProvider>
