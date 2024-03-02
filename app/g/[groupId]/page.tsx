@@ -1,6 +1,11 @@
 "use client";
+import MiniCreatePost from "@/components/mini-create-post";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useQuery } from "convex/react";
 import { useSession } from "next-auth/react";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 interface PageProps {
   params: {
@@ -9,7 +14,9 @@ interface PageProps {
 }
 
 const page = ({ params }: PageProps) => {
-  const { groupId } = params;
+  const group = useQuery(api.group.getById, {
+    groupId: params.groupId as Id<"group">,
+  });
 
   const { data, status } = useSession();
 
@@ -31,13 +38,15 @@ const page = ({ params }: PageProps) => {
   //     },
   //   });
 
-  //   if (!subreddit) return notFound();
+//   if (!group) return notFound();
 
   return (
     <>
-      <h1 className="font-bold text-3xl md:text-4xl h-14">g/{}</h1>
-      {/* <MiniCreatePost session={session} />
-      <PostFeed initialPosts={subreddit.posts} subredditName={subreddit.name} /> */}
+      <Suspense>
+        <h1 className="font-bold text-3xl md:text-4xl h-14">g/{group?.name}</h1>
+        <MiniCreatePost session={data} />
+        {/*    <PostFeed initialPosts={subreddit.posts} subredditName={subreddit.name} /> */}
+      </Suspense>
     </>
   );
 };
