@@ -28,26 +28,26 @@ const Editor = ({ onChange, initialContent, editable }: EditorProps) => {
   //   const generateUploadUrl = useMutation(api.documents.generateUploadUrl);
   //   console.log(generateUploadUrl);
   //   const saveStorageId = useMutation(api.documents.saveStorageId);
-  //   const handleUpload = async (file: File) => {
-  //     console.log("INSIDE HANDLE UPLOAD");
-  //     try {
-  //       const postUrl = await generateUploadUrl({
-  //         id: spaceName as Id<"documents">,
-  //       });
-  //       const result = await fetch(postUrl, {
-  //         method: "POST",
-  //         headers: { "Content-Type": file.type }, // use file.type here
-  //         body: file, // use file here
-  //       });
-  //       const body = await result.json();
-  //       const url = await generateUrl({ id: body.storageId });
-  //       console.log(body);
-  //       console.log(url);
-  //       return url as any;
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
+  // const handleUpload = async (file: File) => {
+  //   console.log("INSIDE HANDLE UPLOAD");
+  //   try {
+  //     const postUrl = await generateUploadUrl({
+  //       id: spaceName as Id<"documents">,
+  //     });
+  //     const result = await fetch(postUrl, {
+  //       method: "POST",
+  //       headers: { "Content-Type": file.type }, // use file.type here
+  //       body: file, // use file here
+  //     });
+  //     const body = await result.json();
+  //     const url = await generateUrl({ id: body.storageId });
+  //     console.log(body);
+  //     console.log(url);
+  //     return url as any;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const editor: BlockNoteEditor = useBlockNote({
     editable,

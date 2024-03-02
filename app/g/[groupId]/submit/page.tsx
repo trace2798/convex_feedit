@@ -1,11 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useQuery } from "convex/react";
+import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
-import { notFound } from "next/navigation";
-import { useMemo } from "react";
+import { notFound, useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 interface pageProps {
   params: {
@@ -14,6 +18,10 @@ interface pageProps {
 }
 
 const page = ({ params }: pageProps) => {
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const router = useRouter();
+  const { data } = useSession();
   const group = useQuery(api.group.getById, {
     groupId: params.groupId as Id<"group">,
   });
@@ -21,8 +29,21 @@ const page = ({ params }: pageProps) => {
     () => dynamic(() => import("@/components/editor"), { ssr: false }),
     []
   );
+  const { mutate, pending } = useApiMutation(api.posts.create);
   //   if (!group) return notFound();
-
+  const handlePostCreate = () => {
+    mutate({
+      userId: data?.user.id,
+      groupId: params.groupId as Id<"group">,
+      content: content,
+      title: title,
+    })
+      .then((id) => {
+        toast.success("Post created");
+        router.push(`/g/${params.groupId}/post/${id}`);
+      })
+      .catch(() => toast.error("Failed to create group"));
+  };
   return (
     <div className="flex flex-col items-start gap-6">
       {/* heading */}
@@ -36,12 +57,23 @@ const page = ({ params }: pageProps) => {
           </p>
         </div>
       </div>
-
+      <div className="w-full">
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="pl-6 w-full"
+          placeholder="Title of your post"
+        />
+      </div>
       <div className="w-full py-5 rounded-lg border min-h-[40vh]">
-        <Editor onChange={() => {}} initialContent={""} editable={true} />
+        <Editor
+          onChange={(value) => setContent(value)}
+          initialContent={""}
+          editable={true}
+        />
       </div>
       <div className="w-full flex justify-end pb-5">
-        <Button type="submit" className="w-full" form="subreddit-post-form">
+        <Button type="submit" className="w-full" onClick={handlePostCreate}>
           Post
         </Button>
       </div>

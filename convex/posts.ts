@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
 export const create = mutation({
@@ -7,6 +7,7 @@ export const create = mutation({
     userId: v.string(),
     title: v.string(),
     groupId: v.string(),
+    content: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
@@ -21,14 +22,67 @@ export const create = mutation({
     const post = await ctx.db.insert("posts", {
       title: args.title,
       isArchived: false,
-      isPublic: false,
+      isPublic: true,
       isPublished: false,
       publishedAt: null,
       tags: [],
       updatedAt: new Date().getTime(),
       userId: args.userId as Id<"users">,
       groupId: args.groupId as Id<"group">,
+      content: args.content,
     });
+
+    return post;
+  },
+});
+
+export const getById = query({
+  args: { postId: v.id("posts") },
+  handler: async (ctx, args) => {
+    // const identity = await ctx.auth.getUserIdentity();
+    // // console.log("IDENTITY ===>", identity);
+    const post = await ctx.db.get(args.postId as Id<"posts">);
+
+    if (!post) {
+      throw new Error("Not found");
+    }
+
+    //   if (snippet.isPublished && !snippet.isArchived) {
+    //     return snippet;
+    //   }
+
+    //   if (snippet.isPublic) {
+    //     return snippet;
+    //   }
+
+    // if (!identity) {
+    //   throw new Error("Not authenticated");
+    // }
+
+    //   if (snippet.isPublic) {
+    //     return snippet;
+    //   }
+
+    //   const userId = identity.subject;
+
+    //   if (snippet.userId !== userId) {
+    //     throw new Error("Unauthorized");
+    //   }
+
+    // const presence = await ctx.db
+    //   .query("presence")
+    //   .withIndex("by_user", (q) => q.eq("userId", userId))
+    //   .unique();
+    // // console.log(presence);
+    // if (presence) {
+    //   await ctx.db.patch(presence._id, {
+    //     lastActive: Date.now(),
+    //     location: snippet._id,
+    //   });
+    // }
+    // await ctx.runMutation(internal.snippet.incrementCount, {
+    //   id: args.snippetId as Id<"snippets">,
+    // });
 
     return post;
   },
