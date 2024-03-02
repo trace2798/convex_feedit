@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -7,6 +8,7 @@ import ConvexClientProvider from "@/providers/convex-client-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { ModalProvider } from "@/providers/modal-provider";
 import { Navbar } from "@/components/navbar";
+import { SearchCommand } from "@/components/search-command";
 
 
 export const metadata: Metadata = {
@@ -30,6 +32,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+               <SearchCommand />
               <Toaster />
               <ModalProvider />
               <Navbar />
