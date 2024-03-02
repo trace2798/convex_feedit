@@ -34,7 +34,9 @@ export default function RootLayout({
               <Toaster />
               <ModalProvider />
               <Navbar />
-              {children}
+              <div className="container max-w-7xl mx-auto h-full pt-12">
+                {children}
+              </div>
             </ThemeProvider>
           </ConvexClientProvider>
         </SessionProvider>

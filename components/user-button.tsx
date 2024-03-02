@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FC } from "react";
 
@@ -55,13 +56,17 @@ const UserButton: FC<UserButtonProps> = ({}) => {
                 <p className="font-medium text-sm ">{data?.user?.name}</p>
               )}
               {data?.user?.email && (
-                <p className="w-[200px] truncate text-xs ">{data?.user?.email}</p>
+                <p className="w-[200px] truncate text-xs ">
+                  {data?.user?.email}
+                </p>
               )}
             </div>
           </div>
 
           <DropdownMenuSeparator />
-
+          <DropdownMenuItem asChild className="hover:cursor-pointer">
+            <Link href="/settings">Settings</Link>
+          </DropdownMenuItem>
           <DropdownMenuItem
             // asChild
             className="cursor-pointer"
