@@ -29,6 +29,7 @@ const page = ({ params }: pageProps) => {
     () => dynamic(() => import("@/components/editor"), { ssr: false }),
     []
   );
+  console.log(data);
   const { mutate, pending } = useApiMutation(api.posts.create);
   //   if (!group) return notFound();
   const handlePostCreate = () => {
@@ -37,6 +38,7 @@ const page = ({ params }: pageProps) => {
       groupId: params.groupId as Id<"group">,
       content: content,
       title: title,
+      username: data?.user.name,
     })
       .then((id) => {
         toast.success("Post created");

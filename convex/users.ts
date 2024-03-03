@@ -50,6 +50,7 @@ export const getByEmail = query({
   },
 });
 
+
 export const update = mutation({
   args: {
     id: v.id("users"),

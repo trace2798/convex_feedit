@@ -66,6 +66,7 @@ export default defineSchema({
     title: v.string(),
     content: v.optional(v.string()),
     userId: v.id("users"),
+    username: v.union(v.null(), v.string()),
     groupId: v.id("group"),
     isArchived: v.boolean(),
     isPublished: v.boolean(),
@@ -76,7 +77,8 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_group", ["groupId"])
-    .index("by_tag", ["tags"]),
+    .index("by_tag", ["tags"])
+    .index("bt_username", ["username"]),
   tags: defineTable({
     userId: v.id("users"),
     name: v.string(),

@@ -5,7 +5,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { ArrowBigDown, ArrowBigUp, Loader2 } from "lucide-react";
-import { notFound } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 import { Suspense, useMemo } from "react";
 import dynamic from "next/dynamic";
 
@@ -15,23 +15,21 @@ interface SubRedditPostPageProps {
   };
 }
 
-// export const dynamic = "force-dynamic";
-// export const fetchCache = "force-no-store";
-
 const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
   console.log(params.postId);
+  const pathname = usePathname();
+  console.log(pathname);
   const Editor = useMemo(
     () => dynamic(() => import("@/components/editor"), { ssr: false }),
     []
   );
-  const post = useQuery(api.posts.getById, {
+  const postInfo = useQuery(api.posts.getById, {
     postId: params.postId as Id<"posts">,
   });
 
-  if (post === undefined) {
+  if (postInfo === undefined) {
     return (
       <div>
-        {/* <Cover.Skeleton /> */}
         <div className="md:max-w-3xl lg:max-w-4xl mx-auto mt-10">
           <div className="space-y-4 pl-8 pt-4">
             <Skeleton className="h-14 w-[50%]" />
@@ -44,17 +42,20 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
     );
   }
 
-  if (post === null) {
+  if (postInfo === null) {
     return <div>Not found</div>;
   }
 
-  console.log(post);
+  console.log(postInfo);
+  const { post, group, user } = postInfo;
   return (
     <div>
       <div className="h-full flex-col items-center sm:items-start justify-between">
-        {/* <Suspense fallback={<Skeleton />}> */}
-        <h1>{post?._id}</h1>
-        <h1>{post?.title}</h1>
+        <div>
+          <h1>g/{group[0].name}</h1>
+          <h1 className="text-muted-foreground">by u/{user[0].name}</h1>
+        </div>
+        <h1 className="font-bold text-3xl mb-5">{post?.title}</h1>
         <div className="h-full">
           <Editor
             initialContent={post?.content}
@@ -62,7 +63,6 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
             onChange={() => {}}
           />
         </div>
-        {/* </Suspense> */}
       </div>
     </div>
   );

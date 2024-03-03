@@ -5,6 +5,7 @@ import { Id } from "./_generated/dataModel";
 export const create = mutation({
   args: {
     userId: v.string(),
+    username: v.string(),
     title: v.string(),
     groupId: v.string(),
     content: v.optional(v.string()),
@@ -30,6 +31,7 @@ export const create = mutation({
       userId: args.userId as Id<"users">,
       groupId: args.groupId as Id<"group">,
       content: args.content,
+      username: args.username,
     });
 
     return post;
@@ -47,44 +49,21 @@ export const getById = query({
       throw new Error("Not found");
     }
 
-    //   if (snippet.isPublished && !snippet.isArchived) {
-    //     return snippet;
-    //   }
+    const group = await ctx.db
+      .query("group")
+      .filter((q) => q.eq(q.field("_id"), post.groupId))
+      .collect();
 
-    //   if (snippet.isPublic) {
-    //     return snippet;
-    //   }
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("_id"), post.userId))
 
-    // if (!identity) {
-    //   throw new Error("Not authenticated");
-    // }
-
-    //   if (snippet.isPublic) {
-    //     return snippet;
-    //   }
-
-    //   const userId = identity.subject;
-
-    //   if (snippet.userId !== userId) {
-    //     throw new Error("Unauthorized");
-    //   }
-
-    // const presence = await ctx.db
-    //   .query("presence")
-    //   .withIndex("by_user", (q) => q.eq("userId", userId))
-    //   .unique();
-    // // console.log(presence);
-    // if (presence) {
-    //   await ctx.db.patch(presence._id, {
-    //     lastActive: Date.now(),
-    //     location: snippet._id,
-    //   });
-    // }
-    // await ctx.runMutation(internal.snippet.incrementCount, {
-    //   id: args.snippetId as Id<"snippets">,
-    // });
-
-    return post;
+      .collect();
+    return {
+      post: post,
+      group: group,
+      user: user,
+    };
   },
 });
 
