@@ -68,7 +68,7 @@ const CommentBox: FC<CommentBoxProps> = ({
         </div>
       </div>
       <div className="mt-10">
-        <CommentFeed postId={postId} />
+        <CommentFeed postId={postId} currentUserId={currentUserId} />
       </div>
     </>
   );

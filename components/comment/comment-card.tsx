@@ -1,14 +1,22 @@
 "use client";
 import { FC } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatDistanceToNow } from "date-fns";
+import CommentVotes from "./comment-vote";
 
 interface CommentCardProps {
   comment: any;
+  currentUserId?: string;
 }
 
-const CommentCard: FC<CommentCardProps> = ({ comment }) => {
+const CommentCard: FC<CommentCardProps> = ({ comment, currentUserId }) => {
   return (
     <>
       <Card>
@@ -31,6 +39,14 @@ const CommentCard: FC<CommentCardProps> = ({ comment }) => {
         <CardContent>
           <p>{comment?.content}</p>
         </CardContent>
+        <CardFooter>
+          <CommentVotes
+            commentId={comment._id}
+            groupId={comment.groupId}
+            postId={comment.postId}
+            userId={currentUserId}
+          />
+        </CardFooter>
       </Card>
     </>
   );

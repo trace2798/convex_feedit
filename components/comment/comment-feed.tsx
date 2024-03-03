@@ -7,9 +7,10 @@ import CommentCard from "./comment-card";
 
 interface CommentFeedProps {
   postId: string;
+  currentUserId?: string;
 }
 
-const CommentFeed: FC<CommentFeedProps> = ({ postId }) => {
+const CommentFeed: FC<CommentFeedProps> = ({ postId, currentUserId }) => {
   const comments = useQuery(api.comments.getByPostId, {
     postId: postId as Id<"posts">,
   });
@@ -27,7 +28,7 @@ const CommentFeed: FC<CommentFeedProps> = ({ postId }) => {
           </Card>
         ) : (
           comments?.comments.map((comment, index) => (
-            <CommentCard key={index} comment={comment} />
+            <CommentCard key={index} comment={comment} currentUserId={currentUserId} />
           ))
         )}
       </div>

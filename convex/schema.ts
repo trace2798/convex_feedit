@@ -99,6 +99,17 @@ export default defineSchema({
     .index("by_post", ["postId"])
     .index("by_user", ["userId"])
     .index("by_group", ["groupId"]),
+  comment_vote: defineTable({
+    userId: v.id("users"),
+    postId: v.id("posts"),
+    groupId: v.id("group"),
+    commentId: v.id("comments"),
+    voteType: voteType,
+  })
+    .index("by_comment", ["commentId"])
+    .index("by_post", ["postId"])
+    .index("by_user", ["userId"])
+    .index("by_group", ["groupId"]),
   tags: defineTable({
     userId: v.id("users"),
     name: v.string(),
