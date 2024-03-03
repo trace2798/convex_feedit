@@ -90,33 +90,35 @@ const PostVotes: FC<PostVotesProps> = ({ postId, userId, groupId }) => {
 
   return (
     <>
-      <div className="flex w-[200px] items-center justify-evenly">
+      <div className="flex w-[180px] items-center justify-between">
         {" "}
-        <Button
-          disabled={pending || downVotePending}
-          variant="ghost"
-          onClick={() => handleUpVote()}
-        >
-          <ArrowBigUp
-            className={cn("h-5 w-5 text-zinc-700", {
-              "text-emerald-500 fill-emerald-500": currentVote === "UP",
-            })}
-          />
-        </Button>
-        <Button
-          disabled={pending || downVotePending}
-          variant="ghost"
-          className=""
-          onClick={() => handleDownVote()}
-        >
-          <ArrowBigDown
-            className={cn("h-5 w-5 text-zinc-700", {
-              "text-red-500 fill-red-500": currentVote === "DOWN",
-            })}
-          />
-        </Button>
+        <div>
+          <Button
+            disabled={pending || downVotePending}
+            variant="ghost"
+            onClick={() => handleUpVote()}
+          >
+            <ArrowBigUp
+              className={cn("h-5 w-5 text-zinc-700", {
+                "text-emerald-500 fill-emerald-500": currentVote === "UP",
+              })}
+            />
+          </Button>
+          <Button
+            disabled={pending || downVotePending}
+            variant="ghost"
+            className=""
+            onClick={() => handleDownVote()}
+          >
+            <ArrowBigDown
+              className={cn("h-5 w-5 text-zinc-700", {
+                "text-red-500 fill-red-500": currentVote === "DOWN",
+              })}
+            />
+          </Button>
+        </div>
+        <div>{votesAmt}</div>
         {/* {votes?.votes.length} */}
-        {votesAmt}
       </div>
     </>
   );

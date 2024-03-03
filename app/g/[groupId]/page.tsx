@@ -47,7 +47,7 @@ const page = ({ params }: PageProps) => {
           g/{group[0].name}
         </h1>
         <MiniCreatePost session={data} />
-        <PostFeed initialPosts={posts} />
+        <PostFeed initialPosts={posts} currentUserId={data?.user?.id} />
 
         {/* {posts?.map((post) => (
           <Link href={`/g/${params.groupId}/post/${post._id}`} key={post._id}>

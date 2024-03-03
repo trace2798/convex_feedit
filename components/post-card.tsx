@@ -10,12 +10,14 @@ import {
 } from "./ui/card";
 import { title } from "process";
 import { BlockNoteView } from "@blocknote/react";
+import PostVotes from "@/app/g/[groupId]/post/[postId]/_components/post-votes";
 
 interface PostCardProps {
   post: Post;
+  currentUserId?: string;
 }
 
-const PostCard: FC<PostCardProps> = ({ post }) => {
+const PostCard: FC<PostCardProps> = ({ post, currentUserId }) => {
   console.log(post);
   return (
     <>
@@ -28,7 +30,13 @@ const PostCard: FC<PostCardProps> = ({ post }) => {
             </CardDescription>
           </CardHeader>
         </Link>
-        <CardFooter>Votes</CardFooter>
+        <CardFooter>
+          <PostVotes
+            postId={post._id}
+            userId={currentUserId}
+            groupId={post.groupId}
+          />
+        </CardFooter>
       </Card>
     </>
   );
