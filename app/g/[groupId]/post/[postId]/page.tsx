@@ -16,17 +16,38 @@ interface SubRedditPostPageProps {
 }
 
 // export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
+// export const fetchCache = "force-no-store";
 
 const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
   console.log(params.postId);
-  const post = useQuery(api.posts.getById, {
-    postId: params.postId as Id<"posts">,
-  });
   const Editor = useMemo(
     () => dynamic(() => import("@/components/editor"), { ssr: false }),
     []
   );
+  const post = useQuery(api.posts.getById, {
+    postId: params.postId as Id<"posts">,
+  });
+
+  if (post === undefined) {
+    return (
+      <div>
+        {/* <Cover.Skeleton /> */}
+        <div className="md:max-w-3xl lg:max-w-4xl mx-auto mt-10">
+          <div className="space-y-4 pl-8 pt-4">
+            <Skeleton className="h-14 w-[50%]" />
+            <Skeleton className="h-4 w-[80%]" />
+            <Skeleton className="h-4 w-[40%]" />
+            <Skeleton className="h-4 w-[60%]" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (post === null) {
+    return <div>Not found</div>;
+  }
+
   console.log(post);
   return (
     <div>
