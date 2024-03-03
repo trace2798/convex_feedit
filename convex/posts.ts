@@ -122,3 +122,31 @@ export const getByGroupId = query({
     return posts;
   },
 });
+
+export const update = mutation({
+  args: {
+    id: v.id("posts"),
+    title: v.string(),
+    content: v.optional(v.string()),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...rest } = args;
+
+    const existingPost = await ctx.db.get(args.id);
+
+    if (!existingPost) {
+      throw new Error("Not found");
+    }
+
+    if (existingPost.userId !== args.userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const post = await ctx.db.patch(args.id, {
+      ...rest,
+    });
+
+    return post;
+  },
+});

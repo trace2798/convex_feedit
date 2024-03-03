@@ -24,26 +24,6 @@ const page = ({ params }: PageProps) => {
   console.log(posts);
   const { data, status } = useSession();
 
-  //   const subreddit = await db.subreddit.findFirst({
-  //     where: { name: slug },
-  //     include: {
-  //       posts: {
-  //         include: {
-  //           author: true,
-  //           votes: true,
-  //           comments: true,
-  //           subreddit: true,
-  //         },
-  //         orderBy: {
-  //           createdAt: "desc",
-  //         },
-  //         take: INFINITE_SCROLL_PAGINATION_RESULTS,
-  //       },
-  //     },
-  //   });
-
-  //   if (!group) return notFound();
-
   return (
     <>
       <Suspense>

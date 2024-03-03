@@ -6,11 +6,13 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { ArrowBigDown, ArrowBigUp, Edit3, Loader2 } from "lucide-react";
 import { notFound, usePathname, useRouter } from "next/navigation";
-import { Suspense, useMemo } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { toast } from "sonner";
 
 interface SubRedditPostPageProps {
   params: {
@@ -18,11 +20,12 @@ interface SubRedditPostPageProps {
   };
 }
 
-const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
+const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
+  const [newcontent, setNewContent] = useState("");
+  const { data } = useSession();
   console.log(params.postId);
   const router = useRouter();
   const pathname = usePathname();
-  const { data } = useSession();
   console.log(data);
   console.log(pathname);
   const Editor = useMemo(
@@ -32,7 +35,7 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
   const postInfo = useQuery(api.posts.getById, {
     postId: params.postId as Id<"posts">,
   });
-
+  const { mutate, pending } = useApiMutation(api.posts.update);
   if (postInfo === undefined) {
     return (
       <div>
@@ -54,6 +57,19 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
 
   console.log(postInfo);
   const { post, group, user } = postInfo;
+  const handlePostUpdate = () => {
+    mutate({
+      id: post._id,
+      userId: data?.user.id as Id<"users">,
+      content: newcontent,
+      title: post.title,
+    })
+      .then((id) => {
+        toast.success("Post updated");
+        // router.push(`/g/${params.groupId}/post/${id}`);
+      })
+      .catch(() => toast.error("Failed to update post"));
+  };
   return (
     <div>
       <div className="h-full flex-col items-center sm:items-start justify-between">
@@ -67,25 +83,22 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
         <div className="h-full">
           <Editor
             initialContent={post?.content}
-            editable={false}
-            onChange={() => {}}
+            editable={true}
+            onChange={(content) => {
+              setNewContent(content);
+            }}
           />
         </div>
-        <div>
-          <ArrowBigUp />
-          <ArrowBigDown />
-        </div>
-        {data?.user.id === user[0]._id && (
-          <Button
-            onClick={() => router.push(pathname + "/edit")}
-            variant="ghost"
-          >
-            <Edit3 className="w-5 h-5" />
-          </Button>
-        )}
+        <Button
+          disabled={pending || !newcontent}
+          onClick={() => handlePostUpdate()}
+          className="mt-5"
+        >
+          Update Post
+        </Button>
       </div>
     </div>
   );
 };
 
-export default SubRedditPostPage;
+export default SubRedditEditPostPage;
