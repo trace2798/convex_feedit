@@ -8,6 +8,8 @@ export const authUserRoles = v.union(
   v.literal("Developer")
 );
 
+export const voteType = v.union(v.literal("UP"), v.literal("DOWN"));
+
 /**
  * Convex schema
  *
@@ -79,6 +81,15 @@ export default defineSchema({
     .index("by_group", ["groupId"])
     .index("by_tag", ["tags"])
     .index("bt_username", ["username"]),
+  votes: defineTable({
+    voteType: voteType,
+    userId: v.id("users"),
+    postId: v.id("posts"),
+    groupId: v.id("group"),
+  })
+    .index("by_post", ["postId"])
+    .index("by_user", ["userId"])
+    .index("by_group", ["groupId"]),
   tags: defineTable({
     userId: v.id("users"),
     name: v.string(),

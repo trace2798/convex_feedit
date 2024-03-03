@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import PostVotes from "./_components/post-votes";
 
 interface SubRedditPostPageProps {
   params: {
@@ -71,18 +72,23 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
             onChange={() => {}}
           />
         </div>
-        <div>
-          <ArrowBigUp />
-          <ArrowBigDown />
+        <div className="flex justify-between">
+          <PostVotes
+            postId={post?._id}
+            groupId={group[0]._id}
+            userId={data?.user.id}
+          />
+          <div>
+            {data?.user.id === user[0]._id && (
+              <Button
+                onClick={() => router.push(pathname + "/edit")}
+                variant="ghost"
+              >
+                <Edit3 className="w-5 h-5" />
+              </Button>
+            )}
+          </div>
         </div>
-        {data?.user.id === user[0]._id && (
-          <Button
-            onClick={() => router.push(pathname + "/edit")}
-            variant="ghost"
-          >
-            <Edit3 className="w-5 h-5" />
-          </Button>
-        )}
       </div>
     </div>
   );

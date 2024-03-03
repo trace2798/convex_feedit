@@ -20,6 +20,7 @@ import type * as posts from "../posts.js";
 import type * as sessions from "../sessions.js";
 import type * as tag from "../tag.js";
 import type * as users from "../users.js";
+import type * as votes from "../votes.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   sessions: typeof sessions;
   tag: typeof tag;
   users: typeof users;
+  votes: typeof votes;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
