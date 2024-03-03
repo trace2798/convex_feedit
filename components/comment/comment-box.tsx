@@ -7,6 +7,7 @@ import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { Id } from "@/convex/_generated/dataModel";
+import CommentFeed from "./comment-feed";
 
 interface CommentBoxProps {
   currentUserId?: string;
@@ -30,6 +31,7 @@ const CommentBox: FC<CommentBoxProps> = ({
     })
       .then((id) => {
         toast.success("Comment Added");
+        setContent("");
         // router.push(`/g/${params.groupId}/post/${id}`);
       })
       .catch(() => toast.error("Failed to comment"));
@@ -64,6 +66,9 @@ const CommentBox: FC<CommentBoxProps> = ({
             Cancel
           </Button>
         </div>
+      </div>
+      <div className="mt-10">
+        <CommentFeed postId={postId} />
       </div>
     </>
   );
