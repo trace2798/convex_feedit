@@ -27,7 +27,6 @@ const PostVotes: FC<PostVotesProps> = ({ postId, userId, groupId }) => {
   useEffect(() => {
     // Check if the user has already voted on this post
     const userVote = votes?.votes.find((vote) => vote.userId === userId);
-
     // If the user has voted, update the currentVote state
     if (userVote) {
       setCurrentVote(userVote.voteType); // Assuming 'type' is either 'UP' or 'DOWN'
@@ -52,11 +51,17 @@ const PostVotes: FC<PostVotesProps> = ({ postId, userId, groupId }) => {
       userId: userId as Id<"users">,
       groupId: groupId as Id<"group">,
       postId: postId as Id<"posts">,
-    })
-      .then(() => {
-        toast.success("Up Voted");
-      })
-      .catch(() => toast.error("Failed to upvote post"));
+    }).then(() => {
+      // toast.success("Up Voted");
+      if (currentVote === "UP") {
+        setCurrentVote("");
+        setVotesAmt(votesAmt - 1);
+      } else {
+        setCurrentVote("UP");
+        setVotesAmt(votesAmt + 1);
+      }
+    });
+    //   .catch(() => toast.error("Failed to upvote post"));
     //   .catch((e) => console.log(e));
   };
 
@@ -69,11 +74,17 @@ const PostVotes: FC<PostVotesProps> = ({ postId, userId, groupId }) => {
       userId: userId as Id<"users">,
       groupId: groupId as Id<"group">,
       postId: postId as Id<"posts">,
-    })
-      .then(() => {
-        toast.success("Down Voted");
-      })
-      .catch(() => toast.error("Failed to down vote post"));
+    }).then(() => {
+      // toast.success("Down Voted");
+      if (currentVote === "DOWN") {
+        setCurrentVote("");
+        setVotesAmt(votesAmt + 1);
+      } else {
+        setCurrentVote("DOWN");
+        setVotesAmt(votesAmt - 1);
+      }
+    });
+    //   .catch(() => toast.error("Failed to down vote post"));
     //   .catch((e) => console.log(e));
   };
 
