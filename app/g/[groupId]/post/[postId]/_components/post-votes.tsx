@@ -90,7 +90,7 @@ const PostVotes: FC<PostVotesProps> = ({ postId, userId, groupId }) => {
 
   return (
     <>
-      <div className="flex w-[180px] items-center justify-between">
+      <div className="flex w-[150px] items-center justify-between">
         {" "}
         <div>
           <Button
@@ -118,7 +118,6 @@ const PostVotes: FC<PostVotesProps> = ({ postId, userId, groupId }) => {
           </Button>
         </div>
         <div>{votesAmt}</div>
-        {/* {votes?.votes.length} */}
       </div>
     </>
   );

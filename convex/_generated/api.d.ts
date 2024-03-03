@@ -15,6 +15,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as accounts from "../accounts.js";
+import type * as comments from "../comments.js";
 import type * as group from "../group.js";
 import type * as posts from "../posts.js";
 import type * as sessions from "../sessions.js";
@@ -32,6 +33,7 @@ import type * as votes from "../votes.js";
  */
 declare const fullApi: ApiFromModules<{
   accounts: typeof accounts;
+  comments: typeof comments;
   group: typeof group;
   posts: typeof posts;
   sessions: typeof sessions;

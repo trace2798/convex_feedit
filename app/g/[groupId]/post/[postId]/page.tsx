@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import PostVotes from "./_components/post-votes";
+import CommentBox from "@/components/comment/comment-box";
 
 interface SubRedditPostPageProps {
   params: {
@@ -88,6 +89,13 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
               </Button>
             )}
           </div>
+        </div>
+        <div className="mt-5">
+          <CommentBox
+            currentUserId={data?.user.id}
+            postId={post?._id}
+            groupId={group[0]._id}
+          />
         </div>
       </div>
     </div>

@@ -90,6 +90,15 @@ export default defineSchema({
     .index("by_post", ["postId"])
     .index("by_user", ["userId"])
     .index("by_group", ["groupId"]),
+  comments: defineTable({
+    userId: v.id("users"),
+    postId: v.id("posts"),
+    groupId: v.id("group"),
+    content: v.string(),
+  })
+    .index("by_post", ["postId"])
+    .index("by_user", ["userId"])
+    .index("by_group", ["groupId"]),
   tags: defineTable({
     userId: v.id("users"),
     name: v.string(),

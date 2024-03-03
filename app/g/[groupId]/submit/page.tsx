@@ -75,7 +75,7 @@ const page = ({ params }: pageProps) => {
         />
       </div>
       <div className="w-full flex justify-end pb-5">
-        <Button type="submit" className="w-full" onClick={handlePostCreate}>
+        <Button disabled={pending} type="submit" className="w-full" onClick={handlePostCreate}>
           Post
         </Button>
       </div>
