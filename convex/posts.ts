@@ -87,3 +87,59 @@ export const getById = query({
     return post;
   },
 });
+
+export const getByGroupId = query({
+  args: { groupId: v.id("group") },
+  handler: async (ctx, args) => {
+    // const identity = await ctx.auth.getUserIdentity();
+    // // console.log("IDENTITY ===>", identity);
+    const posts = await ctx.db
+      .query("posts")
+      .filter((q) => q.eq(q.field("groupId"), args.groupId))
+      .order("desc")
+      .collect();
+
+    if (!posts) {
+      throw new Error("Not found");
+    }
+
+    //   if (snippet.isPublished && !snippet.isArchived) {
+    //     return snippet;
+    //   }
+
+    //   if (snippet.isPublic) {
+    //     return snippet;
+    //   }
+
+    // if (!identity) {
+    //   throw new Error("Not authenticated");
+    // }
+
+    //   if (snippet.isPublic) {
+    //     return snippet;
+    //   }
+
+    //   const userId = identity.subject;
+
+    //   if (snippet.userId !== userId) {
+    //     throw new Error("Unauthorized");
+    //   }
+
+    // const presence = await ctx.db
+    //   .query("presence")
+    //   .withIndex("by_user", (q) => q.eq("userId", userId))
+    //   .unique();
+    // // console.log(presence);
+    // if (presence) {
+    //   await ctx.db.patch(presence._id, {
+    //     lastActive: Date.now(),
+    //     location: snippet._id,
+    //   });
+    // }
+    // await ctx.runMutation(internal.snippet.incrementCount, {
+    //   id: args.snippetId as Id<"snippets">,
+    // });
+
+    return posts;
+  },
+});
