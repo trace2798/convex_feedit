@@ -15,6 +15,8 @@ import {
 import { AlertModal } from "@/components/modals/alert-modal";
 import { toast } from "sonner";
 import { BillboardColumn } from "./columns";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { api } from "@/convex/_generated/api";
 // import { removeMember } from "./member-action";
 
 interface CellActionProps {
@@ -27,10 +29,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const params = useParams();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { mutate, pending } = useApiMutation(api.group_members.removeMember);
 
   const onConfirm = async () => {
     try {
       setLoading(true);
+      mutate({ memberId: data?._id });
       // const response = await removeMember(
       //   params.organizationId as string,
       //   data.id

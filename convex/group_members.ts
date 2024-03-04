@@ -54,3 +54,32 @@ export const addMember = mutation({
     return group_member;
   },
 });
+
+export const removeMember = mutation({
+  args: {
+    memberId: v.id("group_members"),
+  },
+  handler: async (ctx, args) => {
+    // const identity = await ctx.auth.getUserIdentity();
+    const member = await ctx.db.get(args.memberId);
+    console.log(member);
+    if (!member) {
+      throw new Error("Not found");
+    }
+    if (member.memberRole == "Owner") {
+      throw new Error("Cannot delete owner");
+    }
+    await ctx.db.delete(args.memberId);
+    // const group = await ctx.db
+    //   .query("group")
+    //   .filter((q) => q.eq(q.field("_id"), args.groupId))
+    //   .collect();
+    // const group_member = await ctx.db.insert("group_members", {
+    //   userId: args.userId as Id<"users">,
+    //   groupId: args.groupId as Id<"group">,
+    //   memberRole: args.memberRoles as "Member" | "Mod" | "Admin" | "Owner",
+    // });
+
+    // console.log("group member", group_member);
+  },
+});

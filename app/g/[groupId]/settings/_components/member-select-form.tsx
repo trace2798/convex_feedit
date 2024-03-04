@@ -68,9 +68,10 @@ const MemberSelectForm = ({
       memberRoles: values.memberRole,
     })
       .then((id) => {
-        toast.success("Post created");
+        toast.success("Member Added");
+        form.reset();
       })
-      .catch(() => toast.error("Failed to create group"));
+      .catch(() => toast.error("Failed to add member"));
   };
 
   const isLoading = form.formState.isSubmitting;
