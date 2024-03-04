@@ -25,7 +25,7 @@ const CommentBox: FC<CommentBoxProps> = ({
         groupId={groupId}
         commentId={commentId}
       />
-      <div className="mt-10">
+      <div className="mt-10 space-y-5 mb-10">
         <h1 className="my-5">Comments</h1>
         <CommentList
           postId={postId as Id<"posts">}

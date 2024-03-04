@@ -55,16 +55,6 @@ export const CommentList = ({
     );
   }
 
-  if (comments.length === 0) {
-    return (
-      <>
-        <Card className="text-center border-none">
-          <CardTitle>Be the one to start a conversation</CardTitle>
-        </Card>
-      </>
-    );
-  }
-
   return (
     <>
       <p
@@ -80,7 +70,7 @@ export const CommentList = ({
         No more comments to show.
       </p>
       {comments.map((comment) => (
-        <div key={comment._id}>
+        <div key={comment._id} >
           <Item
             level={level}
             onExpand={() => onExpand(comment._id)}

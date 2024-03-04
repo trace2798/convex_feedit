@@ -22,24 +22,14 @@ import { useSession } from "next-auth/react";
 import CommentCard from "./comment-card";
 
 interface ItemProps {
-  //   id?: Id<"comments">;
   comment?: any;
-  //   documentIcon?: string;
-  active?: boolean;
   expanded?: boolean;
   level?: number;
   onExpand?: () => void;
-
-  //   icon: LucideIcon;
   currentUserId: string;
 }
 
 export const Item = ({
-  //   id,
-
-  //   icon: Icon,
-  active,
-  //   documentIcon,
   level = 0,
   onExpand,
   expanded,
@@ -57,14 +47,12 @@ export const Item = ({
 
   return (
     <div
-      //   onClick={onClick}
       role="button"
       style={{
         paddingLeft: level ? `${level * 30 + 12}px` : "12px",
       }}
       className={cn(
-        "group min-h-[27px] text-sm w-full pb-1 hover:bg-primary/5 flex flex-col text-muted-foreground font-medium",
-        active && "bg-primary/5 text-primary"
+        "group min-h-[27px] text-sm w-full pb-1 hover:bg-primary/5 flex flex-col text-muted-foreground font-medium"
       )}
     >
       <CommentCard comment={comment} currentUserId={currentUserId} />
