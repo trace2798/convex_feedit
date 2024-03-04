@@ -95,10 +95,12 @@ export default defineSchema({
     postId: v.id("posts"),
     groupId: v.id("group"),
     content: v.string(),
+    parentComment: v.optional(v.id("comments")),
   })
     .index("by_post", ["postId"])
     .index("by_user", ["userId"])
-    .index("by_group", ["groupId"]),
+    .index("by_group", ["groupId"])
+    .index("by_comment", ["parentComment"]),
   comment_vote: defineTable({
     userId: v.id("users"),
     postId: v.id("posts"),

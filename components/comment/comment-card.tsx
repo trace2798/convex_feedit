@@ -10,17 +10,19 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import CommentVotes from "./comment-vote";
+import CommentReply from "./comment-reply";
 
 interface CommentCardProps {
   comment: any;
-  currentUserId?: string;
+  currentUserId: string;
 }
 
 const CommentCard: FC<CommentCardProps> = ({ comment, currentUserId }) => {
+  
   return (
     <>
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-1">
           <div className="flex items-center space-x-4">
             <Avatar>
               <AvatarImage src={comment.user?.image} />
@@ -36,15 +38,21 @@ const CommentCard: FC<CommentCardProps> = ({ comment, currentUserId }) => {
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pl-[72px] pb-3">
           <p>{comment?.content}</p>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="pb-1">
           <CommentVotes
             commentId={comment._id}
             groupId={comment.groupId}
             postId={comment.postId}
             userId={currentUserId}
+          />
+          <CommentReply
+            commentId={comment._id}
+            groupId={comment.groupId}
+            postId={comment.postId}
+            currentUserId={currentUserId}
           />
         </CardFooter>
       </Card>

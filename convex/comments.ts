@@ -4,29 +4,23 @@ import { Id } from "./_generated/dataModel";
 
 export const create = mutation({
   args: {
-    userId: v.string(),
-    postId: v.string(),
-    groupId: v.string(),
+    userId: v.id("users"),
+    postId: v.id("posts"),
+    groupId: v.id("group"),
     content: v.string(),
+    parentComment: v.optional(v.id("comments")),
   },
   handler: async (ctx, args) => {
-    // const identity = await ctx.auth.getUserIdentity();
-
-    // if (!identity) {
-    //   throw new Error("Not authenticated");
-    // }
-    // // console.log(identity, "IDENTITY");
-    // const userId = identity.subject;
-    // // console.log(userId, "USER ID");
-    // const userName = identity.name || "Anonymous";
-    const post = await ctx.db.insert("comments", {
-      userId: args.userId as Id<"users">,
-      groupId: args.groupId as Id<"group">,
+    console.log("ARGS", args);
+    const comment = await ctx.db.insert("comments", {
+      userId: args.userId,
+      groupId: args.groupId,
       content: args.content,
-      postId: args.postId as Id<"posts">,
+      postId: args.postId,
+      parentComment: args.parentComment,
     });
 
-    return post;
+    return comment;
   },
 });
 
