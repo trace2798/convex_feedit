@@ -3,13 +3,18 @@ import { FC } from "react";
 import MemberSelectForm from "./_components/member-select-form";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { BillboardClient } from "./_components/client";
 import { Id } from "@/convex/_generated/dataModel";
+import { useSession } from "next-auth/react";
 
 interface GroupIdSettingsPageProps {}
 
 const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
+  const { data } = useSession();
+  if (!data) {
+    redirect("/");
+  }
   const allUser = useQuery(api.users.getAllUsers);
   console.log("ALL USERS", allUser);
   const path = usePathname();
@@ -26,8 +31,11 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
   return (
     <>
       <MemberSelectForm groupId={groupId} users={allUser} />
-      {members && members.membersWithUserInfo && (
-        <BillboardClient data={members.membersWithUserInfo} />
+      {members && data && members.membersWithUserInfo && (
+        <BillboardClient
+          currentUserId={data.user.id as string}
+          data={members.membersWithUserInfo}
+        />
       )}
     </>
   );

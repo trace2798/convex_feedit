@@ -10,6 +10,7 @@ import { useMemberModal } from "@/hooks/use-member-modal";
 
 interface BillboardClientProps {
   data: BillboardColumn[];
+  currentUserId: string;
 }
 
 export const BillboardClient: React.FC<BillboardClientProps> = ({ data }) => {

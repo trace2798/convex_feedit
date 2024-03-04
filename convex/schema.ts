@@ -5,7 +5,7 @@ export const memberRoles = v.union(
   v.literal("Member"),
   v.literal("Mod"),
   v.literal("Admin"),
-  v.literal("Owner"),
+  v.literal("Owner")
 );
 
 export const voteType = v.union(v.literal("UP"), v.literal("DOWN"));
@@ -69,7 +69,10 @@ export default defineSchema({
     userId: v.id("users"),
     groupId: v.id("group"),
     memberRole: memberRoles,
-  }).index("by_group", ["groupId"]),
+  })
+    .index("by_group", ["groupId"])
+    .index("by_user", ["userId"])
+    .index("by_group_user", ["groupId", "userId"]),
   posts: defineTable({
     title: v.string(),
     content: v.optional(v.string()),
@@ -86,7 +89,7 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_group", ["groupId"])
     .index("by_tag", ["tags"])
-    .index("bt_username", ["username"]),
+    .index("by_username", ["username"]),
   votes: defineTable({
     voteType: voteType,
     userId: v.id("users"),

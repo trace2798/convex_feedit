@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useQuery } from "convex/react";
 import { Settings } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { toast } from "sonner";
 
 interface PageProps {
   params: {
@@ -28,6 +30,17 @@ const Page = ({ params }: PageProps) => {
   console.log("MEMBERS MEMBERS+>", members);
   console.log(initialPosts);
   const { data, status } = useSession();
+  const { mutate, pending } = useApiMutation(api.group_members.joinGroup);
+  const handleJoinGroup = () => {
+    mutate({
+      userId: data?.user.id,
+      groupId: params.groupId as Id<"group">,
+    })
+      .then(() => {
+        toast.success("Successful");
+      })
+      .catch(() => toast.error("Oops! Something went wrong."));
+  };
   const checkMembershipAndRole = () => {
     const member = members?.members?.find((m) => m.userId === data?.user?.id);
     if (member) {
@@ -65,8 +78,8 @@ const Page = ({ params }: PageProps) => {
                 </Button>{" "}
               </Link>
             )}
-            <Button>
-              {checkMembershipAndRole() === "Join" ? "Join" : "Joined"}
+            <Button variant="outline" onClick={handleJoinGroup}>
+              {checkMembershipAndRole() === "Join" ? "Join" : "Leave"}
             </Button>
           </div>
         </div>
