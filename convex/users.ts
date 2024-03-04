@@ -50,6 +50,12 @@ export const getByEmail = query({
   },
 });
 
+export const getAllUsers = query({
+  async handler(ctx) {
+    const users = await ctx.db.query("users").collect();
+    return users;
+  },
+});
 
 export const update = mutation({
   args: {

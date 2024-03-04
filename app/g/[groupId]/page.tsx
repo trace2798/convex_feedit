@@ -9,8 +9,7 @@ import { useQuery } from "convex/react";
 import { Settings } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { Suspense, use } from "react";
+import { Suspense } from "react";
 
 interface PageProps {
   params: {
