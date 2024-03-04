@@ -25,7 +25,7 @@ const Page = ({ params }: PageProps) => {
   const members = useQuery(api.group_members.getMemberByGroupId, {
     groupId: params.groupId as Id<"group">,
   });
-  console.log("MEMBERS", members);
+  console.log("MEMBERS MEMBERS+>", members);
   console.log(initialPosts);
   const { data, status } = useSession();
   const checkMembershipAndRole = () => {

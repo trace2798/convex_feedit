@@ -18,9 +18,19 @@ export const getMemberByGroupId = query({
     if (!members) {
       throw new Error("Not found");
     }
+    const membersWithUserInfo = await Promise.all(
+      members.map(async (member) => {
+        const userInfo = await ctx.db.get(member.userId);
+        return {
+          ...member,
+          userInfo,
+        };
+      })
+    );
 
     return {
       members: members,
+      membersWithUserInfo: membersWithUserInfo,
     };
   },
 });

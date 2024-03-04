@@ -133,7 +133,7 @@ const MemberSelectForm = ({
                 </PopoverContent>
               </Popover>
               <FormDescription>
-                Once submitted the user will be added to this organization.
+                Once submitted the user will be added to this group.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -191,7 +191,7 @@ const MemberSelectForm = ({
                 </PopoverContent>
               </Popover>
               <FormDescription>
-                Once submitted the user will be added to this organization.
+                Once submitted the user will be added to this group.
               </FormDescription>
               <FormMessage />
             </FormItem>
