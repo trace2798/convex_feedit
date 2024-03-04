@@ -1,11 +1,11 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
-export const authUserRoles = v.union(
-  v.literal("User"),
+export const memberRoles = v.union(
+  v.literal("Member"),
   v.literal("Mod"),
   v.literal("Admin"),
-  v.literal("Developer")
+  v.literal("Owner"),
 );
 
 export const voteType = v.union(v.literal("UP"), v.literal("DOWN"));
@@ -57,13 +57,19 @@ export default defineSchema({
   group: defineTable({
     name: v.string(),
     description: v.optional(v.string()),
-    userId: v.id("users"),
+    ownerId: v.id("users"),
+    isPublic: v.boolean(),
   })
-    .index("by_user", ["userId"])
+    .index("by_owner", ["ownerId"])
     .searchIndex("search_name", {
       searchField: "name",
       filterFields: ["name"],
     }),
+  group_members: defineTable({
+    userId: v.id("users"),
+    groupId: v.id("group"),
+    memberRole: memberRoles,
+  }).index("by_group", ["groupId"]),
   posts: defineTable({
     title: v.string(),
     content: v.optional(v.string()),

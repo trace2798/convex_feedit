@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { internal } from "./_generated/api";
 
 export const getById = query({
   args: { groupId: v.id("group") },
@@ -77,7 +78,6 @@ export const getSearch = query({
 });
 
 export const get = query({
-  
   handler: async (ctx) => {
     // const identity = await ctx.auth.getUserIdentity();
 
@@ -86,30 +86,36 @@ export const get = query({
     // }
 
     // const userId = identity.subject;
-   
+
     const groups = await ctx.db
       .query("group")
-     
+
       .collect();
 
     return groups;
   },
 });
 
-
 export const create = mutation({
   args: {
     userId: v.string(),
     name: v.string(),
+    isPublic: v.boolean(),
   },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
 
     const group = await ctx.db.insert("group", {
       name: args.name,
-      userId: args.userId as Id<"users">,
+      ownerId: args.userId as Id<"users">,
+      isPublic: args.isPublic,
     });
-
+    await ctx.db.insert("group_members", {
+      userId: args.userId as Id<"users">,
+      groupId: group as Id<"group">,
+      memberRole: "Owner",
+    });
+    console.log("group group", group);
     return group;
   },
 });

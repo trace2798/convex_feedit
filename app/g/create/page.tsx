@@ -2,23 +2,32 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import * as Switch from "@radix-ui/react-switch";
 import { api } from "@/convex/_generated/api";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { Label } from "@radix-ui/react-dropdown-menu";
 
 const Page = () => {
   const router = useRouter();
   const { data } = useSession();
   const userId = data?.user?.id;
   const [input, setInput] = useState<string>("");
+  const [isPublic, setIsPublic] = useState<boolean>(true);
   const { mutate, pending } = useApiMutation(api.group.create);
   const handleGroupCreate = () => {
     mutate({
       userId,
       name: input,
+      isPublic: isPublic,
     })
       .then((id) => {
         toast.success("Group created");
@@ -49,7 +58,20 @@ const Page = () => {
             />
           </div>
         </div>
-
+        <div>
+          <Label>Group Privacy</Label>
+          <HoverCard>
+            <HoverCardTrigger className="flex mt-5 flex-col group">
+              <Switch.Root
+                checked={isPublic}
+                onCheckedChange={setIsPublic}
+                className="w-11 p-px rounded-full bg-slate-500 data-[state=checked]:bg-sky-500 shadow-inner shadow-black/50 active:data-[state=checked]:bg-sky-400 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-sky-400 focus-visible:outline-2"
+              >
+                <Switch.Thumb className="w-6 h-6 data-[state=checked]:bg-white bg-gray-200 shadow-sm block rounded-full transition data-[state=checked]:translate-x-[18px]" />
+              </Switch.Root>
+            </HoverCardTrigger>
+          </HoverCard>
+        </div>
         <div className="flex justify-end gap-4">
           <Button
             disabled={pending}
