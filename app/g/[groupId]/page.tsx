@@ -16,7 +16,7 @@ interface PageProps {
   };
 }
 
-const page = ({ params }: PageProps) => {
+const Page = ({ params }: PageProps) => {
   // const group = useQuery(api.group.getById, {
   //   groupId: params.groupId as Id<"group">,
   // });
@@ -59,4 +59,4 @@ const page = ({ params }: PageProps) => {
   );
 };
 
-export default page;
+export default Page;

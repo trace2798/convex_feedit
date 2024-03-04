@@ -13,8 +13,8 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, currentUserId }) => {
   return (
     <>
       <div className="space-y-5">
-        {initialPosts?.map((post) => (
-          <PostCard post={post} currentUserId={currentUserId} />
+        {initialPosts?.map((post, index) => (
+          <PostCard key={index} post={post} currentUserId={currentUserId} />
         ))}
       </div>
     </>

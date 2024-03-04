@@ -11,13 +11,13 @@ import { notFound, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-interface pageProps {
+interface PageProps {
   params: {
     groupId: string;
   };
 }
 
-const page = ({ params }: pageProps) => {
+const Page = ({ params }: PageProps) => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const router = useRouter();
@@ -75,7 +75,12 @@ const page = ({ params }: pageProps) => {
         />
       </div>
       <div className="w-full flex justify-end pb-5">
-        <Button disabled={pending} type="submit" className="w-full" onClick={handlePostCreate}>
+        <Button
+          disabled={pending}
+          type="submit"
+          className="w-full"
+          onClick={handlePostCreate}
+        >
           Post
         </Button>
       </div>
@@ -83,4 +88,4 @@ const page = ({ params }: pageProps) => {
   );
 };
 
-export default page;
+export default Page;

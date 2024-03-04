@@ -92,9 +92,10 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
         </div>
         <div className="mt-5">
           <CommentBox
-            currentUserId={data?.user.id}
+            currentUserId={data?.user.id as string}
             postId={post?._id}
             groupId={group[0]._id}
+            commentId=""
           />
         </div>
       </div>
