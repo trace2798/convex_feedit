@@ -1,10 +1,11 @@
 "use client";
+import { Id } from "@/convex/_generated/dataModel";
 import { FC } from "react";
-import CommentFeed from "./comment-feed";
+import { CommentList } from "./comment-list";
 import CommentTextArea from "./comment-textarea";
 
 interface CommentBoxProps {
-  currentUserId?: string;
+  currentUserId: string;
   postId: string;
   groupId: string;
   commentId: string;
@@ -25,7 +26,11 @@ const CommentBox: FC<CommentBoxProps> = ({
         commentId={commentId}
       />
       <div className="mt-10">
-        <CommentFeed postId={postId} currentUserId={currentUserId} />
+        <h1 className="my-5">Comments</h1>
+        <CommentList
+          postId={postId as Id<"posts">}
+          currentUserId={currentUserId}
+        />
       </div>
     </>
   );

@@ -1,13 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogFooter,
-    DialogTrigger
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { FC } from "react";
 import CommentTextArea from "./comment-textarea";
+import { useLoginModal } from "@/store/use-login-modal";
 
 interface CommentReplyProps {
   commentId: string;
@@ -22,13 +23,26 @@ const CommentReply: FC<CommentReplyProps> = ({
   groupId,
   currentUserId,
 }) => {
+  const { onOpen } = useLoginModal();
   return (
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="ghost" className="ml-10">
-            Reply
-          </Button>
+          <>
+            {!currentUserId ? (
+              <Button
+                onClick={() => onOpen()}
+                className="ml-5 cursor-pointer"
+                variant="ghost"
+              >
+                Login to reply
+              </Button>
+            ) : (
+              <Button variant="ghost" className="ml-10">
+                Reply
+              </Button>
+            )}
+          </>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <CommentTextArea
@@ -37,9 +51,6 @@ const CommentReply: FC<CommentReplyProps> = ({
             groupId={groupId}
             commentId={commentId}
           />
-          <DialogFooter>
-            <Button type="submit">Save changes</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

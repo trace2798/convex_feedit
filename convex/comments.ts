@@ -25,7 +25,7 @@ export const create = mutation({
 });
 
 export const getByPostId = query({
-  args: { postId: v.id("posts") },
+  args: { postId: v.id("posts"), parentComment: v.optional(v.id("comments")) },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
     // // console.log("IDENTITY ===>", identity);
@@ -36,6 +36,7 @@ export const getByPostId = query({
     }
     const comments = await ctx.db
       .query("comments")
+      .withIndex("by_comment", (q) => q.eq("parentComment", args.parentComment))
       .filter((q) => q.eq(q.field("postId"), args.postId))
       .order("desc")
       .collect();
@@ -53,5 +54,38 @@ export const getByPostId = query({
     return {
       comments: commentsWithUser,
     };
+  },
+});
+
+export const getCommentsByPost = query({
+  args: {
+    postId: v.id("posts"),
+    parentComment: v.optional(v.id("comments")),
+  },
+  handler: async (ctx, args) => {
+    const post = await ctx.db.get(args.postId as Id<"posts">);
+
+    if (!post) {
+      throw new Error("Not found");
+    }
+    const comments = await ctx.db
+      .query("comments")
+      .withIndex("by_post_comment", (q) =>
+        q.eq("postId", args.postId).eq("parentComment", args.parentComment)
+      )
+      // .filter((q) => q.eq(q.field("isArchived"), false))
+      .order("desc")
+      .collect();
+    const commentsWithUser = await Promise.all(
+      comments.map(async (comment) => {
+        const user = await ctx.db.get(comment.userId as Id<"users">);
+        return {
+          ...comment,
+          user: user,
+        };
+      })
+    );
+
+    return commentsWithUser;
   },
 });

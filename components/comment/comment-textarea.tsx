@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
+import { useLoginModal } from "@/store/use-login-modal";
 
 interface CommentTextAreaProps {
   currentUserId?: string;
@@ -21,24 +22,29 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
   groupId,
   commentId,
 }) => {
+  const { onOpen } = useLoginModal();
   const [content, setContent] = useState("");
   const { mutate, pending } = useApiMutation(api.comments.create);
   const handleCommentCreate = () => {
-    console.log("COMMENT ID",commentId)
+    if (!currentUserId) {
+      onOpen();
+      return;
+    }
+    console.log("COMMENT ID", commentId);
     mutate({
       userId: currentUserId,
       groupId: groupId as Id<"group">,
       content: content,
       postId: postId,
-      parentComment: commentId as Id<"comments"> || "",
+      parentComment: commentId as Id<"comments">,
     })
       .then((id) => {
         toast.success("Comment Added");
         setContent("");
         // router.push(`/g/${params.groupId}/post/${id}`);
       })
-      //   .catch(() => toast.error("Failed to comment"));
-      .catch((error) => console.log(error));
+      .catch(() => toast.error("Failed to comment"));
+    // .catch((error) => console.log(error));
   };
 
   const handleCancel = () => {
@@ -50,7 +56,12 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
       <div>
         <Label>{commentId ? "Reply" : " Add your comment"}</Label>
         <Textarea
-          placeholder="Tell us what you think about post"
+          disabled={!currentUserId}
+          placeholder={
+            !currentUserId
+              ? "Sign in to comment"
+              : "What do you think of the post"
+          }
           className="resize-none mt-2"
           value={content} // Make sure the textarea's value is always in sync with the state
           onChange={(e) => setContent(e.target.value)}

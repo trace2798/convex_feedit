@@ -1,16 +1,11 @@
 "use client";
-import { FC } from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { formatDistanceToNow } from "date-fns";
-import CommentVotes from "./comment-vote";
+import { FC, Suspense } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import CommentReply from "./comment-reply";
+import CommentVotes from "./comment-vote";
+import { Loader2 } from "lucide-react";
 
 interface CommentCardProps {
   comment: any;
@@ -18,16 +13,18 @@ interface CommentCardProps {
 }
 
 const CommentCard: FC<CommentCardProps> = ({ comment, currentUserId }) => {
-  
+  console.log("COMMENT CARD", comment);
   return (
     <>
-      <Card>
+      <Card className="w-full break-words">
         <CardHeader className="pb-1">
           <div className="flex items-center space-x-4">
-            <Avatar>
-              <AvatarImage src={comment.user?.image} />
-              <AvatarFallback>OM</AvatarFallback>
-            </Avatar>
+            <Suspense fallback={<Loader2 className="h-6 w-6" />}>
+              <Avatar>
+                <AvatarImage src={comment?.user?.image} />
+                <AvatarFallback>OM</AvatarFallback>
+              </Avatar>
+            </Suspense>
             <div>
               <p className="text-sm font-medium leading-none">
                 {comment?.user?.name}
