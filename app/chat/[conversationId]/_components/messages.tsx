@@ -19,14 +19,14 @@ export type HomeMessage = {
   isArchived: boolean;
 };
 
-interface ChatHomeMessagesProps {
+interface ChatMessagesProps {
   message: HomeMessage;
   isOwnMessage: boolean;
   conversationId: string;
   currentUserId: Id<"users">;
 }
 
-const ChatHomeMessages: FC<ChatHomeMessagesProps> = ({
+const ChatMessages: FC<ChatMessagesProps> = ({
   message,
   isOwnMessage,
   conversationId,
@@ -100,4 +100,4 @@ const ChatHomeMessages: FC<ChatHomeMessagesProps> = ({
   );
 };
 
-export default ChatHomeMessages;
+export default ChatMessages;

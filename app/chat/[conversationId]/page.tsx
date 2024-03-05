@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { ElementRef, FC, Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import ChatHomeMessages from "./_components/home-messages";
+import ChatMessages from "./_components/messages";
 import { Spinner } from "@/components/spinner";
 
 interface ConversationIdPageProps {
@@ -80,7 +80,7 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
               </div>
             ) : (
               messages.messages.map((message, index) => (
-                <ChatHomeMessages
+                <ChatMessages
                   conversationId={params.conversationId}
                   currentUserId={data?.user.id as Id<"users">}
                   message={message}
