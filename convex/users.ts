@@ -129,20 +129,49 @@ export const getAllInfoById = query({
       .query("posts")
       .withIndex("by_user", (q) => q.eq("userId", args.id))
       .collect();
+    const postsWithGroupDetails = await Promise.all(
+      posts.map(async (post) => {
+        const group = await ctx.db.get(post.groupId);
+        return { ...post, group };
+      })
+    );
     const comments = await ctx.db
       .query("comments")
       .withIndex("by_user", (q) => q.eq("userId", args.id))
+      .order("desc")
       .collect();
-    const commentsWithPostDetails = await Promise.all(
+    const commentsWithPostAndGroupDetails = await Promise.all(
       comments.map(async (comment) => {
         const post = await ctx.db.get(comment.postId);
-        return { ...comment, post };
+        const group = await ctx.db.get(comment.groupId);
+        return { ...comment, post, group };
       })
     );
+
+    // Query for groups the user has created
+    const createdGroups = await ctx.db
+      .query("group")
+      .withIndex("by_owner", (q) => q.eq("ownerId", args.id))
+      .collect();
+
+    // Query for groups the user has joined
+    const joinedGroupMemberships = await ctx.db
+      .query("group_members")
+      .withIndex("by_user", (q) => q.eq("userId", args.id))
+      .collect();
+    const joinedGroups = await Promise.all(
+      joinedGroupMemberships.map(async (membership) => {
+        const group = await ctx.db.get(membership.groupId);
+        return { ...membership, group };
+      })
+    );
+
     return {
       user,
-      posts,
-      comments: commentsWithPostDetails,
+      posts: postsWithGroupDetails,
+      comments: commentsWithPostAndGroupDetails,
+      createdGroups,
+      joinedGroups,
     };
   },
 });

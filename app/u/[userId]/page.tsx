@@ -62,10 +62,18 @@ const Page = ({ params }: PageProps) => {
             )}
           </div>
           <Separator className="mt-5" />
+          <h1>Creator: {info?.createdGroups.map((group) => group.name)}</h1>
+          <h1>
+            Members: {info?.joinedGroups.map((group) => group.group?.name)}
+          </h1>
+          <Separator className="mt-5" />
           <div className="mt-5">
             <h1 className="mb-3">Posts</h1>
             {info?.posts.map((post, index) => (
               <>
+                <h1 className="text-muted-foreground ml-1">
+                  g/{post.group?.name}
+                </h1>
                 <PostCard key={index} post={post} />
               </>
             ))}
@@ -76,16 +84,32 @@ const Page = ({ params }: PageProps) => {
               <div key={index} className="flex flex-col space-y-4">
                 <h1 className="my-0">
                   {comment.parentComment ? (
-                    <h1>
-                      Replied to a comment on Post:{" "}
+                    <h1 className="text-sm">
+                      <a href={`/g/${comment.groupId}`}>
+                        <span className="text-muted-foreground hover:text-blue-400">
+                          g/{comment.group?.name} &nbsp;|&nbsp;
+                        </span>
+                      </a>
+                      <a href={`/g/${comment.groupId}/post/${comment.postId}`}>
+                        <span className="hover:text-blue-400">
+                          {comment.post?.title}
+                        </span>
+                      </a>
+                      &nbsp;|&nbsp;[Reply]
+                    </h1>
+                  ) : (
+                    <h1 className="text-sm">
+                      <a href={`/g/${comment.groupId}`}>
+                        <span className="text-muted-foreground hover:text-blue-400">
+                          g/{comment.group?.name} &nbsp;|&nbsp;
+                        </span>
+                      </a>
                       <a href={`/g/${comment.groupId}/post/${comment.postId}`}>
                         <span className="hover:text-blue-400">
                           {comment.post?.title}
                         </span>
                       </a>
                     </h1>
-                  ) : (
-                    ""
                   )}{" "}
                 </h1>
                 <UserCommentBox comment={comment} />
