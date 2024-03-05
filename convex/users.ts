@@ -130,13 +130,19 @@ export const getAllInfoById = query({
       .withIndex("by_user", (q) => q.eq("userId", args.id))
       .collect();
     const comments = await ctx.db
-      .query("posts")
+      .query("comments")
       .withIndex("by_user", (q) => q.eq("userId", args.id))
       .collect();
+    const commentsWithPostDetails = await Promise.all(
+      comments.map(async (comment) => {
+        const post = await ctx.db.get(comment.postId);
+        return { ...comment, post };
+      })
+    );
     return {
       user,
       posts,
-      comments,
+      comments: commentsWithPostDetails,
     };
   },
 });
