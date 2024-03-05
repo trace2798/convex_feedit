@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Code2Icon } from "lucide-react";
+import { Code2Icon, MessageCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLoginModal } from "@/store/use-login-modal";
 import UserButton from "./user-button";
@@ -23,7 +23,9 @@ export const Navbar = () => {
           </Link>
           <div className="flex items-center align-center space-x-5">
             {/* <SearchCommand/> */}
-            <Button onClick={search.onOpen}>Search</Button>
+            <Link href={"/chat"}>
+              <Button variant="ghost">Chat</Button>
+            </Link>
             <ModeToggle />
             {data?.user && <UserButton />}
             {status === "unauthenticated" && (

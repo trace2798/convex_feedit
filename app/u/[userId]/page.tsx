@@ -16,6 +16,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { toast } from "sonner";
 import UserCommentBox from "./_components/user-comment-box";
+import { useRouter } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -24,18 +25,41 @@ interface PageProps {
 }
 
 const Page = ({ params }: PageProps) => {
+  const router = useRouter();
   const info = useQuery(api.users.getAllInfoById, {
     id: params.userId as Id<"users">,
   });
   console.log("INFO INFO", info);
   const { data } = useSession();
+  const { mutate, pending } = useApiMutation(api.conversation.create);
+
+  const handleConversation = () => {
+    mutate({
+      user1Id: data?.user.id,
+      user2Id: params.userId,
+    })
+      .then((id) => {
+        toast.success("Chat created");
+        router.push(`/chat/${id}`);
+      })
+      .catch(() => toast.error("Failed to create group"));
+  };
   return (
     <>
       <Suspense>
         <div>
           <div className="flex items-center justify-between">
             <h1>u/{info?.user.username}</h1>
-            <Button variant="outline">Send DM</Button>
+            {data?.user.id === params.userId ? (
+              <Link href={"/chat"}>
+                {" "}
+                <Button variant="outline">Messages</Button>
+              </Link>
+            ) : (
+              <Button variant="outline" onClick={handleConversation}>
+                Send DM
+              </Button>
+            )}
           </div>
           <Separator className="mt-5" />
           <div className="mt-5">

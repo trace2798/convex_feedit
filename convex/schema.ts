@@ -127,4 +127,20 @@ export default defineSchema({
     userId: v.id("users"),
     name: v.string(),
   }),
+  messages: defineTable({
+    userId: v.id("users"),
+    content: v.string(),
+    conversationId: v.id("conversation"),
+  })
+    .index("by_user", ["userId"])
+    .index("by_conversation", ["conversationId"]),
+  conversation: defineTable({
+    user1Id: v.id("users"),
+    user2Id: v.id("users"),
+    messageId: v.optional(v.id("messages")),
+  })
+    .index("by_both_user", ["user1Id", "user2Id"])
+    .index("by_messageId", ["messageId"])
+    .index("by_user1Id", ["user1Id"])
+    .index("by_user2Id", ["user2Id"]),
 });
