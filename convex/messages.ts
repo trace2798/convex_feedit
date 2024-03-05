@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { internal } from "./_generated/api";
 
 export const sendMessage = mutation({
   args: {
@@ -9,23 +10,13 @@ export const sendMessage = mutation({
     conversationId: v.id("conversation"),
   },
   handler: async (ctx, args) => {
-    //   const identity = await ctx.auth.getUserIdentity();
-
-    //   if (!identity) {
-    //     throw new Error("Not authenticated");
-    //   }
-
-    //   const userId = identity.subject;
-
     const chat = await ctx.db.insert("messages", {
       userId: args.userId,
       content: args.content,
       conversationId: args.conversationId,
+      isArchived: false,
+      lastMessageSentAt: Date.now(),
     });
-
-    // const updateStatus = await ctx.db.patch("presence",{
-
-    // })
 
     return chat;
   },
@@ -44,5 +35,32 @@ export const getByConversationId = query({
     return {
       messages,
     };
+  },
+});
+
+export const deleteMessage = mutation({
+  args: {
+    userId: v.id("users"),
+    messageId: v.id("messages"),
+    conversationId: v.id("conversation"),
+  },
+  handler: async (ctx, args) => {
+    const existingMessage = await ctx.db
+      .query("messages")
+      .withIndex("by_conversation", (q) =>
+        q.eq("conversationId", args.conversationId as Id<"conversation">)
+      )
+      .filter((q) => q.eq(q.field("_id"), args.messageId))
+      .collect();
+    if (
+      existingMessage.length > 0 &&
+      existingMessage[0]._id !== args.messageId
+    ) {
+      throw new Error("Message not found");
+    }
+    if (existingMessage[0].userId !== args.userId) {
+      throw new Error("Unauthorized");
+    }
+    await ctx.db.delete(args.messageId);
   },
 });

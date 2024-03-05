@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
 export const create = mutation({
@@ -18,7 +18,7 @@ export const create = mutation({
       )
       .collect();
 
-      const existingConversation2 = await ctx.db
+    const existingConversation2 = await ctx.db
       .query("conversation")
       .withIndex("by_both_user", (q) =>
         q
@@ -36,6 +36,7 @@ export const create = mutation({
     const conversation = await ctx.db.insert("conversation", {
       user1Id: args.user1Id as Id<"users">,
       user2Id: args.user2Id as Id<"users">,
+      lastMessageSentAt: Date.now(),
     });
 
     console.log("conversation conversation", conversation);
@@ -80,10 +81,18 @@ export const getConversationByUserId = query({
       })
     );
 
-    return {
-      conversationWithUser1,
-      conversationWithUser2,
-    };
+    const allConversations = [
+      ...conversationWithUser1,
+      ...conversationWithUser2,
+    ];
+
+    return allConversations;
   },
 });
 
+export const updateLastSeen = mutation({
+  args: { conversationId: v.id("conversation") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.conversationId, { lastMessageSentAt: Date.now() });
+  },
+});

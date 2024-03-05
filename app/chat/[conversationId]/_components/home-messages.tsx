@@ -8,6 +8,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
+import { useApiMutation } from "@/hooks/use-api-mutation";
 
 export type HomeMessage = {
   _id: Id<"messages">;
@@ -15,28 +16,35 @@ export type HomeMessage = {
   content: string;
   userId: Id<"users">;
   conversationId: Id<"conversation">;
+  isArchived: boolean;
 };
 
 interface ChatHomeMessagesProps {
   message: HomeMessage;
   isOwnMessage: boolean;
+  conversationId: string;
+  currentUserId: Id<"users">;
 }
 
 const ChatHomeMessages: FC<ChatHomeMessagesProps> = ({
   message,
   isOwnMessage,
+  conversationId,
+  currentUserId,
 }) => {
-  //   const archiveMessage = useMutation(api.documents.archiveHomeMessage);
-  //   const deleteMessage = () => {
-  //     if (!message._id) return;
-  //     const promise = archiveMessage({ id: message._id as Id<"homeChat"> });
+  const { mutate, pending } = useApiMutation(api.messages.deleteMessage);
 
-  //     toast.promise(promise, {
-  //       loading: "Moving to trash...",
-  //       success: "Note moved to trash!",
-  //       error: "Failed to archive note.",
-  //     });
-  //   };
+  const handleDelete = () => {
+    mutate({
+      messageId: message._id as Id<"messages">,
+      conversationId: conversationId as Id<"conversation">,
+      userId: currentUserId as Id<"users">,
+    })
+      .then((id) => {
+        toast.success("Message Deleted");
+      })
+      .catch(() => toast.error("Failed to delete message"));
+  };
   return (
     <>
       <div
@@ -57,23 +65,21 @@ const ChatHomeMessages: FC<ChatHomeMessagesProps> = ({
             {isOwnMessage ? "(you)" : ""}
           </p>
           <p className="text-white">
-            {/* {message.isArchived
+            {message.isArchived
               ? "This message has been deleted."
-              : message.content} */}
-            {message.content}
+              : message.content}
           </p>
           <p
             className={`${
               isOwnMessage ? "text-blue-100" : "text-slate-400"
             } font-switzerLight mt-3`}
           >
-            {/* {message.isArchived
-              ? ""
+            {message.isArchived
+              ? "Message has been deleted"
               : format(
                   new Date(message._creationTime),
                   "iiii, do MMMM, yyyy p"
-                )} */}
-            {format(new Date(message._creationTime), "iiii, do MMMM, yyyy p")}
+                )}
           </p>
         </div>
 
@@ -81,7 +87,7 @@ const ChatHomeMessages: FC<ChatHomeMessagesProps> = ({
           <div className="flex flex-col justify-between">
             <Button
               className="cursor-pointer -bottom-7 p-0 text-right right-2 transition"
-              //   onClick={deleteMessage}
+              onClick={handleDelete}
               aria-label="Trash button to delete Message. Mod of the chat can delete all the messages."
               variant="ghost"
             >

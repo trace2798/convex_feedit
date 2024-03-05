@@ -1,9 +1,10 @@
 "use client";
 
-import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
-import { useState } from "react";
+import { Copy, MoreHorizontal, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 
+import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,15 +13,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AlertModal } from "@/components/modals/alert-modal";
-import { toast } from "sonner";
-import { BillboardColumn } from "./columns";
-import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { toast } from "sonner";
+import { MemberColumn } from "./columns";
 // import { removeMember } from "./member-action";
 
 interface CellActionProps {
-  data: BillboardColumn;
+  data: MemberColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {

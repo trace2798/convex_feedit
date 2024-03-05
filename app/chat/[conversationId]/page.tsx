@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 import { ElementRef, FC, Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import ChatHomeMessages from "./_components/home-messages";
+import { Spinner } from "@/components/spinner";
 
 interface ConversationIdPageProps {
   params: {
@@ -28,7 +29,9 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
   const [loading, setLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const { mutate, pending } = useApiMutation(api.messages.sendMessage);
-
+  const { mutate: convoLastSeen, pending: convoPending } = useApiMutation(
+    api.conversation.updateLastSeen
+  );
   const sendMessage = () => {
     mutate({
       userId: data?.user.id,
@@ -39,6 +42,13 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
         toast.success("Message Sent");
         setMessage("");
         // router.push(`/g/${id}`);
+        convoLastSeen({
+          conversationId: params.conversationId as Id<"conversation">,
+        })
+          .then(() => {
+            toast.success("Conversation Last Seen Updated");
+          })
+          .catch(() => toast.error("Failed to update conversation Last seen"));
       })
       .catch(() => toast.error("Failed to sent message"));
   };
@@ -57,8 +67,8 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
   }, [messages]);
   return (
     <>
-      <Suspense>
-        <div className="flex w-full">
+      <Suspense fallback={<Spinner size={"lg"} />}>
+        <div className="flex flex-col w-full">
           <ScrollArea
             className={cn(
               "border-none max-h-[70vh] overflow-y-auto px-5 bg-text-muted w-full transition flex text-sm flex-col rounded-2xl"
@@ -69,14 +79,14 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
                 <h1>Oops. Looks like you have not started chatting.</h1>
               </div>
             ) : (
-             
               messages.messages.map((message, index) => (
                 <ChatHomeMessages
+                  conversationId={params.conversationId}
+                  currentUserId={data?.user.id as Id<"users">}
                   message={message}
                   isOwnMessage={message.userId === data.user.id}
                   key={index}
                 />
-                // <h1>{message.content}</h1>
               ))
             )}
 

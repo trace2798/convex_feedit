@@ -131,6 +131,8 @@ export default defineSchema({
     userId: v.id("users"),
     content: v.string(),
     conversationId: v.id("conversation"),
+    isArchived: v.boolean(),
+    lastMessageSentAt: v.optional(v.number()),
   })
     .index("by_user", ["userId"])
     .index("by_conversation", ["conversationId"]),
@@ -138,6 +140,7 @@ export default defineSchema({
     user1Id: v.id("users"),
     user2Id: v.id("users"),
     messageId: v.optional(v.id("messages")),
+    lastMessageSentAt: v.number(),
   })
     .index("by_both_user", ["user1Id", "user2Id"])
     .index("by_messageId", ["messageId"])

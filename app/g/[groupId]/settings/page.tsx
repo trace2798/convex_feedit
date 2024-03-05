@@ -12,24 +12,24 @@ interface GroupIdSettingsPageProps {}
 
 const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
   const { data, status } = useSession();
+  const path = usePathname();
+  const pathParts = path.split("/");
+  const groupId = pathParts[pathParts.indexOf("g") + 1];
+  const allUser = useQuery(api.users.getAllUsers);
+  const members = useQuery(api.group_members.getMemberByGroupId, {
+    groupId: groupId as Id<"group">,
+  });
+
   if (status === "loading") {
     return <p>Loading...</p>;
   }
   if (!data) {
     redirect("/");
+    return null;
   }
-  const allUser = useQuery(api.users.getAllUsers);
+
   console.log("ALL USERS", allUser);
-  const path = usePathname();
-  console.log(path);
-  // Split the path into an array of substrings
-  const pathParts = path.split("/");
-  // Find the index of 'g' and add 1 to get the value after 'g/'
-  const groupId = pathParts[pathParts.indexOf("g") + 1];
   console.log(groupId); // This will log the value between 'g/' and '/settings'
-  const members = useQuery(api.group_members.getMemberByGroupId, {
-    groupId: groupId as Id<"group">,
-  });
   console.log("MEMBER USER INFO", members?.membersWithUserInfo);
   return (
     <>

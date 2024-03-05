@@ -12,39 +12,27 @@ interface ChatPageProps {}
 
 const ChatPage: FC<ChatPageProps> = ({}) => {
   const { data } = useSession();
-  if (!data) return null;
+
   const conversations = useQuery(api.conversation.getConversationByUserId, {
     userId: data?.user.id as Id<"users">,
   });
   console.log(conversations, "CONVERSATIONS");
+  const sortedConversations = conversations?.sort(
+    (a, b) => b.lastMessageSentAt - a.lastMessageSentAt
+  );
   return (
     <>
       <Suspense fallback={<Spinner />}>
         <h1 className="text-xl font-bold mb-5">Conversations</h1>
         <div className="flex w-full">
-          <div className="w-1/4">
-            {conversations?.conversationWithUser1.map((conversation) => (
+          <div className="w-full lg:w-1/4">
+            {sortedConversations?.map((conversation) => (
               <Link
                 href={`/chat/${conversation._id}`}
                 key={conversation._id}
                 className="space-y-3"
               >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg font-light">
-                      u/{conversation.user?.username}
-                    </CardTitle>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
-            {conversations?.conversationWithUser2.map((conversation) => (
-              <Link
-                href={`/chat/${conversation._id}`}
-                key={conversation._id}
-                className="space-y-3"
-              >
-                <Card>
+                <Card className="mb-3">
                   <CardHeader>
                     <CardTitle className="text-lg font-light">
                       u/{conversation.user?.username}
@@ -54,7 +42,7 @@ const ChatPage: FC<ChatPageProps> = ({}) => {
               </Link>
             ))}
           </div>
-          <div className="w-3/4">messages</div>
+          <div className="hidden lg:block lg:w-3/4">messages</div>
         </div>
       </Suspense>
     </>
