@@ -5,7 +5,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { nanoid } from 'nanoid'
+import { nanoid } from "nanoid";
 
 const userArgs = {
   email: v.string(),
@@ -116,3 +116,27 @@ export async function getUserWithEmail(ctx: QueryCtx, email: string) {
 //     await ctx.db.patch(args.userId, { aiCount: updatedAICount });
 //   },
 // });
+
+export const getAllInfoById = query({
+  args: {
+    id: v.id("users"),
+  },
+  async handler(ctx, args) {
+    const user = await ctx.db.get(args.id);
+    if (!user) return null;
+
+    const posts = await ctx.db
+      .query("posts")
+      .withIndex("by_user", (q) => q.eq("userId", args.id))
+      .collect();
+    const comments = await ctx.db
+      .query("posts")
+      .withIndex("by_user", (q) => q.eq("userId", args.id))
+      .collect();
+    return {
+      user,
+      posts,
+      comments,
+    };
+  },
+});

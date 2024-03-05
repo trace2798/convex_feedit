@@ -36,15 +36,40 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
       groupId: groupId as Id<"group">,
       content: content,
       postId: postId,
-      parentComment: commentId as Id<"comments">,
+      // parentComment: commentId as Id<"comments"> || "",
     })
       .then((id) => {
         toast.success("Comment Added");
         setContent("");
         // router.push(`/g/${params.groupId}/post/${id}`);
       })
-      .catch(() => toast.error("Failed to comment"));
-    // .catch((error) => console.log(error));
+      // .catch(() => toast.error("Failed to comment"));
+      .catch((error) => console.log(error));
+  };
+
+  const { mutate: replyMutation, pending: replyPending } = useApiMutation(
+    api.comments.createReply
+  );
+  const handleReply = () => {
+    if (!currentUserId) {
+      onOpen();
+      return;
+    }
+    console.log("COMMENT ID", commentId);
+    replyMutation({
+      userId: currentUserId,
+      groupId: groupId as Id<"group">,
+      content: content,
+      postId: postId,
+      parentComment: (commentId as Id<"comments">) || "",
+    })
+      .then((id) => {
+        toast.success("Comment Added");
+        setContent("");
+        // router.push(`/g/${params.groupId}/post/${id}`);
+      })
+      // .catch(() => toast.error("Failed to comment"));
+      .catch((error) => console.log(error));
   };
 
   const handleCancel = () => {
@@ -67,9 +92,12 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
           onChange={(e) => setContent(e.target.value)}
         />
         <div className="space-x-5 mt-3">
+          {currentUserId} {postId} {groupId} {commentId}
           <Button
-            disabled={pending || !content}
-            onClick={() => handleCommentCreate()}
+            disabled={pending || !content || replyPending}
+            onClick={
+              commentId ? () => handleReply() : () => handleCommentCreate()
+            }
           >
             Post
           </Button>

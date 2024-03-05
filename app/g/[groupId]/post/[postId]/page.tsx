@@ -1,18 +1,18 @@
 "use client";
 
+import CommentBox from "@/components/comment/comment-box";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
-import { ArrowBigDown, ArrowBigUp, Edit3, Loader2 } from "lucide-react";
-import { notFound, usePathname, useRouter } from "next/navigation";
-import { Suspense, useMemo } from "react";
+import { Edit3 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import { usePathname, useRouter } from "next/navigation";
+import { useMemo } from "react";
 import PostVotes from "./_components/post-votes";
-import CommentBox from "@/components/comment/comment-box";
 
 interface SubRedditPostPageProps {
   params: {

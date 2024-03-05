@@ -8,7 +8,29 @@ export const create = mutation({
     postId: v.id("posts"),
     groupId: v.id("group"),
     content: v.string(),
-    parentComment: v.optional(v.id("comments")),
+    // parentComment: v.optional(v.id("comments")),
+  },
+  handler: async (ctx, args) => {
+    console.log("ARGS", args);
+    const comment = await ctx.db.insert("comments", {
+      userId: args.userId,
+      groupId: args.groupId,
+      content: args.content,
+      postId: args.postId,
+      // parentComment: args.parentComment,
+    });
+
+    return comment;
+  },
+});
+
+export const createReply = mutation({
+  args: {
+    userId: v.id("users"),
+    postId: v.id("posts"),
+    groupId: v.id("group"),
+    content: v.string(),
+    parentComment: v.id("comments"),
   },
   handler: async (ctx, args) => {
     console.log("ARGS", args);
