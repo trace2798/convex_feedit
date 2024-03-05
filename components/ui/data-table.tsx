@@ -46,9 +46,11 @@ export function DataTable<TData, TValue>({
     },
   });
   // console.log("DATA TABLE ==>", data);
+  console.log("SEARCH", searchKey)
   return (
     <div>
       <div className="flex items-center py-4">
+       
         <Input
           placeholder="Search"
           value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}

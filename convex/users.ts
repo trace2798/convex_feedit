@@ -5,6 +5,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
+import { nanoid } from 'nanoid'
 
 const userArgs = {
   email: v.string(),
@@ -22,6 +23,7 @@ export const create = mutation({
         name: args.name,
         emailVerified: args.emailVerified,
         image: args.image,
+        username: nanoid(10),
         // aiCount: 0,
         // role: "User",
       })

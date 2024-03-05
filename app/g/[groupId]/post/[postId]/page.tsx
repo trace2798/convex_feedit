@@ -63,7 +63,9 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
           <Link href={`/g/${group[0]._id}`}>
             <h1 className="hover:text-indigo-500">g/{group[0].name}</h1>
           </Link>
-          <h1 className="text-muted-foreground text-sm">by u/{user[0].name}</h1>
+          <h1 className="text-muted-foreground text-sm">
+            by u/{user[0].username}
+          </h1>
         </div>
         <h1 className="font-bold text-3xl mb-5">{post?.title}</h1>
         <div className="h-full">

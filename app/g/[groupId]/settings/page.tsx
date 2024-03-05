@@ -4,14 +4,17 @@ import MemberSelectForm from "./_components/member-select-form";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { redirect, usePathname } from "next/navigation";
-import { BillboardClient } from "./_components/client";
+import { MemberTable } from "./_components/client";
 import { Id } from "@/convex/_generated/dataModel";
 import { useSession } from "next-auth/react";
 
 interface GroupIdSettingsPageProps {}
 
 const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
-  const { data } = useSession();
+  const { data, status } = useSession();
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
   if (!data) {
     redirect("/");
   }
@@ -32,7 +35,7 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
     <>
       <MemberSelectForm groupId={groupId} users={allUser} />
       {members && data && members.membersWithUserInfo && (
-        <BillboardClient
+        <MemberTable
           currentUserId={data.user.id as string}
           data={members.membersWithUserInfo}
         />

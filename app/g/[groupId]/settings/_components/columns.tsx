@@ -6,7 +6,7 @@ import { CellAction } from "./cell-action";
 import { Id } from "@/convex/_generated/dataModel";
 import { formatDistanceToNow } from "date-fns";
 
-export type BillboardColumn = {
+export type MemberColumn = {
   userInfo: {
     _id: Id<"users">;
     _creationTime: number;
@@ -22,9 +22,9 @@ export type BillboardColumn = {
   memberRole: "Member" | "Mod" | "Admin" | "Owner";
 };
 
-export const columns: ColumnDef<BillboardColumn>[] = [
+export const columns: ColumnDef<MemberColumn>[] = [
   {
-    accessorKey: "userInfo",
+    accessorKey: "userInfo.name",
     header: "Name",
     cell: ({ row }) => {
       const userInfo = row.getValue("userInfo") as { name: string };
@@ -34,7 +34,7 @@ export const columns: ColumnDef<BillboardColumn>[] = [
     },
   },
   {
-    accessorKey: "userInfo.email",
+    accessorKey: "userInfo",
     header: "Email",
     cell: ({ row }) => {
       const userInfo = row.getValue("userInfo") as { email: string };
