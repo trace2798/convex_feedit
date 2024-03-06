@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { internal } from "./_generated/api";
+import { paginationOptsValidator } from "convex/server";
 
 export const getById = query({
   args: { groupId: v.id("group") },
@@ -78,7 +79,8 @@ export const getSearch = query({
 });
 
 export const get = query({
-  handler: async (ctx) => {
+  args: { isPublic: v.boolean(), paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
 
     // if (!identity) {
@@ -89,8 +91,9 @@ export const get = query({
 
     const groups = await ctx.db
       .query("group")
-
-      .collect();
+      .withIndex("by_visible", (q) => q.eq("isPublic", args.isPublic))
+      // .filter((q) => q.eq(q.field("isPublic"), args.isPublic))
+      .paginate(args.paginationOpts);
 
     return groups;
   },

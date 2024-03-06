@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { paginationOptsValidator } from "convex/server";
 
 export const create = mutation({
   args: {
@@ -119,23 +120,50 @@ export const update = mutation({
   },
 });
 
+// export const getGeneralFeed = query({
+//   args: { isPublic: v.boolean(), paginationOpts: paginationOptsValidator },
+//   handler: async (ctx, args) => {
+//     const posts = await ctx.db
+//       .query("posts")
+//       .withIndex("by_public", (q) => q.eq("isPublic", args.isPublic))
+//       .filter((q) => q.eq(q.field("isArchived"), false))
+//       .order("desc")
+//       .paginate(args.paginationOpts);
+//     console.log("posts GENERAL FEED SERVER ==>", posts);
+//     const postsWithGroupAndUserDetails = await Promise.all(
+//       posts.page.map(async (post) => {
+//         const group = await ctx.db.get(post.groupId);
+//         const user = await ctx.db.get(post.userId); // fetch user details
+//         return { ...post, group, user }; // include user details in the post
+//       })
+//     );
+//     console.log("posts with group GENERAL FEED SERVER ==>", postsWithGroupAndUserDetails);
+//     return { posts: postsWithGroupAndUserDetails };
+//   },
+// });
+
 export const getGeneralFeed = query({
-  handler: async (ctx) => {
+  args: { isPublic: v.boolean(), paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
     const posts = await ctx.db
       .query("posts")
+      .withIndex("by_public", (q) => q.eq("isPublic", args.isPublic))
       .filter((q) => q.eq(q.field("isArchived"), false))
-      .filter((q) => q.eq(q.field("isPublic"), true))
       .order("desc")
-      .collect();
+      .paginate(args.paginationOpts);
+    console.log("posts GENERAL FEED SERVER ==>", posts);
     const postsWithGroupAndUserDetails = await Promise.all(
-      posts.map(async (post) => {
+      posts.page.map(async (post) => {
         const group = await ctx.db.get(post.groupId);
         const user = await ctx.db.get(post.userId); // fetch user details
         return { ...post, group, user }; // include user details in the post
       })
     );
-    return {
-      posts: postsWithGroupAndUserDetails,
+    console.log("posts with group GENERAL FEED SERVER ==>", postsWithGroupAndUserDetails);
+    return { 
+      page: postsWithGroupAndUserDetails, 
+      isDone: posts.isDone, 
+      continueCursor: posts.continueCursor 
     };
   },
 });

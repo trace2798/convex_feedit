@@ -62,6 +62,7 @@ export default defineSchema({
     isPublic: v.boolean(),
   })
     .index("by_owner", ["ownerId"])
+    .index("by_visible", ["isPublic"])
     .searchIndex("search_name", {
       searchField: "name",
       filterFields: ["name"],
@@ -90,7 +91,8 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_group", ["groupId"])
     .index("by_tag", ["tags"])
-    .index("by_username", ["username"]),
+    .index("by_username", ["username"])
+    .index("by_public", ["isPublic"]),
   votes: defineTable({
     voteType: voteType,
     userId: v.id("users"),

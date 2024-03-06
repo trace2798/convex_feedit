@@ -13,15 +13,25 @@ import {
 interface PostCardProps {
   post: Post;
   currentUserId?: string;
+  group?: any;
 }
 
-const PostCard: FC<PostCardProps> = ({ post, currentUserId }) => {
+const PostCard: FC<PostCardProps> = ({ post, group, currentUserId }) => {
   console.log(post);
+  
   return (
     <>
       <Card className="border-transparent border-b-inherit hover:border-indigo-400">
         <Link href={`/g/${post.groupId}/post/${post._id}`} key={post._id}>
           <CardHeader>
+            {group && (
+              <Link
+                href={`/g/${group._id}`}
+                className="text-sm text-muted-foreground hover:text-red-400"
+              >
+                g/{group.name}
+              </Link>
+            )}
             <CardTitle>{post.title}</CardTitle>
             <CardDescription className="line-clamp-3">
               {post.content}
