@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import CommentReply from "./comment-reply";
 import CommentVotes from "./comment-vote";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 interface CommentCardProps {
   comment: any;
@@ -26,10 +27,12 @@ const CommentCard: FC<CommentCardProps> = ({ comment, currentUserId }) => {
               </Avatar>
             </Suspense>
             <div>
-              <p className="text-sm font-medium leading-none">
-                {comment?.user?.name}
-              </p>
-              <p className="text-sm text-muted-foreground">
+              <Link href={`/u/${comment?.userId}`}>
+                <p className="text-sm font-medium leading-none hover:text-red-400">
+                  u/{comment?.user?.username}
+                </p>
+              </Link>
+              <p className="text-xs text-muted-foreground">
                 {formatDistanceToNow(comment._creationTime)}
               </p>
             </div>
