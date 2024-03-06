@@ -1,4 +1,5 @@
 "use client";
+import CustomFeed from "@/components/feed/custom-feed";
 import GeneralFeed from "@/components/feed/general-feed";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -37,13 +38,13 @@ export default function Home() {
       )}
       <div className="flex flex-col md:flex-row py-6">
         <div className="md:flex-grow md:w-4/5 md:pr-5 lg:pr-10">
-          {data ? <h1>Custom Feed</h1> : <GeneralFeed />}
+          {data ? <CustomFeed /> : <GeneralFeed />}
         </div>
         <div className="h-fit md:w-1/5 flex flex-col space-y-5">
           <div className="border border-slate-300 dark:border-slate-800 rounded-lg">
             <div className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
               <div className="flex justify-between gap-x-4 py-3">
-                <p className="text-zinc-500">Create your own community</p>
+                <p className="text-zinc-500">Create your own group</p>
               </div>
 
               {data ? (

@@ -75,13 +75,15 @@ const Page = ({ params }: PageProps) => {
               {info?.createdGroups.map((group, index) => (
                 <HoverCard>
                   <HoverCardTrigger>
-                    <Badge
-                      key={index}
-                      variant="default"
-                      className="hover:cursor-pointer"
-                    >
-                      {group?.name}
-                    </Badge>
+                    <Link href={`/g/${group._id}`}>
+                      <Badge
+                        key={index}
+                        variant="default"
+                        className="hover:cursor-pointer"
+                      >
+                        {group?.name}
+                      </Badge>
+                    </Link>
                   </HoverCardTrigger>
                   <HoverCardContent>
                     <p className="py-2">
@@ -106,9 +108,11 @@ const Page = ({ params }: PageProps) => {
               {info?.joinedGroups.map((group, index) => (
                 <HoverCard>
                   <HoverCardTrigger>
-                    <Badge key={index} variant="secondary">
-                      {group?.group?.name}
-                    </Badge>
+                    <Link href={`/g/${group?.group?._id}`}>
+                      <Badge key={index} variant="secondary">
+                        {group?.group?.name}
+                      </Badge>
+                    </Link>
                   </HoverCardTrigger>
                   <HoverCardContent>
                     <p className="py-2">

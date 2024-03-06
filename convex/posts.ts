@@ -145,6 +145,7 @@ export const update = mutation({
 export const getGeneralFeed = query({
   args: { isPublic: v.boolean(), paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
+    
     const posts = await ctx.db
       .query("posts")
       .withIndex("by_public", (q) => q.eq("isPublic", args.isPublic))
@@ -159,12 +160,14 @@ export const getGeneralFeed = query({
         return { ...post, group, user }; // include user details in the post
       })
     );
-    console.log("posts with group GENERAL FEED SERVER ==>", postsWithGroupAndUserDetails);
-    return { 
-      page: postsWithGroupAndUserDetails, 
-      isDone: posts.isDone, 
-      continueCursor: posts.continueCursor 
+    console.log(
+      "posts with group GENERAL FEED SERVER ==>",
+      postsWithGroupAndUserDetails
+    );
+    return {
+      page: postsWithGroupAndUserDetails,
+      isDone: posts.isDone,
+      continueCursor: posts.continueCursor,
     };
   },
 });
-

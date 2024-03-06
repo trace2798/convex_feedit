@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "../ui/card";
 
-const GeneralFeed = ({}) => {
+const GeneralFeed = ({ currentUserId }: { currentUserId?: string }) => {
   const { results, status, loadMore } = usePaginatedQuery(
     api.posts.getGeneralFeed,
     { isPublic: true },
@@ -34,7 +34,7 @@ const GeneralFeed = ({}) => {
     handleScroll();
     document.addEventListener("scroll", handleScroll);
     return () => document.removeEventListener("scroll", handleScroll);
-  }, [status, loadMore, results]); 
+  }, [status, loadMore, results]);
 
   if (results === undefined) {
     return (
