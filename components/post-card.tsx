@@ -19,7 +19,7 @@ const PostCard: FC<PostCardProps> = ({ post, currentUserId }) => {
   console.log(post);
   return (
     <>
-      <Card className="">
+      <Card className="border-transparent border-b-inherit hover:border-indigo-400">
         <Link href={`/g/${post.groupId}/post/${post._id}`} key={post._id}>
           <CardHeader>
             <CardTitle>{post.title}</CardTitle>

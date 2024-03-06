@@ -69,68 +69,72 @@ const Page = ({ params }: PageProps) => {
             )}
           </div>
           <Separator className="mt-5" />
-          <div className="space-x-3 py-3 flex items-center align-middle">
-            <h1 className="text-sm text-muted-foreground">Creator</h1>
-            {info?.createdGroups.map((group, index) => (
-              <HoverCard>
-                <HoverCardTrigger>
-                  <Badge
-                    key={index}
-                    variant="default"
-                    className="hover:cursor-pointer"
-                  >
-                    {group?.name}
-                  </Badge>
-                </HoverCardTrigger>
-                <HoverCardContent>
-                  <p className="py-2">
-                    {" "}
-                    Created on:&nbsp;
-                    <span className="text-zinc-700 dark:text-neutral-400">
+          {info && info?.createdGroups.length > 0 && (
+            <div className="space-x-3 py-3 flex items-center align-middle">
+              <h1 className="text-sm text-muted-foreground">Creator</h1>
+              {info?.createdGroups.map((group, index) => (
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Badge
+                      key={index}
+                      variant="default"
+                      className="hover:cursor-pointer"
+                    >
+                      {group?.name}
+                    </Badge>
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    <p className="py-2">
                       {" "}
-                      {format(
-                        new Date(group._creationTime),
-                        "iiii, do MMMM, yyyy p"
-                      )}
-                    </span>{" "}
-                  </p>{" "}
-                </HoverCardContent>
-              </HoverCard>
-            ))}
-          </div>
-          <div className="space-x-3 py-3 flex items-center align-middle">
-            <h1 className="text-sm text-muted-foreground">Member </h1>
-            {info?.joinedGroups.map((group, index) => (
-              <HoverCard>
-                <HoverCardTrigger>
-                  <Badge key={index} variant="secondary">
-                    {group?.group?.name}
-                  </Badge>
-                </HoverCardTrigger>
-                <HoverCardContent>
-                  <p className="py-2">
-                    {" "}
-                    Membership type:&nbsp;
-                    <span className="text-zinc-700 dark:text-neutral-400">
+                      Created on:&nbsp;
+                      <span className="text-zinc-700 dark:text-neutral-400">
+                        {" "}
+                        {format(
+                          new Date(group._creationTime),
+                          "iiii, do MMMM, yyyy p"
+                        )}
+                      </span>{" "}
+                    </p>{" "}
+                  </HoverCardContent>
+                </HoverCard>
+              ))}
+            </div>
+          )}
+          {info && info?.joinedGroups.length > 0 && (
+            <div className="space-x-3 py-3 flex items-center align-middle">
+              <h1 className="text-sm text-muted-foreground">Member </h1>
+              {info?.joinedGroups.map((group, index) => (
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Badge key={index} variant="secondary">
+                      {group?.group?.name}
+                    </Badge>
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    <p className="py-2">
                       {" "}
-                      {group.memberRole}
-                    </span>{" "}
-                  </p>
-                  <p className="py-2">
-                    {" "}
-                    Joined on:&nbsp;
-                    <span className="text-zinc-700 dark:text-neutral-400">
+                      Membership type:&nbsp;
+                      <span className="text-zinc-700 dark:text-neutral-400">
+                        {" "}
+                        {group.memberRole}
+                      </span>{" "}
+                    </p>
+                    <p className="py-2">
                       {" "}
-                      {format(
-                        new Date(group._creationTime),
-                        "iiii, do MMMM, yyyy p"
-                      )}
-                    </span>{" "}
-                  </p>{" "}
-                </HoverCardContent>
-              </HoverCard>
-            ))}
-          </div>
+                      Joined on:&nbsp;
+                      <span className="text-zinc-700 dark:text-neutral-400">
+                        {" "}
+                        {format(
+                          new Date(group._creationTime),
+                          "iiii, do MMMM, yyyy p"
+                        )}
+                      </span>{" "}
+                    </p>{" "}
+                  </HoverCardContent>
+                </HoverCard>
+              ))}
+            </div>
+          )}
           <Separator className="mb-5" />
           <div className="mt-5 space-y-5">
             <h1 className="mb-3">Posts</h1>
@@ -139,9 +143,11 @@ const Page = ({ params }: PageProps) => {
                 <div>
                   <h1 className="mb-2 text-muted-foreground ml-1">
                     Posted on{" "}
-                    <span className="hover:text-red-400 hover:cursor-pointer">
-                      g/{post.group?.name}
-                    </span>{" "}
+                    <a href={`/g/${post.group?._id}`}>
+                      <span className="hover:text-red-400 hover:cursor-pointer">
+                        g/{post.group?.name}
+                      </span>{" "}
+                    </a>
                     {formatDistanceToNow(post._creationTime)}
                   </h1>
                   <PostCard key={index} post={post} />

@@ -118,3 +118,25 @@ export const update = mutation({
     return post;
   },
 });
+
+export const getGeneralFeed = query({
+  handler: async (ctx) => {
+    const posts = await ctx.db
+      .query("posts")
+      .filter((q) => q.eq(q.field("isArchived"), false))
+      .filter((q) => q.eq(q.field("isPublic"), true))
+      .order("desc")
+      .collect();
+    const postsWithGroupAndUserDetails = await Promise.all(
+      posts.map(async (post) => {
+        const group = await ctx.db.get(post.groupId);
+        const user = await ctx.db.get(post.userId); // fetch user details
+        return { ...post, group, user }; // include user details in the post
+      })
+    );
+    return {
+      posts: postsWithGroupAndUserDetails,
+    };
+  },
+});
+

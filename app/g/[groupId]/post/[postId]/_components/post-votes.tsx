@@ -90,34 +90,33 @@ const PostVotes: FC<PostVotesProps> = ({ postId, userId, groupId }) => {
 
   return (
     <>
-      <div className="flex w-[150px] items-center justify-between">
+      <div className="flex items-center justify-between">
         {" "}
-        <div>
-          <Button
-            disabled={pending || downVotePending}
-            variant="ghost"
-            onClick={() => handleUpVote()}
-          >
-            <ArrowBigUp
-              className={cn("h-5 w-5 text-zinc-700", {
-                "text-emerald-500 fill-emerald-500": currentVote === "UP",
-              })}
-            />
-          </Button>
-          <Button
-            disabled={pending || downVotePending}
-            variant="ghost"
-            className=""
-            onClick={() => handleDownVote()}
-          >
-            <ArrowBigDown
-              className={cn("h-5 w-5 text-zinc-700", {
-                "text-red-500 fill-red-500": currentVote === "DOWN",
-              })}
-            />
-          </Button>
-        </div>
-        <div>{votesAmt}</div>
+        <Button
+          disabled={pending || downVotePending}
+          variant="ghost"
+          className="p-0"
+          onClick={() => handleUpVote()}
+        >
+          <ArrowBigUp
+            className={cn("h-5 w-5 text-zinc-700", {
+              "text-emerald-500 fill-emerald-500": currentVote === "UP",
+            })}
+          />
+        </Button>
+        <div className="px-3">{votesAmt}</div>
+        <Button
+          disabled={pending || downVotePending}
+          variant="ghost"
+          className="p-0"
+          onClick={() => handleDownVote()}
+        >
+          <ArrowBigDown
+            className={cn("h-5 w-5 text-zinc-700", {
+              "text-red-500 fill-red-500": currentVote === "DOWN",
+            })}
+          />
+        </Button>
       </div>
     </>
   );
