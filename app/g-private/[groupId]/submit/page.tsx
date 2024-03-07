@@ -39,7 +39,7 @@ const Page = ({ params }: PageProps) => {
       content: content,
       title: title,
       username: data?.user.name,
-      onPublicGroup: true,
+      onPublicGroup: false,
     })
       .then((id) => {
         toast.success("Post created");

@@ -4,7 +4,7 @@ import { Id } from "./_generated/dataModel";
 import { internal } from "./_generated/api";
 import { paginationOptsValidator } from "convex/server";
 
-export const getById = query({
+export const getByPublicId = query({
   args: { groupId: v.id("group") },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
@@ -51,7 +51,9 @@ export const getById = query({
     // await ctx.runMutation(internal.snippet.incrementCount, {
     //   id: args.snippetId as Id<"snippets">,
     // });
-
+    if (group.isPublic) {
+      return;
+    }
     return group;
   },
 });
@@ -79,7 +81,7 @@ export const getSearch = query({
 });
 
 export const get = query({
-  args: { isPublic: v.boolean(), paginationOpts: paginationOptsValidator },
+  args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
 
@@ -91,7 +93,7 @@ export const get = query({
 
     const groups = await ctx.db
       .query("group")
-      .withIndex("by_visible", (q) => q.eq("isPublic", args.isPublic))
+      // .withIndex("by_visible", (q) => q.eq("isPublic", args.isPublic))
       // .filter((q) => q.eq(q.field("isPublic"), args.isPublic))
       .paginate(args.paginationOpts);
 

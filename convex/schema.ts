@@ -103,12 +103,14 @@ export default defineSchema({
     publishedAt: v.union(v.null(), v.number()),
     updatedAt: v.union(v.null(), v.number()),
     tags: v.optional(v.array(v.id("tag"))),
+    onPublicGroup: v.optional(v.boolean()),
   })
     .index("by_user", ["userId"])
     .index("by_group", ["groupId"])
     .index("by_tag", ["tags"])
     .index("by_username", ["username"])
-    .index("by_public", ["isPublic"]),
+    .index("by_public", ["isPublic"])
+    .index("by_public_onPublicGroup", ["onPublicGroup", "isPublic"]),
   votes: defineTable({
     voteType: voteType,
     userId: v.id("users"),

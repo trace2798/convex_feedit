@@ -7,6 +7,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { FC, Suspense } from "react";
 
 interface ChatPageProps {}
@@ -14,7 +15,9 @@ interface ChatPageProps {}
 const ChatPage: FC<ChatPageProps> = ({}) => {
   const { data } = useSession();
   console.log(data, "DATA");
-
+  if (!data) {
+    redirect("/");
+  }
   const conversations = useQuery(api.conversation.getConversationByUserId, {
     userId: data?.user.id as Id<"users">,
   });

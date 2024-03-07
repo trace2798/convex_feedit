@@ -18,7 +18,7 @@ interface PostCardProps {
 
 const PostCard: FC<PostCardProps> = ({ post, group, currentUserId }) => {
   console.log(post);
-  
+
   return (
     <>
       <Card className="border-transparent border-b-inherit hover:border-indigo-400">
@@ -26,7 +26,7 @@ const PostCard: FC<PostCardProps> = ({ post, group, currentUserId }) => {
           <CardHeader>
             {group && (
               <Link
-                href={`/g/${group._id}`}
+                href={`/${group.isPublic ? "g" : "g-private"}/${group._id}`}
                 className="text-sm text-muted-foreground hover:text-red-400"
               >
                 g/{group.name}

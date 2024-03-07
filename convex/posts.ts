@@ -10,6 +10,7 @@ export const create = mutation({
     title: v.string(),
     groupId: v.string(),
     content: v.optional(v.string()),
+    onPublicGroup: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
@@ -25,14 +26,15 @@ export const create = mutation({
       title: args.title,
       isArchived: false,
       isPublic: true,
-      isPublished: false,
-      publishedAt: null,
+      isPublished: true,
+      publishedAt: new Date().getTime(),
       tags: [],
       updatedAt: new Date().getTime(),
       userId: args.userId as Id<"users">,
       groupId: args.groupId as Id<"group">,
       content: args.content,
       username: args.username,
+      onPublicGroup: args.onPublicGroup,
     });
 
     return post;
@@ -120,35 +122,14 @@ export const update = mutation({
   },
 });
 
-// export const getGeneralFeed = query({
-//   args: { isPublic: v.boolean(), paginationOpts: paginationOptsValidator },
-//   handler: async (ctx, args) => {
-//     const posts = await ctx.db
-//       .query("posts")
-//       .withIndex("by_public", (q) => q.eq("isPublic", args.isPublic))
-//       .filter((q) => q.eq(q.field("isArchived"), false))
-//       .order("desc")
-//       .paginate(args.paginationOpts);
-//     console.log("posts GENERAL FEED SERVER ==>", posts);
-//     const postsWithGroupAndUserDetails = await Promise.all(
-//       posts.page.map(async (post) => {
-//         const group = await ctx.db.get(post.groupId);
-//         const user = await ctx.db.get(post.userId); // fetch user details
-//         return { ...post, group, user }; // include user details in the post
-//       })
-//     );
-//     console.log("posts with group GENERAL FEED SERVER ==>", postsWithGroupAndUserDetails);
-//     return { posts: postsWithGroupAndUserDetails };
-//   },
-// });
-
 export const getGeneralFeed = query({
   args: { isPublic: v.boolean(), paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
-    
     const posts = await ctx.db
       .query("posts")
-      .withIndex("by_public", (q) => q.eq("isPublic", args.isPublic))
+      .withIndex("by_public_onPublicGroup", (q) =>
+        q.eq("onPublicGroup", true).eq("isPublic", true)
+      )
       .filter((q) => q.eq(q.field("isArchived"), false))
       .order("desc")
       .paginate(args.paginationOpts);

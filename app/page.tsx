@@ -2,18 +2,13 @@
 import CustomFeed from "@/components/feed/custom-feed";
 import GeneralFeed from "@/components/feed/general-feed";
 import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { useLoginModal } from "@/store/use-login-modal";
 import { useTagModal } from "@/store/use-tag-modal";
-import { usePaginatedQuery, useQuery } from "convex/react";
-import { Group, HomeIcon } from "lucide-react";
+import { usePaginatedQuery } from "convex/react";
+import { Group, Lock } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -25,8 +20,8 @@ export default function Home() {
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.group.get,
-    { isPublic: true },
-    { initialNumItems: 1 }
+    {},
+    { initialNumItems: 3 }
   );
   console.log(results);
   return (
@@ -77,23 +72,30 @@ export default function Home() {
 
             <Suspense fallback={<Skeleton className="h-4 w-full" />}>
               {results?.map((g, index) => (
-                <div key={index}>
-                  <Link href={`/g/${g._id}`} key={index} className="">
-                    <Card className="border-transparent hover:border-indigo-400 hover:text-red-400 my-1">
-                      <CardHeader className="py-1 px-2">
-                        <CardTitle className="text-lg font-light">
-                          g/{g.name}
-                        </CardTitle>
-                      </CardHeader>
-                    </Card>
-                  </Link>
-                  <div className="text-center text-sm hover:cursor-pointer text-muted-foreground">
-                    {status === "CanLoadMore" && (
-                      <div onClick={() => loadMore(3)}>Load More</div>
-                    )}
+                <>
+                  <div key={index}>
+                    <Link
+                      href={`/${g.isPublic ? "g" : "g-private"}/${g._id}`}
+                      key={index}
+                      className=""
+                    >
+                      <Card className="border-transparent hover:border-indigo-400 hover:text-red-400 my-1">
+                        <CardHeader className="py-1 px-2">
+                          <CardTitle className="text-lg font-light flex justify-between align-middle items-center">
+                            g/{g.name}{" "}
+                            {g.isPublic ? "" : <Lock className="w-5 h-5" />}
+                          </CardTitle>
+                        </CardHeader>
+                      </Card>
+                    </Link>
                   </div>
-                </div>
+                </>
               ))}
+              <div className="text-center text-sm hover:cursor-pointer text-muted-foreground">
+                {status === "CanLoadMore" && (
+                  <div onClick={() => loadMore(3)}>Load More</div>
+                )}
+              </div>
             </Suspense>
           </div>
         </div>

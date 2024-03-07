@@ -73,9 +73,15 @@ const Page = ({ params }: PageProps) => {
             <div className="space-x-3 py-3 flex items-center align-middle">
               <h1 className="text-sm text-muted-foreground">Creator</h1>
               {info?.createdGroups.map((group, index) => (
-                <HoverCard>
+                <HoverCard key={index}>
                   <HoverCardTrigger>
-                    <Link href={`/g/${group._id}`}>
+                    <Link
+                      href={
+                        group.isPublic
+                          ? `/g/${group._id}`
+                          : `/g-private/${group._id}`
+                      }
+                    >
                       <Badge
                         key={index}
                         variant="default"
@@ -106,9 +112,15 @@ const Page = ({ params }: PageProps) => {
             <div className="space-x-3 py-3 flex items-center align-middle">
               <h1 className="text-sm text-muted-foreground">Member </h1>
               {info?.joinedGroups.map((group, index) => (
-                <HoverCard>
+                <HoverCard key={index}>
                   <HoverCardTrigger>
-                    <Link href={`/g/${group?.group?._id}`}>
+                    <Link
+                      href={
+                        group?.group?.isPublic
+                          ? `/g/${group?.group?._id}`
+                          : `/g-private/${group?.group?._id}`
+                      }
+                    >
                       <Badge key={index} variant="secondary">
                         {group?.group?.name}
                       </Badge>
@@ -147,7 +159,13 @@ const Page = ({ params }: PageProps) => {
                 <div>
                   <h1 className="mb-2 text-muted-foreground ml-1">
                     Posted on{" "}
-                    <a href={`/g/${post.group?._id}`}>
+                    <a
+                      href={
+                        post?.group?.isPublic
+                          ? `/g/${post?.group?._id}`
+                          : `/g-private/${post?.group?._id}`
+                      }
+                    >
                       <span className="hover:text-red-400 hover:cursor-pointer">
                         g/{post.group?.name}
                       </span>{" "}
@@ -166,12 +184,24 @@ const Page = ({ params }: PageProps) => {
                 <h1 className="my-0">
                   {comment.parentComment ? (
                     <h1 className="text-sm">
-                      <a href={`/g/${comment.groupId}`}>
+                      <a
+                        href={
+                          comment?.group?.isPublic
+                            ? `/g/${comment?.group?._id}`
+                            : `/g-private/${comment?.group?._id}`
+                        }
+                      >
                         <span className="text-muted-foreground hover:text-blue-400">
                           g/{comment.group?.name} &nbsp;|&nbsp;
                         </span>
                       </a>
-                      <a href={`/g/${comment.groupId}/post/${comment.postId}`}>
+                      <a
+                        href={
+                          comment?.group?.isPublic
+                            ? `/g/${comment.group._id}/post/${comment.postId}`
+                            : `/g-private/${comment?.group?._id}/post/${comment.postId}`
+                        }
+                      >
                         <span className="hover:text-blue-400">
                           {comment.post?.title}
                         </span>
@@ -180,12 +210,24 @@ const Page = ({ params }: PageProps) => {
                     </h1>
                   ) : (
                     <h1 className="text-sm">
-                      <a href={`/g/${comment.groupId}`}>
+                      <a
+                        href={
+                          comment?.group?.isPublic
+                            ? `/g/${comment.group._id}`
+                            : `/g-private/${comment?.group?._id}`
+                        }
+                      >
                         <span className="text-muted-foreground hover:text-blue-400">
                           g/{comment.group?.name} &nbsp;|&nbsp;
                         </span>
                       </a>
-                      <a href={`/g/${comment.groupId}/post/${comment.postId}`}>
+                      <a
+                        href={
+                          comment?.group?.isPublic
+                            ? `/g/${comment.group._id}/post/${comment.postId}`
+                            : `/g-private/${comment?.group?._id}/post/${comment.postId}`
+                        }
+                      >
                         <span className="hover:text-blue-400">
                           {comment.post?.title}
                         </span>
