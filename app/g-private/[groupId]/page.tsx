@@ -7,7 +7,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useQuery } from "convex/react";
-import { Settings } from "lucide-react";
+import { Bell, Settings } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -107,7 +107,14 @@ const PrivateGroupIdPage = ({ params }: PrivateGroupIdPageProps) => {
           </h1>
           <div className="flex gap-4">
             {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
-              <Link href={`/g/${params.groupId}/settings`}>
+              <Link href={`/g-private/${params.groupId}/request`}>
+                <Button variant="ghost">
+                  <Bell className="text-muted-foreground hover:text-indigo-400" />
+                </Button>{" "}
+              </Link>
+            )}
+            {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
+              <Link href={`/g-private/${params.groupId}/settings`}>
                 <Button variant="ghost">
                   <Settings className="text-muted-foreground hover:text-indigo-400" />
                 </Button>{" "}

@@ -98,7 +98,6 @@ export default defineSchema({
     username: v.union(v.null(), v.string()),
     groupId: v.id("group"),
     isArchived: v.boolean(),
-    isPublished: v.boolean(),
     isPublic: v.boolean(),
     publishedAt: v.union(v.null(), v.number()),
     updatedAt: v.union(v.null(), v.number()),
@@ -110,6 +109,7 @@ export default defineSchema({
     .index("by_tag", ["tags"])
     .index("by_username", ["username"])
     .index("by_public", ["isPublic"])
+    .index("by_public_feed", ["isPublic", "isArchived"])
     .index("by_public_onPublicGroup", ["onPublicGroup", "isPublic"]),
   votes: defineTable({
     voteType: voteType,

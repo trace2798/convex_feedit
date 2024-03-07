@@ -26,7 +26,43 @@ export const create = mutation({
       title: args.title,
       isArchived: false,
       isPublic: true,
-      isPublished: true,
+      publishedAt: new Date().getTime(),
+      tags: [],
+      updatedAt: new Date().getTime(),
+      userId: args.userId as Id<"users">,
+      groupId: args.groupId as Id<"group">,
+      content: args.content,
+      username: args.username,
+      onPublicGroup: args.onPublicGroup,
+    });
+
+    return post;
+  },
+});
+
+export const createAsDraft = mutation({
+  args: {
+    userId: v.string(),
+    username: v.string(),
+    title: v.string(),
+    groupId: v.string(),
+    content: v.optional(v.string()),
+    onPublicGroup: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    // const identity = await ctx.auth.getUserIdentity();
+
+    // if (!identity) {
+    //   throw new Error("Not authenticated");
+    // }
+    // // console.log(identity, "IDENTITY");
+    // const userId = identity.subject;
+    // // console.log(userId, "USER ID");
+    // const userName = identity.name || "Anonymous";
+    const post = await ctx.db.insert("posts", {
+      title: args.title,
+      isArchived: false,
+      isPublic: false,
       publishedAt: new Date().getTime(),
       tags: [],
       updatedAt: new Date().getTime(),
@@ -79,6 +115,9 @@ export const getByGroupId = query({
       .collect();
     const posts = await ctx.db
       .query("posts")
+      .withIndex("by_public_feed", (q) =>
+        q.eq("isPublic", true).eq("isArchived", false)
+      )
       .filter((q) => q.eq(q.field("groupId"), args.groupId))
       .order("desc")
       .collect();

@@ -118,3 +118,36 @@ export const getById = query({
     return existingRequestStatus;
   },
 });
+
+export const getByGroupId = query({
+  args: { groupId: v.id("group")},
+
+  handler: async (ctx, args) => {
+    // const identity = await ctx.auth.getUserIdentity();
+    // // console.log("IDENTITY ===>", identity);
+    // if (!args.userId) {
+    //   throw new Error("Not Authorized");
+    // }
+    // const userInfo = await ctx.db
+    //   .query("group_members")
+    //   .withIndex("by_user", (q) => q.eq("userId", args.userId as Id<"users">))
+    //   .collect();
+    // if (userInfo.length === 0) {
+    //   throw new Error("Not Authorized");
+    // }
+    // if (userInfo[0].userId !== args.userId) {
+    //   throw new Error("Not Authorized");
+    // }
+    // if (userInfo[0].memberRole !== "Admin" || "Owner") {
+    //   throw new Error("Not Authorized");
+    // }
+    const existingRequest = await ctx.db
+      .query("group_join_request")
+      .withIndex("by_group", (q) =>
+        q.eq("groupId", args.groupId as Id<"group">)
+      )
+      .collect();
+
+    return existingRequest;
+  },
+});

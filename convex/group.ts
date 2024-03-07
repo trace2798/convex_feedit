@@ -4,7 +4,7 @@ import { Id } from "./_generated/dataModel";
 import { internal } from "./_generated/api";
 import { paginationOptsValidator } from "convex/server";
 
-export const getByPublicId = query({
+export const getById = query({
   args: { groupId: v.id("group") },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
@@ -51,9 +51,7 @@ export const getByPublicId = query({
     // await ctx.runMutation(internal.snippet.incrementCount, {
     //   id: args.snippetId as Id<"snippets">,
     // });
-    if (group.isPublic) {
-      return;
-    }
+   
     return group;
   },
 });

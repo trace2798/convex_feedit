@@ -71,10 +71,15 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
         </div>
         <h1 className="font-bold text-3xl mb-5">{post?.title}</h1>
         <div className="h-full">
-          <Editor
+          {/* <Editor
             initialContent={post?.content}
             editable={false}
             onChange={() => {}}
+          /> */}
+          <div
+            className=""
+            style={{ whiteSpace: "pre-line" }}
+            dangerouslySetInnerHTML={{ __html: post.content as string }}
           />
         </div>
         <div className="flex justify-between">

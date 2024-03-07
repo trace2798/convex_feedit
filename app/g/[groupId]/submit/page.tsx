@@ -1,4 +1,5 @@
 "use client";
+import Tiptap from "@/components/editor/tiptap";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
@@ -22,15 +23,19 @@ const Page = ({ params }: PageProps) => {
   const [content, setContent] = useState<string>("");
   const router = useRouter();
   const { data } = useSession();
-  const group = useQuery(api.group.getByPublicId, {
+  const group = useQuery(api.group.getById, {
     groupId: params.groupId as Id<"group">,
   });
-  const Editor = useMemo(
-    () => dynamic(() => import("@/components/editor"), { ssr: false }),
-    []
-  );
+  console.log("GROUP", group)
+  // const Editor = useMemo(
+  //   () => dynamic(() => import("@/components/editor"), { ssr: false }),
+  //   []
+  // );
   console.log(data);
   const { mutate, pending } = useApiMutation(api.posts.create);
+  const { mutate: saveDraft, pending: saveDraftPending } = useApiMutation(
+    api.posts.createAsDraft
+  );
   //   if (!group) return notFound();
   const handlePostCreate = () => {
     mutate({
@@ -47,9 +52,24 @@ const Page = ({ params }: PageProps) => {
       })
       .catch(() => toast.error("Failed to create group"));
   };
+
+  const handleSaveAsDraft = () => {
+    saveDraft({
+      userId: data?.user.id,
+      groupId: params.groupId as Id<"group">,
+      content: content,
+      title: title,
+      username: data?.user.name,
+      onPublicGroup: true,
+    })
+      .then((id) => {
+        toast.success("Post created");
+        router.push(`/g/${params.groupId}/post/${id}`);
+      })
+      .catch(() => toast.error("Failed to create group"));
+  };
   return (
     <div className="flex flex-col items-start gap-6">
-      {/* heading */}
       <div className="border-b border-gray-200 pb-5">
         <div className="-ml-2 -mt-2 flex flex-wrap items-baseline">
           <h3 className="ml-2 mt-2 text-base font-semibold leading-6">
@@ -68,21 +88,35 @@ const Page = ({ params }: PageProps) => {
           placeholder="Title of your post"
         />
       </div>
-      <div className="w-full py-5 rounded-lg border min-h-[40vh]">
-        <Editor
+      {/* <div className="w-full py-5 rounded-lg border min-h-[40vh]"> */}
+      {/* <Editor
           onChange={(value) => setContent(value)}
           initialContent={""}
           editable={true}
-        />
-      </div>
-      <div className="w-full flex justify-end pb-5">
+        /> */}
+      <Tiptap
+        onChange={(value: any) => setContent(value)}
+        initialContent={""}
+        editable={true}
+      />
+      {/* </div> */}
+      <div className="w-full flex justify-between pb-5">
         <Button
           disabled={pending}
           type="submit"
-          className="w-full"
+          className="w-[380px]"
           onClick={handlePostCreate}
         >
           Post
+        </Button>
+        <Button
+          disabled={pending}
+          type="submit"
+          variant={"outline"}
+          className="w-[380px]"
+          onClick={handleSaveAsDraft}
+        >
+          Save as Draft
         </Button>
       </div>
     </div>

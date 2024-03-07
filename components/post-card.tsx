@@ -34,7 +34,11 @@ const PostCard: FC<PostCardProps> = ({ post, group, currentUserId }) => {
             )}
             <CardTitle>{post.title}</CardTitle>
             <CardDescription className="line-clamp-3">
-              {post.content}
+              <div
+                className=""
+                style={{ whiteSpace: "pre-line" }}
+                dangerouslySetInnerHTML={{ __html: post.content as string }}
+              />
             </CardDescription>
           </CardHeader>
         </Link>

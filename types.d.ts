@@ -6,7 +6,6 @@ export type Post = {
   username: string | null;
   groupId: string; // assuming v.id("group") returns a string
   isArchived: boolean;
-  isPublished: boolean;
   isPublic: boolean;
   publishedAt: number | null;
   updatedAt: number | null;
