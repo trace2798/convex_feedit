@@ -8,6 +8,12 @@ export const memberRoles = v.union(
   v.literal("Owner")
 );
 
+export const requestOutcome = v.union(
+  v.literal("Approved"),
+  v.literal("Rejected"),
+  v.literal("Pending")
+);
+
 export const voteType = v.union(v.literal("UP"), v.literal("DOWN"));
 
 /**
@@ -67,6 +73,16 @@ export default defineSchema({
       searchField: "name",
       filterFields: ["name"],
     }),
+  group_join_request: defineTable({
+    userId: v.id("users"),
+    groupId: v.id("group"),
+    requestOutcome: requestOutcome,
+    acceptedBy: v.optional(v.id("users")),
+    acceptedAt: v.optional(v.number()),
+  })
+    .index("by_group", ["groupId"])
+    .index("by_user", ["userId"])
+    .index("by_group_user", ["groupId", "userId"]),
   group_members: defineTable({
     userId: v.id("users"),
     groupId: v.id("group"),
