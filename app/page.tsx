@@ -86,7 +86,7 @@ export default function Home() {
                 <>
                   <div key={index}>
                     <Link
-                      href={`/${g.isPublic ? "g" : "g-private"}/${g._id}`}
+                      href={`/${g.isPublic ? "g" : "g"}/${g._id}`}
                       key={index}
                       className=""
                     >

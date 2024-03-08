@@ -34,7 +34,7 @@ const Page = () => {
         if (isPublic) {
           router.push(`/g/${id}`);
         } else {
-          router.push(`/g-private/${id}`);
+          router.push(`/g/${id}`);
         }
       })
       .catch(() => toast.error("Failed to create group"));

@@ -27,7 +27,7 @@ const Tiptap = ({ onChange, content }: any) => {
       <EditorContent
         style={{ whiteSpace: "pre-line" }}
         editor={editor}
-
+        className=""
       />
     </div>
   );

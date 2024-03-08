@@ -26,7 +26,7 @@ const PostCard: FC<PostCardProps> = ({ post, group, currentUserId }) => {
           <CardHeader>
             {group && (
               <Link
-                href={`/${group.isPublic ? "g" : "g-private"}/${group._id}`}
+                href={`/${group.isPublic ? "g" : "g"}/${group._id}`}
                 className="text-sm text-muted-foreground hover:text-red-400"
               >
                 g/{group.name}

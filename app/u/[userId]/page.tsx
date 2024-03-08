@@ -77,9 +77,7 @@ const Page = ({ params }: PageProps) => {
                   <HoverCardTrigger>
                     <Link
                       href={
-                        group.isPublic
-                          ? `/g/${group._id}`
-                          : `/g-private/${group._id}`
+                        group.isPublic ? `/g/${group._id}` : `/g/${group._id}`
                       }
                     >
                       <Badge
@@ -118,7 +116,7 @@ const Page = ({ params }: PageProps) => {
                       href={
                         group?.group?.isPublic
                           ? `/g/${group?.group?._id}`
-                          : `/g-private/${group?.group?._id}`
+                          : `/g/${group?.group?._id}`
                       }
                     >
                       <Badge key={index} variant="secondary">
@@ -163,7 +161,7 @@ const Page = ({ params }: PageProps) => {
                       href={
                         post?.group?.isPublic
                           ? `/g/${post?.group?._id}`
-                          : `/g-private/${post?.group?._id}`
+                          : `/g/${post?.group?._id}`
                       }
                     >
                       <span className="hover:text-red-400 hover:cursor-pointer">
@@ -188,7 +186,7 @@ const Page = ({ params }: PageProps) => {
                         href={
                           comment?.group?.isPublic
                             ? `/g/${comment?.group?._id}`
-                            : `/g-private/${comment?.group?._id}`
+                            : `/g/${comment?.group?._id}`
                         }
                       >
                         <span className="text-muted-foreground hover:text-blue-400">
@@ -199,7 +197,7 @@ const Page = ({ params }: PageProps) => {
                         href={
                           comment?.group?.isPublic
                             ? `/g/${comment.group._id}/post/${comment.postId}`
-                            : `/g-private/${comment?.group?._id}/post/${comment.postId}`
+                            : `/g/${comment?.group?._id}/post/${comment.postId}`
                         }
                       >
                         <span className="hover:text-blue-400">
@@ -214,7 +212,7 @@ const Page = ({ params }: PageProps) => {
                         href={
                           comment?.group?.isPublic
                             ? `/g/${comment.group._id}`
-                            : `/g-private/${comment?.group?._id}`
+                            : `/g/${comment?.group?._id}`
                         }
                       >
                         <span className="text-muted-foreground hover:text-blue-400">
@@ -225,7 +223,7 @@ const Page = ({ params }: PageProps) => {
                         href={
                           comment?.group?.isPublic
                             ? `/g/${comment.group._id}/post/${comment.postId}`
-                            : `/g-private/${comment?.group?._id}/post/${comment.postId}`
+                            : `/g/${comment?.group?._id}/post/${comment.postId}`
                         }
                       >
                         <span className="hover:text-blue-400">

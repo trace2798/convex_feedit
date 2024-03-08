@@ -26,7 +26,7 @@ const Page = ({ params }: PageProps) => {
   const group = useQuery(api.group.getById, {
     groupId: params.groupId as Id<"group">,
   });
-  console.log("GROUP", group)
+  console.log("GROUP", group);
   // const Editor = useMemo(
   //   () => dynamic(() => import("@/components/editor"), { ssr: false }),
   //   []
@@ -44,7 +44,7 @@ const Page = ({ params }: PageProps) => {
       content: content,
       title: title,
       username: data?.user.name,
-      onPublicGroup: true,
+      onPublicGroup: group?.isPublic ? true : false,
     })
       .then((id) => {
         toast.success("Post created");

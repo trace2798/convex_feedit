@@ -13,15 +13,6 @@ export const create = mutation({
     onPublicGroup: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
-    // const identity = await ctx.auth.getUserIdentity();
-
-    // if (!identity) {
-    //   throw new Error("Not authenticated");
-    // }
-    // // console.log(identity, "IDENTITY");
-    // const userId = identity.subject;
-    // // console.log(userId, "USER ID");
-    // const userName = identity.name || "Anonymous";
     const post = await ctx.db.insert("posts", {
       title: args.title,
       isArchived: false,
