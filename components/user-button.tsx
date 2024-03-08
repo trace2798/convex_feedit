@@ -9,15 +9,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AvatarFallback } from "@radix-ui/react-avatar";
+import { User } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FC } from "react";
 
-interface UserButtonProps {}
+interface UserButtonProps {
+  data: any;
+  status: "loading" | "authenticated" | "unauthenticated";
+}
 
-const UserButton: FC<UserButtonProps> = ({}) => {
-  const { data, status } = useSession();
+const UserButton: FC<UserButtonProps> = ({ data, status }) => {
   if (status === "loading")
     return (
       <>
@@ -26,7 +29,7 @@ const UserButton: FC<UserButtonProps> = ({}) => {
         </Avatar>
       </>
     );
-  // console.log(data);
+  console.log("USER", data);
   if (!data) {
     redirect("/");
   }
@@ -52,8 +55,8 @@ const UserButton: FC<UserButtonProps> = ({}) => {
         <DropdownMenuContent className="" align="end">
           <div className="flex items-center justify-start gap-2 p-2">
             <div className="flex flex-col space-y-0.5 leading-none">
-              {data?.user?.name && (
-                <p className="font-medium text-sm ">{data?.user?.name}</p>
+              {data?.user?.username && (
+                <p className="font-medium text-sm ">{data?.user?.username}</p>
               )}
               {data?.user?.email && (
                 <p className="w-[200px] truncate text-xs ">
@@ -65,10 +68,12 @@ const UserButton: FC<UserButtonProps> = ({}) => {
 
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild className="hover:cursor-pointer">
-            <Link href="/settings">Settings</Link>
+            <Link href={`/u/${data?.user?.id}`}>Profile</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className="hover:cursor-pointer">
+            <Link href={`/chat`}>Conversation</Link>
           </DropdownMenuItem>
           <DropdownMenuItem
-            // asChild
             className="cursor-pointer"
             onClick={() => signOut()}
           >

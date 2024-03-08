@@ -2,12 +2,13 @@
 import MiniCreatePost from "@/components/mini-create-post";
 import PostFeed from "@/components/post-feed";
 import { Button } from "@/components/ui/button";
+import { Card, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useQuery } from "convex/react";
-import { Settings } from "lucide-react";
+import { Bell, Settings } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -27,15 +28,30 @@ const Page = ({ params }: PageProps) => {
   const router = useRouter();
   const initialPosts = useQuery(api.posts.getByGroupId, {
     groupId: params.groupId as Id<"group">,
+    userId: data?.user?.id as Id<"users">,
   });
 
-  const members = useQuery(api.group_members.getMemberByGroupId, {
+  const members = useQuery(api.group_members.getMemberByGroupIdandUserId, {
     groupId: params.groupId as Id<"group">,
+    userId: data?.user?.id as Id<"users">,
   });
-
-  console.log("MEMBERS MEMBERS+>", members);
+  const { mutate: cancelRequestMutate, pending: cancelRequestPending } =
+    useApiMutation(api.group_join_request.cancelGroupRequest);
+  console.log("MEMBERS MEMBERS ===+>", members);
   console.log(initialPosts);
   const { mutate, pending } = useApiMutation(api.group_members.joinGroup);
+  const { mutate: sentRequestMutate, pending: sentRequestPending } =
+    useApiMutation(api.group_join_request.joinGroupRequest);
+  const handleRequestSent = () => {
+    sentRequestMutate({
+      userId: data?.user.id,
+      groupId: params.groupId as Id<"group">,
+    })
+      .then(() => {
+        toast.success("Successful");
+      })
+      .catch(() => toast.error("Oops! Something went wrong."));
+  };
 
   const handleJoinGroup = () => {
     mutate({
@@ -55,6 +71,17 @@ const Page = ({ params }: PageProps) => {
     return "Join";
   };
 
+  const handleCancelGroupRequest = () => {
+    cancelRequestMutate({
+      userId: data?.user.id,
+      groupId: params.groupId as Id<"group">,
+    })
+      .then(() => {
+        toast.success("Successful");
+      })
+      .catch(() => toast.error("Oops! Something went wrong."));
+  };
+
   if (initialPosts === undefined) {
     return (
       <div>
@@ -72,11 +99,8 @@ const Page = ({ params }: PageProps) => {
   const { group, posts } = initialPosts;
 
   if (!group[0].isPublic) {
-    router.push(`/g-private/${params.groupId}`);
+    router.push(`/g/${params.groupId}`);
   }
-  // console.log("REQUEST STATUS", requestStatus);
-  // console.log("GROUO PRIVATE", group);
-
   return (
     <>
       <Suspense>
@@ -86,19 +110,91 @@ const Page = ({ params }: PageProps) => {
           </h1>
           <div className="flex gap-4">
             {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
+              <Link href={`/g/${params.groupId}/request`}>
+                <Button variant="ghost">
+                  <Bell className="text-muted-foreground hover:text-indigo-400" />
+                </Button>{" "}
+              </Link>
+            )}
+            {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
               <Link href={`/g/${params.groupId}/settings`}>
                 <Button variant="ghost">
                   <Settings className="text-muted-foreground hover:text-indigo-400" />
                 </Button>{" "}
               </Link>
             )}
-            <Button variant="outline" onClick={handleJoinGroup}>
-              {checkMembershipAndRole() === "Join" ? "Join" : "Leave"}
-            </Button>
+            {!group[0].isPublic && members?.requestInfo && (
+              <>
+                {members?.requestInfo?.requestOutcome === "Pending" && (
+                  <div>
+                    <Button variant="outline" className="bg-yellow-500">
+                      Request Pending
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="ml-3"
+                      onClick={handleCancelGroupRequest} // Uncomment this line
+                    >
+                      Cancel Request
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
+            {!group[0].isPublic && !members?.members ? (
+              <>
+                <Button variant="outline" onClick={handleRequestSent}>
+                  Request to Join
+                </Button>
+              </>
+            ) : (
+              ""
+            )}
+
+            {/* {!group[0].isPublic && (
+              {members.members?.find((m) => m.userId === data?.user?.id) && (
+                {["Admin", "Owner"].includes(checkMembershipAndRole()) ? (
+                  <Button disabled variant="outline">
+                    Leave
+                  </Button>
+                ) : (
+                  <Button variant="outline" onClick={handleJoinGroup}>
+                    Leave
+                  </Button>
+                )}
+              )}
+              <>
+                
+                </>
+            ): (
+
+            )} */}
+
+            {group[0].isPublic && (
+              <Button variant="outline" onClick={handleJoinGroup}>
+                {checkMembershipAndRole() === "Join" ? "Join" : "Leave"}
+              </Button>
+            )}
           </div>
         </div>
-        <MiniCreatePost session={data} />
-        <PostFeed initialPosts={posts} currentUserId={data?.user?.id} />
+        {group[0].isPublic ||
+        (data?.user.id &&
+          members?.requestInfo?.requestOutcome === "Approved") ||
+        members?.members ? (
+          <>
+            <MiniCreatePost session={data} />
+            <PostFeed initialPosts={posts} currentUserId={data?.user?.id} />
+          </>
+        ) : (
+          <div className="flex justify-center h-[40vh] items-center">
+            <Card className="border-none">
+              <CardTitle className="text-center">
+                Private group. You need to be a member to see the posts
+                published here.
+              </CardTitle>
+            </Card>
+          </div>
+        )}
       </Suspense>
     </>
   );

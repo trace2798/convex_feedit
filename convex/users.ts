@@ -128,6 +128,7 @@ export const getAllInfoById = query({
     const posts = await ctx.db
       .query("posts")
       .withIndex("by_user", (q) => q.eq("userId", args.id))
+      .filter((q) => q.eq(q.field("isPublic"), true))
       .collect();
     const postsWithGroupDetails = await Promise.all(
       posts.map(async (post) => {

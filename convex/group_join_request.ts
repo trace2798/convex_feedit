@@ -120,7 +120,7 @@ export const getById = query({
 });
 
 export const getByGroupId = query({
-  args: { groupId: v.id("group")},
+  args: { groupId: v.id("group"), userId: v.optional(v.id("users")) },
 
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
@@ -149,5 +149,31 @@ export const getByGroupId = query({
       .collect();
 
     return existingRequest;
+  },
+});
+
+export const approveJoinRequest = mutation({
+  args: {
+    userId: v.id("users"),
+    groupId: v.string(),
+    id: v.id("group_join_request"),
+  },
+  handler: async (ctx, args) => {
+    const existingRequest = await ctx.db.get(args.id);
+
+    // If the member already exists
+    if (!existingRequest) {
+      // If the member is an Admin or Owner, throw an error
+      return "Something went wrong";
+    }
+    // If the member does not exist, add them to the group
+    else {
+      const approvedReq = await ctx.db.patch(args.id, {
+        requestOutcome: "Approved",
+        acceptedBy: args.userId,
+        acceptedAt: Date.now(),
+      });
+      return approvedReq;
+    }
   },
 });

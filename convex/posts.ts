@@ -107,12 +107,18 @@ export const getById = query({
 });
 
 export const getByGroupId = query({
-  args: { groupId: v.id("group") },
+  args: { groupId: v.id("group"), userId: v.optional(v.id("users")) },
   handler: async (ctx, args) => {
     const group = await ctx.db
       .query("group")
       .filter((q) => q.eq(q.field("_id"), args.groupId))
       .collect();
+    if (!group[0].isPublic && !args.userId) {
+      return {
+        posts: [],
+        group: group,
+      };
+    }
     const posts = await ctx.db
       .query("posts")
       .withIndex("by_public_feed", (q) =>

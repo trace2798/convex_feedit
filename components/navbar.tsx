@@ -27,7 +27,7 @@ export const Navbar = () => {
               <Button variant="ghost">Chat</Button>
             </Link>
             <ModeToggle />
-            {data?.user && <UserButton />}
+            {data?.user && <UserButton data={data} status={status} />}
             {status === "unauthenticated" && (
               <Button
                 onClick={() => onOpen()}

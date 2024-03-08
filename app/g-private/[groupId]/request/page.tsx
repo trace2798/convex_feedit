@@ -1,6 +1,7 @@
 "use client";
 import { Spinner } from "@/components/spinner";
-import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardFooter } from "@/components/ui/card";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
@@ -18,7 +19,7 @@ const RequestPage: FC<RequestPageProps> = ({ params }) => {
   console.log("DATA", data);
   const request = useQuery(api.group_join_request.getByGroupId, {
     groupId: params.groupId as Id<"group">,
-    // userId: data?.user.id as Id<"users">,
+    userId: data?.user.id as Id<"users">,
   });
 
   return (
@@ -28,6 +29,10 @@ const RequestPage: FC<RequestPageProps> = ({ params }) => {
           <p>{request.userId}</p>
           <p>{request.groupId}</p>
           <p>{request.requestOutcome}</p>
+          <CardFooter className="flex justify-between">
+
+          <Button>Approve</Button>
+          </CardFooter>
         </Card>
       ))}
     </>
