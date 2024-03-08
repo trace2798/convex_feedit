@@ -101,58 +101,24 @@ const Page = ({ params }: PageProps) => {
   if (!group[0].isPublic) {
     router.push(`/g/${params.groupId}`);
   }
-  return (
-    <>
-      <Suspense>
-        <div className="flex justify-between items-center ">
-          <h1 className="font-bold text-3xl md:text-4xl h-14">
-            g/{group[0].name}
-          </h1>
-          <div className="flex gap-4">
-            {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
-              <Link href={`/g/${params.groupId}/request`}>
-                <Button variant="ghost">
-                  <Bell className="text-muted-foreground hover:text-indigo-400" />
-                </Button>{" "}
-              </Link>
-            )}
-            {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
-              <Link href={`/g/${params.groupId}/settings`}>
-                <Button variant="ghost">
-                  <Settings className="text-muted-foreground hover:text-indigo-400" />
-                </Button>{" "}
-              </Link>
-            )}
-            {!group[0].isPublic && members?.requestInfo && (
-              <>
-                {members?.requestInfo?.requestOutcome === "Pending" && (
-                  <div>
-                    <Button variant="outline" className="bg-yellow-500">
-                      Request Pending
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="ml-3"
-                      onClick={handleCancelGroupRequest} // Uncomment this line
-                    >
-                      Cancel Request
-                    </Button>
-                  </div>
+  if (group[0].isPublic) {
+    return (
+      <>
+        <Suspense>
+          <div className="flex justify-between items-center align-middle text-center ">
+            <h1 className="font-bold text-3xl md:text-4xl h-14">
+              g/{group[0].name}
+            </h1>
+            {data && (
+              <div className="max-w-xl flex ">
+                {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
+                  <Link href={`/g/${params.groupId}/settings`}>
+                    <Button variant="ghost">
+                      <Settings className="text-muted-foreground hover:text-indigo-400" />
+                    </Button>{" "}
+                  </Link>
                 )}
-              </>
-            )}
-            {!group[0].isPublic && !members?.members ? (
-              <>
-                <Button variant="outline" onClick={handleRequestSent}>
-                  Request to Join
-                </Button>
-              </>
-            ) : (
-              ""
-            )}
 
-            {/* {!group[0].isPublic && (
-              {members.members?.find((m) => m.userId === data?.user?.id) && (
                 {["Admin", "Owner"].includes(checkMembershipAndRole()) ? (
                   <Button disabled variant="outline">
                     Leave
@@ -162,42 +128,115 @@ const Page = ({ params }: PageProps) => {
                     Leave
                   </Button>
                 )}
-              )}
-              <>
-                
-                </>
-            ): (
-
-            )} */}
-
-            {group[0].isPublic && (
-              <Button variant="outline" onClick={handleJoinGroup}>
-                {checkMembershipAndRole() === "Join" ? "Join" : "Leave"}
-              </Button>
+              </div>
             )}
           </div>
+
+          {data && <MiniCreatePost session={data} />}
+          <PostFeed initialPosts={posts} currentUserId={data?.user?.id} />
+        </Suspense>
+      </>
+    );
+  }
+  if (!group[0].isPublic) {
+    return (
+      <>
+        <div className="flex justify-between items-center align-middle text-center ">
+          <h1 className="font-bold text-3xl md:text-4xl h-14">
+            g/{group[0].name}
+          </h1>
+          {data && (
+            <div className="max-w-xl flex ">
+              {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
+                <Link href={`/g/${params.groupId}/request`}>
+                  <Button variant="ghost">
+                    <Bell className="text-muted-foreground hover:text-indigo-400" />
+                  </Button>{" "}
+                </Link>
+              )}
+              {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
+                <Link href={`/g/${params.groupId}/settings`}>
+                  <Button variant="ghost">
+                    <Settings className="text-muted-foreground hover:text-indigo-400" />
+                  </Button>{" "}
+                </Link>
+              )}
+
+              {["Admin", "Owner"].includes(checkMembershipAndRole()) ? (
+                <Button disabled variant="outline">
+                  Leave
+                </Button>
+              ) : (
+                ""
+              )}
+              {["Member", "Mod"].includes(checkMembershipAndRole()) ? (
+                <Button
+                  className=""
+                  variant="outline"
+                  onClick={handleJoinGroup}
+                >
+                  Leave
+                </Button>
+              ) : (
+                ""
+              )}
+              {members?.requestInfo?.userId === data?.user?.id &&
+              members?.requestInfo?.requestOutcome === "Pending" ? (
+                <div>
+                  <Button variant="outline" className="bg-yellow-500">
+                    Request Pending
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="ml-3"
+                    onClick={handleCancelGroupRequest} // Uncomment this line
+                  >
+                    Cancel Request
+                  </Button>
+                </div>
+              ) : members?.members.find((m) => m.userId === data?.user?.id) ? (
+                ""
+              ) : (
+                <Button variant="outline" onClick={handleRequestSent}>
+                  Request to Join
+                </Button>
+              )}
+            </div>
+          )}
         </div>
-        {group[0].isPublic ||
-        (data?.user.id &&
-          members?.requestInfo?.requestOutcome === "Approved") ||
-        members?.members ? (
+        {data && members?.members.find((m) => m.userId === data?.user?.id) && (
           <>
             <MiniCreatePost session={data} />
             <PostFeed initialPosts={posts} currentUserId={data?.user?.id} />
           </>
-        ) : (
-          <div className="flex justify-center h-[40vh] items-center">
-            <Card className="border-none">
-              <CardTitle className="text-center">
-                Private group. You need to be a member to see the posts
-                published here.
-              </CardTitle>
-            </Card>
-          </div>
         )}
-      </Suspense>
-    </>
-  );
+        {data && !members?.members.find((m) => m.userId === data?.user?.id) && (
+          <>
+            <div className="flex justify-center h-[40vh] items-center">
+              <Card className="border-none">
+                <CardTitle className="text-center">
+                  Private group. You need to be a member to see the posts
+                  published here.
+                </CardTitle>
+              </Card>
+            </div>
+          </>
+        )}
+        {!data && (
+          <>
+            <div className="flex justify-center h-[40vh] items-center">
+              <Card className="border-none">
+                <CardTitle className="text-center">
+                  Private group. You need to be logged in
+                </CardTitle>
+              </Card>
+            </div>
+          </>
+        )}
+        {}
+      </>
+    );
+  }
 };
 
 export default Page;

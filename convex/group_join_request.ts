@@ -173,6 +173,12 @@ export const approveJoinRequest = mutation({
         acceptedBy: args.userId,
         acceptedAt: Date.now(),
       });
+
+      await ctx.db.insert("group_members", {
+        userId: existingRequest.userId,
+        groupId: args.groupId as Id<"group">,
+        memberRole: "Member",
+      });
       return approvedReq;
     }
   },
