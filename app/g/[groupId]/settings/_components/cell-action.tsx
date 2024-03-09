@@ -35,21 +35,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setLoading(true);
       mutate({ memberId: data?._id });
-      // const response = await removeMember(
-      //   params.organizationId as string,
-      //   data.id
-      // );
       const response = null;
       console.log(response);
-      // if (response?.message === "Owner cannot be removed.") {
-      //   toast.error("Not permitted. Owner cannot be removed");
-      // } else if (response?.message === "Operation not permitted.") {
-      //   toast.error("Operation not permitted.");
-      // } else {
-      //   toast.success("User Removed.");
-      // }
-
-      //  toast.success("User Removed.");
       router.refresh();
     } catch (error) {
       toast.error("Failed to remove user");

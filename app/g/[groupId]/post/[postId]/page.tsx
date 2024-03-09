@@ -11,11 +11,12 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import PostVotes from "./_components/post-votes";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { toast } from "sonner";
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
+import { AlertModal } from "@/components/modals/alert-modal";
 
 interface SubRedditPostPageProps {
   params: {
@@ -25,6 +26,8 @@ interface SubRedditPostPageProps {
 
 const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
   console.log(params.postId);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const { data } = useSession();
@@ -98,63 +101,73 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
   }
 
   return (
-    <div>
-      <div className="h-full flex-col items-center sm:items-start justify-between">
-        <div className="flex flex-col mb-5">
-          <Link href={`/g/${group[0]._id}`}>
-            <h1 className="hover:text-indigo-500">g/{group[0].name}</h1>
-          </Link>
-          <Link href={`/u/${user[0]._id}`}>
-            <h1 className="text-muted-foreground text-sm hover:text-indigo-400">
-              by u/{user[0].username}
-            </h1>
-          </Link>
-        </div>
-        <h1 className="font-bold text-3xl mb-5">{post?.title}</h1>
-        <div className="h-full">
-          {/* <Editor
+    <>
+      <AlertModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={handlePostDelete}
+        loading={loading}
+        subDescription="Deleting this Post will delete all the votes and comments associated with it."
+      />
+
+      <div>
+        <div className="h-full flex-col items-center sm:items-start justify-between">
+          <div className="flex flex-col mb-5">
+            <Link href={`/g/${group[0]._id}`}>
+              <h1 className="hover:text-indigo-500">g/{group[0].name}</h1>
+            </Link>
+            <Link href={`/u/${user[0]._id}`}>
+              <h1 className="text-muted-foreground text-sm hover:text-indigo-400">
+                by u/{user[0].username}
+              </h1>
+            </Link>
+          </div>
+          <h1 className="font-bold text-3xl mb-5">{post?.title}</h1>
+          <div className="h-full">
+            {/* <Editor
             initialContent={post?.content}
             editable={false}
             onChange={() => {}}
           /> */}
-          <div
-            className=""
-            style={{ whiteSpace: "pre-line" }}
-            dangerouslySetInnerHTML={{ __html: post.content as string }}
-          />
-        </div>
-        <div className="flex justify-between">
-          <PostVotes
-            postId={post?._id}
-            groupId={group[0]._id}
-            userId={data?.user.id}
-          />
-          <div>
-            {data?.user.id === user[0]._id && (
-              <div>
-                <Button
-                  onClick={() => router.push(pathname + "/edit")}
-                  variant="ghost"
-                >
-                  <Edit3 className="w-5 h-5" />
-                </Button>
-                <Button onClick={handlePostDelete} variant="outline">
-                  <Trash className="w-5 h-5" />
-                </Button>
-              </div>
-            )}
+            <div
+              className=""
+              style={{ whiteSpace: "pre-line" }}
+              dangerouslySetInnerHTML={{ __html: post.content as string }}
+            />
+          </div>
+          <div className="flex justify-between">
+            <PostVotes
+              postId={post?._id}
+              groupId={group[0]._id}
+              userId={data?.user.id}
+            />
+            <div>
+              {data?.user.id === user[0]._id && (
+                <div>
+                  <Button
+                    onClick={() => router.push(pathname + "/edit")}
+                    variant="ghost"
+                  >
+                    <Edit3 className="w-5 h-5" />
+                  </Button>
+                  <Button onClick={() => setOpen(true)} variant="outline">
+                    <Trash className="w-5 h-5" />
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="mt-5">
+            <CommentBox
+              currentUserId={data?.user.id as string}
+              postId={post?._id}
+              groupId={group[0]._id}
+              commentId=""
+            />
           </div>
         </div>
-        <div className="mt-5">
-          <CommentBox
-            currentUserId={data?.user.id as string}
-            postId={post?._id}
-            groupId={group[0]._id}
-            commentId=""
-          />
-        </div>
       </div>
-    </div>
+    </>
   );
 };
 
