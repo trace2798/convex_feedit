@@ -78,7 +78,7 @@ export const getById = query({
     // const identity = await ctx.auth.getUserIdentity();
     // // console.log("IDENTITY ===>", identity);
     const post = await ctx.db.get(args.postId as Id<"posts">);
-
+    console.log("POST inside getByID", post);
     if (!post) {
       throw new Error("Not found");
     }
@@ -91,7 +91,6 @@ export const getById = query({
     const user = await ctx.db
       .query("users")
       .filter((q) => q.eq(q.field("_id"), post.userId))
-
       .collect();
     return {
       post: post,

@@ -12,6 +12,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { toast } from "sonner";
+import { useApiMutation } from "@/hooks/use-api-mutation";
 
 interface MiniCreatePostProps {
   session: Session | null;
@@ -26,25 +27,24 @@ const MiniCreatePost: FC<MiniCreatePostProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const create = useMutation(api.posts.createAsDraft);
+  const { mutate, pending } = useApiMutation(api.posts.createAsDraft);
 
   const handleCreate = () => {
-    const promise = create({
+    mutate({
       userId: session?.user.id as Id<"users">,
       groupId: groupId as Id<"group">,
       title: "",
       content: "",
       username: session?.user.name as string,
       onPublicGroup: onPublicGroup,
-    }).then((documentId) =>
-      router.push(`/g/${groupId}/post/${documentId}/edit`)
-    );
-
-    toast.promise(promise, {
-      loading: "Creating a new note...",
-      success: "New note created!",
-      error: "Failed to create a new note.",
-    });
+    })
+      .then(
+        (documentId) => router.push(`/g/${groupId}/post/${documentId}`),
+        // (documentId) => router.push(`/g/${groupId}/post/${documentId}/edit`),
+        // toast.success("Post created")
+        // window.location.reload() as any
+      )
+      .catch(() => toast.error("Failed to create post"));
   };
 
   return (

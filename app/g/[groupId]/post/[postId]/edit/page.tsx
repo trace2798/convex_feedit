@@ -1,20 +1,18 @@
 "use client";
 
+import Tiptap from "@/components/editor/tiptap";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useQuery } from "convex/react";
-import { ArrowBigDown, ArrowBigUp, Edit3, Loader2 } from "lucide-react";
-import { notFound, usePathname, useRouter } from "next/navigation";
-import { Suspense, useEffect, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
 import { useApiMutation } from "@/hooks/use-api-mutation";
+import { useQuery } from "convex/react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import Tiptap from "@/components/editor/tiptap";
-import { Input } from "@/components/ui/input";
 
 interface SubRedditPostPageProps {
   params: {
@@ -23,17 +21,19 @@ interface SubRedditPostPageProps {
 }
 
 const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
- 
   const { data } = useSession();
-  console.log(params.postId);
+  const [newcontent, setNewContent] = useState("");
+  const [newtitle, setNewTitle] = useState("");
+
+  // console.log(params.postId);
   const router = useRouter();
   const pathname = usePathname();
-  console.log(data);
-  console.log(pathname);
+  // console.log(data);
+  // console.log(pathname);
   const postInfo = useQuery(api.posts.getById, {
     postId: params.postId as Id<"posts">,
   });
-  const { mutate, pending } = useApiMutation(api.posts.update);
+
   if (postInfo === undefined) {
     return (
       <div>
@@ -53,10 +53,14 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
     return <div>Not found</div>;
   }
 
-  console.log(postInfo);
   const { post, group, user } = postInfo;
-  const [newcontent, setNewContent] = useState(post.content);
-  const [newtitle, setNewTitle] = useState(post.title);
+  const { mutate, pending } = useApiMutation(api.posts.update);
+  // const [newcontent, setNewContent] = useState(post.content);
+  // const [newtitle, setNewTitle] = useState(post.title);
+  useEffect(() => {
+    setNewContent(post.content as string);
+    setNewTitle(post.title);
+  }, [post]);
   const handlePublish = () => {
     mutate({
       id: post._id,
@@ -65,11 +69,26 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
       title: newtitle ?? post.title,
       isPublic: true,
     })
-      .then((id) => {
+      .then(() => {
         toast.success("Post updated");
         router.push(`/g/${post.groupId}/post/${post._id}`);
       })
       .catch(() => toast.error("Failed to update post"));
+  };
+
+  const handleSaveAsDraft = () => {
+    mutate({
+      id: post._id,
+      userId: data?.user.id as Id<"users">,
+      content: newcontent ?? post.content,
+      title: newtitle ?? post.title,
+      isPublic: false,
+    })
+      .then(() => {
+        toast.success("Post updated and saved as draft");
+        router.push(`/g/${post.groupId}`);
+      })
+      .catch(() => toast.error("Failed to update post and save as draft"));
   };
   return (
     <div>
@@ -86,7 +105,6 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
             placeholder={post.title}
             onChange={(e) => setNewTitle(e.target.value)}
           />
-          {/* {post?.title} */}
         </h1>
         <div className="h-full">
           <Tiptap
@@ -110,7 +128,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
             type="submit"
             variant={"outline"}
             className="w-[380px]"
-            // onClick={handleSaveAsDraft}
+            onClick={handleSaveAsDraft}
           >
             Save as Draft
           </Button>
