@@ -3,40 +3,107 @@ import Tiptap from "@/components/editor/tiptap";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useSession } from "next-auth/react";
-import dynamic from "next/dynamic";
-import { notFound, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
-
+import { UploadButton } from "./_components/upload-button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 interface PageProps {
   params: {
     groupId: string;
   };
 }
 
+let storageId: any;
+
+const formSchema = z.object({
+  caption: z.string().min(1, "Required"),
+  file: z
+    .custom<FileList>((val) => val instanceof FileList, "Required")
+    .refine((files) => files.length > 0, `Required`),
+});
+
 const Page = ({ params }: PageProps) => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
   const router = useRouter();
   const { data } = useSession();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      caption: "",
+      file: undefined,
+    },
+  });
   const group = useQuery(api.group.getById, {
     groupId: params.groupId as Id<"group">,
   });
-  console.log("GROUP", group);
-  // const Editor = useMemo(
-  //   () => dynamic(() => import("@/components/editor"), { ssr: false }),
-  //   []
-  // );
-  console.log(data);
   const { mutate, pending } = useApiMutation(api.posts.create);
   const { mutate: saveDraft, pending: saveDraftPending } = useApiMutation(
     api.posts.createAsDraft
   );
-  //   if (!group) return notFound();
+
+  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+  const createFile = useMutation(api.files.createFile);
+  const fileRef = form.register("file");
+  // let storageId: "";
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!data) return;
+
+    const postUrl = await generateUploadUrl({
+      userId: data.user.id as Id<"users">,
+    });
+
+    const fileType = values.file[0].type;
+
+    const result = await fetch(postUrl, {
+      method: "POST",
+      headers: { "Content-Type": fileType },
+      body: values.file[0],
+    });
+    const { storageId: newStorageId } = await result.json();
+    storageId = newStorageId;
+    const types = {
+      "image/png": "image",
+    } as Record<string, Doc<"files">["type"]>;
+
+    try {
+      await createFile({
+        caption: values.caption,
+        fileId: storageId,
+        // postId: "" as Id<"posts">,
+        groupId: params.groupId as Id<"group">,
+        userId: data.user.id as Id<"users">,
+        type: types[fileType],
+      });
+
+      form.reset();
+
+      setIsFileDialogOpen(false);
+
+      toast.success("File Uploaded");
+    } catch (err) {
+      console.log("", err);
+      toast.error("Upload Failed");
+    }
+  }
+
   const handlePostCreate = () => {
     mutate({
       userId: data?.user.id,
@@ -45,6 +112,7 @@ const Page = ({ params }: PageProps) => {
       title: title,
       username: data?.user.name,
       onPublicGroup: group?.isPublic ? true : false,
+      fileId: storageId,
     })
       .then((id) => {
         toast.success("Post created");
@@ -88,18 +156,56 @@ const Page = ({ params }: PageProps) => {
           placeholder="Title of your post"
         />
       </div>
-      {/* <div className="w-full py-5 rounded-lg border min-h-[40vh]"> */}
-      {/* <Editor
-          onChange={(value) => setContent(value)}
-          initialContent={""}
-          editable={true}
-        /> */}
       <Tiptap
         onChange={(value: any) => setContent(value)}
         initialContent={""}
         editable={true}
       />
-      {/* </div> */}
+      {/* <UploadButton
+        userId={data?.user.id as Id<"users">}
+        groupId={params.groupId as Id<"group">}
+      /> */}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="caption"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Caption</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="file"
+            render={() => (
+              <FormItem>
+                <FormLabel>File</FormLabel>
+                <FormControl>
+                  <Input type="file" {...fileRef} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+            className="flex gap-1"
+          >
+            {form.formState.isSubmitting && (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            )}
+            Submit
+          </Button>
+        </form>
+      </Form>
       <div className="w-full flex justify-between pb-5">
         <Button
           disabled={pending}

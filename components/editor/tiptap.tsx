@@ -5,15 +5,18 @@ import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./toolbar";
 import Underline from "@tiptap/extension-underline";
 
-const Tiptap = ({ onChange, content }: any) => {
+const Tiptap = ({ onChange, content, initialContent }: any) => {
   const handleChange = (newContent: string) => {
     onChange(newContent);
   };
   const editor = useEditor({
     extensions: [StarterKit, Underline],
+    content: initialContent || content || "",
+
     editorProps: {
       attributes: {
-        class: "",
+        class:
+          "flex flex-col px-4 py-3 justify-start border-b border-r border-l border-gray-700 text-gray-400 items-start w-full gap-3 font-medium text-[16px] pt-4 rounded-bl-md rounded-br-md outline-none min-h-[40vh]",
       },
     },
     onUpdate: ({ editor }) => {
@@ -22,7 +25,7 @@ const Tiptap = ({ onChange, content }: any) => {
   });
 
   return (
-    <div className="w-full rounded-lg border min-h-[40vh]">
+    <div className="w-full rounded-lg border">
       <Toolbar editor={editor} content={content} />
       <EditorContent
         style={{ whiteSpace: "pre-line" }}

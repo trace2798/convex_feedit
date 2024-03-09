@@ -18,6 +18,7 @@ import type * as accounts from "../accounts.js";
 import type * as comments from "../comments.js";
 import type * as comment_votes from "../comment_votes.js";
 import type * as conversation from "../conversation.js";
+import type * as files from "../files.js";
 import type * as group from "../group.js";
 import type * as group_join_request from "../group_join_request.js";
 import type * as group_members from "../group_members.js";
@@ -41,6 +42,7 @@ declare const fullApi: ApiFromModules<{
   comments: typeof comments;
   comment_votes: typeof comment_votes;
   conversation: typeof conversation;
+  files: typeof files;
   group: typeof group;
   group_join_request: typeof group_join_request;
   group_members: typeof group_members;

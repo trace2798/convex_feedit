@@ -13,6 +13,8 @@ import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { toast } from "sonner";
+import Tiptap from "@/components/editor/tiptap";
+import { Input } from "@/components/ui/input";
 
 interface SubRedditPostPageProps {
   params: {
@@ -21,17 +23,13 @@ interface SubRedditPostPageProps {
 }
 
 const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
-  const [newcontent, setNewContent] = useState("");
+ 
   const { data } = useSession();
   console.log(params.postId);
   const router = useRouter();
   const pathname = usePathname();
   console.log(data);
   console.log(pathname);
-  const Editor = useMemo(
-    () => dynamic(() => import("@/components/editor"), { ssr: false }),
-    []
-  );
   const postInfo = useQuery(api.posts.getById, {
     postId: params.postId as Id<"posts">,
   });
@@ -57,16 +55,19 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
 
   console.log(postInfo);
   const { post, group, user } = postInfo;
-  const handlePostUpdate = () => {
+  const [newcontent, setNewContent] = useState(post.content);
+  const [newtitle, setNewTitle] = useState(post.title);
+  const handlePublish = () => {
     mutate({
       id: post._id,
       userId: data?.user.id as Id<"users">,
-      content: newcontent,
-      title: post.title,
+      content: newcontent ?? post.content,
+      title: newtitle ?? post.title,
+      isPublic: true,
     })
       .then((id) => {
         toast.success("Post updated");
-        // router.push(`/g/${params.groupId}/post/${id}`);
+        router.push(`/g/${post.groupId}/post/${post._id}`);
       })
       .catch(() => toast.error("Failed to update post"));
   };
@@ -79,23 +80,41 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
           </Link>
           <h1 className="text-muted-foreground text-sm">by u/{user[0].name}</h1>
         </div>
-        <h1 className="font-bold text-3xl mb-5">{post?.title}</h1>
+        <h1 className="font-bold text-3xl mb-5">
+          <Input
+            value={newtitle}
+            placeholder={post.title}
+            onChange={(e) => setNewTitle(e.target.value)}
+          />
+          {/* {post?.title} */}
+        </h1>
         <div className="h-full">
-          <Editor
-            initialContent={post?.content}
+          <Tiptap
+            onChange={(value: any) => setNewContent(value)}
+            initialContent={post.content}
             editable={true}
-            onChange={(content) => {
-              setNewContent(content);
-            }}
           />
         </div>
-        <Button
-          disabled={pending || !newcontent}
-          onClick={() => handlePostUpdate()}
-          className="mt-5"
-        >
-          Update Post
-        </Button>
+
+        <div className="w-full mt-5 flex justify-between pb-5">
+          <Button
+            disabled={pending}
+            type="submit"
+            className="w-[380px]"
+            onClick={handlePublish}
+          >
+            Publish
+          </Button>
+          <Button
+            disabled={pending}
+            type="submit"
+            variant={"outline"}
+            className="w-[380px]"
+            // onClick={handleSaveAsDraft}
+          >
+            Save as Draft
+          </Button>
+        </div>
       </div>
     </div>
   );

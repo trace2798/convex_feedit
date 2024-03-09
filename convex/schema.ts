@@ -103,6 +103,7 @@ export default defineSchema({
     updatedAt: v.union(v.null(), v.number()),
     tags: v.optional(v.array(v.id("tag"))),
     onPublicGroup: v.optional(v.boolean()),
+    fileId:v.optional(v.id("_storage")),
   })
     .index("by_user", ["userId"])
     .index("by_group", ["groupId"])
@@ -111,6 +112,14 @@ export default defineSchema({
     .index("by_public", ["isPublic"])
     .index("by_public_feed", ["isPublic", "isArchived"])
     .index("by_public_onPublicGroup", ["onPublicGroup", "isPublic"]),
+  files: defineTable({
+    caption: v.optional(v.string()),
+    fileId: v.id("_storage"),
+    postId: v.optional(v.id("posts")),
+    groupId: v.id("group"),
+    userId: v.id("users"),
+    type: v.literal("image"),
+  }).index("by_post", ["postId"]),
   votes: defineTable({
     voteType: voteType,
     userId: v.id("users"),

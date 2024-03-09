@@ -8,43 +8,61 @@ import { usePathname, useRouter } from "next/navigation";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { UserAvatar } from "./user-avatar";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { toast } from "sonner";
 
 interface MiniCreatePostProps {
   session: Session | null;
+  groupId: Id<"group"> | null;
+  onPublicGroup?: boolean;
 }
 
-const MiniCreatePost: FC<MiniCreatePostProps> = ({ session }) => {
+const MiniCreatePost: FC<MiniCreatePostProps> = ({
+  session,
+  groupId,
+  onPublicGroup,
+}) => {
   const router = useRouter();
   const pathname = usePathname();
+  const create = useMutation(api.posts.createAsDraft);
+
+  const handleCreate = () => {
+    const promise = create({
+      userId: session?.user.id as Id<"users">,
+      groupId: groupId as Id<"group">,
+      title: "",
+      content: "",
+      username: session?.user.name as string,
+      onPublicGroup: onPublicGroup,
+    }).then((documentId) =>
+      router.push(`/g/${groupId}/post/${documentId}/edit`)
+    );
+
+    toast.promise(promise, {
+      loading: "Creating a new note...",
+      success: "New note created!",
+      error: "Failed to create a new note.",
+    });
+  };
 
   return (
     <li className="overflow-hidden rounded-md bg-primary-foreground shadow list-none my-5">
-      <div className="h-full px-6 py-4 flex justify-between gap-6">
-        <div className="relative">
+      <div className="h-full px-6 py-4 flex justify-between gap-6 align-middle items-center">
+        <div className="relative ">
           <UserAvatar
             user={{
               name: session?.user.name || null,
               image: session?.user.image || null,
             }}
           />
-
-          <span className="absolute bottom-0 right-0 rounded-full w-3 h-3 bg-green-500 outline outline-2 outline-white" />
         </div>
-        <Input
-          onClick={() => router.push(pathname + "/submit")}
-          readOnly
-          placeholder="Create post"
-        />
-        <Button
-          onClick={() => router.push(pathname + "/submit")}
-          variant="ghost"
-        >
+        <Input onClick={handleCreate} readOnly placeholder="Create post" />
+        <Button onClick={handleCreate} variant="ghost">
           <ImageIcon className="text-zinc-600" />
         </Button>
-        <Button
-          onClick={() => router.push(pathname + "/submit")}
-          variant="ghost"
-        >
+        <Button onClick={handleCreate} variant="ghost">
           <Link2 className="text-zinc-600" />
         </Button>
       </div>

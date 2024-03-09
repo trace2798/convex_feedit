@@ -132,7 +132,13 @@ const Page = ({ params }: PageProps) => {
             )}
           </div>
 
-          {data && <MiniCreatePost session={data} />}
+          {data && (
+            <MiniCreatePost
+              session={data}
+              groupId={params.groupId as Id<"group">}
+              onPublicGroup={true}
+            />
+          )}
           <PostFeed initialPosts={posts} currentUserId={data?.user?.id} />
         </Suspense>
       </>
@@ -206,7 +212,11 @@ const Page = ({ params }: PageProps) => {
         </div>
         {data && members?.members.find((m) => m.userId === data?.user?.id) && (
           <>
-            <MiniCreatePost session={data} />
+            <MiniCreatePost
+              session={data}
+              groupId={params.groupId as Id<"group">}
+              onPublicGroup={false}
+            />
             <PostFeed initialPosts={posts} currentUserId={data?.user?.id} />
           </>
         )}

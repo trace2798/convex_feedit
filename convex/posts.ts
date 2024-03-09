@@ -11,6 +11,7 @@ export const create = mutation({
     groupId: v.string(),
     content: v.optional(v.string()),
     onPublicGroup: v.optional(v.boolean()),
+    fileId: v.optional(v.id("_storage")),
   },
   handler: async (ctx, args) => {
     const post = await ctx.db.insert("posts", {
@@ -25,6 +26,7 @@ export const create = mutation({
       content: args.content,
       username: args.username,
       onPublicGroup: args.onPublicGroup,
+      fileId: args.fileId,
     });
 
     return post;
@@ -39,6 +41,7 @@ export const createAsDraft = mutation({
     groupId: v.string(),
     content: v.optional(v.string()),
     onPublicGroup: v.optional(v.boolean()),
+    fileId: v.optional(v.id("_storage")),
   },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
@@ -51,7 +54,7 @@ export const createAsDraft = mutation({
     // // console.log(userId, "USER ID");
     // const userName = identity.name || "Anonymous";
     const post = await ctx.db.insert("posts", {
-      title: args.title,
+      title: "untitled",
       isArchived: false,
       isPublic: false,
       publishedAt: new Date().getTime(),
@@ -62,6 +65,7 @@ export const createAsDraft = mutation({
       content: args.content,
       username: args.username,
       onPublicGroup: args.onPublicGroup,
+      fileId: args.fileId,
     });
 
     return post;
@@ -136,6 +140,7 @@ export const update = mutation({
     title: v.string(),
     content: v.optional(v.string()),
     userId: v.id("users"),
+    isPublic: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const { id, ...rest } = args;
