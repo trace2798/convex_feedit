@@ -6,13 +6,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
-import { Edit3 } from "lucide-react";
+import { Edit3, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import PostVotes from "./_components/post-votes";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { toast } from "sonner";
+import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 
 interface SubRedditPostPageProps {
   params: {
@@ -26,11 +29,30 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
   const pathname = usePathname();
   const { data } = useSession();
   console.log(data);
-  console.log(pathname);
-  const Editor = useMemo(
-    () => dynamic(() => import("@/components/editor"), { ssr: false }),
-    []
-  );
+  console.log("PATHNAME", pathname);
+
+  const startIndex = pathname.indexOf("/g/") + 3; // Add 3 to skip "g/"
+  const endIndex = pathname.indexOf("/post");
+  const uniqueIdentifier = pathname.slice(startIndex, endIndex);
+  console.log(`The unique identifier is: ${uniqueIdentifier}`);
+  const { mutate, pending } = useApiMutation(api.posts.deletePost);
+  const handlePostDelete = () => {
+    router.push(`/g/${uniqueIdentifier}`);
+
+    router.refresh();
+    mutate({
+      userId: data?.user.id,
+      postId: params.postId as Id<"posts">,
+      groupId: group[0]._id,
+    })
+      .then(() => {
+        // router.push(`/g/${uniqueIdentifier}`);
+
+        toast.success("Post deleted");
+      })
+      .catch(() => toast.error("Failed to delete post"));
+  };
+
   const postInfo = useQuery(api.posts.getById, {
     postId: params.postId as Id<"posts">,
   });
@@ -56,6 +78,25 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
 
   console.log(postInfo);
   const { post, group, user } = postInfo;
+
+  if (!group[0].isPublic && !data) {
+    return (
+      <div className="flex justify-center h-[40vh] items-center">
+        <Card className="border-none">
+          <CardTitle className="text-center">
+            Post made on a private group. You need to be a member to see the
+            posts published here.
+          </CardTitle>
+          <CardFooter className="mt-5 flex justify-center items-center">
+            <Link href={"/"}>
+              <Button>Back Home</Button>
+            </Link>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="h-full flex-col items-center sm:items-start justify-between">
@@ -90,12 +131,17 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
           />
           <div>
             {data?.user.id === user[0]._id && (
-              <Button
-                onClick={() => router.push(pathname + "/edit")}
-                variant="ghost"
-              >
-                <Edit3 className="w-5 h-5" />
-              </Button>
+              <div>
+                <Button
+                  onClick={() => router.push(pathname + "/edit")}
+                  variant="ghost"
+                >
+                  <Edit3 className="w-5 h-5" />
+                </Button>
+                <Button onClick={handlePostDelete} variant="outline">
+                  <Trash className="w-5 h-5" />
+                </Button>
+              </div>
             )}
           </div>
         </div>

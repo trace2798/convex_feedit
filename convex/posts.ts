@@ -188,3 +188,48 @@ export const getGeneralFeed = query({
     };
   },
 });
+
+export const deletePost = mutation({
+  args: {
+    userId: v.string(),
+    postId: v.id("posts"),
+    groupId: v.id("group"),
+  },
+  handler: async (ctx, args) => {
+    // Delete comments associated with the post
+    const comments = await ctx.db
+      .query("comments")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+
+    if (comments.length > 0) {
+      comments.forEach(async (comment) => {
+        await ctx.db.delete(comment._id);
+      });
+    }
+
+    // Delete votes associated with the post
+    const votes = await ctx.db
+      .query("votes")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+
+    if (votes.length > 0) {
+      votes.forEach(async (vote) => {
+        await ctx.db.delete(vote._id);
+      });
+    }
+
+    const comment_votes = await ctx.db
+      .query("comment_vote")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+    if (comment_votes.length > 0) {
+      comment_votes.forEach(async (comment_vote) => {
+        await ctx.db.delete(comment_vote._id);
+      });
+    }
+    // Finally, delete the post
+    await ctx.db.delete(args.postId);
+  },
+});

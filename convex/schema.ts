@@ -131,6 +131,7 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_group", ["groupId"])
     .index("by_comment", ["parentComment"])
+    .index("by_group_post", ["groupId", "postId"])
     .index("by_post_comment", ["postId", "parentComment"]),
   comment_vote: defineTable({
     userId: v.id("users"),

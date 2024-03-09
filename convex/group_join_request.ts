@@ -18,7 +18,7 @@ export const joinGroupRequest = mutation({
       .collect();
 
     // If the member already exists
-    if (existingRequest.length > 0) {
+    if (existingRequest.length > 1) {
       // If the member is an Admin or Owner, throw an error
       return existingRequest;
     }
@@ -161,12 +161,12 @@ export const approveJoinRequest = mutation({
   handler: async (ctx, args) => {
     const existingRequest = await ctx.db.get(args.id);
 
-    // If the member already exists
+  
     if (!existingRequest) {
-      // If the member is an Admin or Owner, throw an error
+    
       return "Something went wrong";
     }
-    // If the member does not exist, add them to the group
+   
     else {
       const approvedReq = await ctx.db.patch(args.id, {
         requestOutcome: "Approved",
@@ -179,6 +179,7 @@ export const approveJoinRequest = mutation({
         groupId: args.groupId as Id<"group">,
         memberRole: "Member",
       });
+
       return approvedReq;
     }
   },
