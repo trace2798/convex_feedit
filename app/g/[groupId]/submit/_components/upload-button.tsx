@@ -79,10 +79,10 @@ export function UploadButton({
 
     try {
       await createFile({
-        title: values.title,
+        caption: values.title as string,
         fileId: storageId,
         type: types[fileType],
-        postId: postId,
+        postId: postId as Id<"posts">,
         groupId: groupId,
         userId: userId,
       });

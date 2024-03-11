@@ -17,7 +17,6 @@ import { api } from "@/convex/_generated/api";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { toast } from "sonner";
 import { MemberColumn } from "./columns";
-// import { removeMember } from "./member-action";
 
 interface CellActionProps {
   data: MemberColumn;

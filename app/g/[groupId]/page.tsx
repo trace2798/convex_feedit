@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
+import { Post } from "@/types";
 import { useQuery } from "convex/react";
 import { Bell, Settings } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -139,7 +140,7 @@ const Page = ({ params }: PageProps) => {
               onPublicGroup={true}
             />
           )}
-          <PostFeed initialPosts={posts} currentUserId={data?.user?.id} />
+          <PostFeed initialPosts={posts as Post[]} currentUserId={data?.user?.id} />
         </Suspense>
       </>
     );
@@ -217,7 +218,7 @@ const Page = ({ params }: PageProps) => {
               groupId={params.groupId as Id<"group">}
               onPublicGroup={false}
             />
-            <PostFeed initialPosts={posts} currentUserId={data?.user?.id} />
+            <PostFeed initialPosts={posts as Post[]} currentUserId={data?.user?.id} />
           </>
         )}
         {data && !members?.members.find((m) => m.userId === data?.user?.id) && (

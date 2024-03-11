@@ -29,15 +29,26 @@ export default function Home() {
       {data ? (
         <div className="flex justify-between items-center align-middle">
           <h1 className="font-bold text-3xl md:text-4xl">Your Feed</h1>
-          <Link
-            href={`/u/${data?.user?.id}`}
-            className={buttonVariants({
-              className: "max-w-xl mt-4 mb-6",
-              variant: "outline",
-            })}
-          >
-            Your Profile
-          </Link>
+          <div className="space-x-3 flex max-md:flex-col">
+            <Link
+              href={`/u/${data?.user?.id}/draft`}
+              className={buttonVariants({
+                className: "max-w-xl mt-4 mb-6",
+                variant: "outline",
+              })}
+            >
+              Your Drafts
+            </Link>
+            <Link
+              href={`/u/${data?.user?.id}`}
+              className={buttonVariants({
+                className: "max-w-xl mt-4 mb-6",
+                variant: "outline",
+              })}
+            >
+              Your Profile
+            </Link>
+          </div>
         </div>
       ) : (
         <h1 className="font-bold text-3xl md:text-4xl">Discover</h1>

@@ -1,28 +1,26 @@
 "use client";
 
 import CommentBox from "@/components/comment/comment-box";
+import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { useQuery } from "convex/react";
-import { Edit3, Trash } from "lucide-react";
-import { useSession } from "next-auth/react";
-import dynamic from "next/dynamic";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import PostVotes from "./_components/post-votes";
-import { useApiMutation } from "@/hooks/use-api-mutation";
-import { toast } from "sonner";
 import {
   Card,
   CardContent,
   CardFooter,
-  CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
-import { AlertModal } from "@/components/modals/alert-modal";
+import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { useQuery } from "convex/react";
+import { Edit3, Trash } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import PostVotes from "./_components/post-votes";
 
 interface SubRedditPostPageProps {
   params: {
@@ -55,8 +53,6 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
       groupId: group[0]._id,
     })
       .then(() => {
-        // router.push(`/g/${uniqueIdentifier}`);
-
         toast.success("Post deleted");
       })
       .catch(() => toast.error("Failed to delete post"));
@@ -132,11 +128,6 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
           </div>
           <h1 className="font-bold text-3xl mb-5">{post?.title}</h1>
           <div className="h-full">
-            {/* <Editor
-            initialContent={post?.content}
-            editable={false}
-            onChange={() => {}}
-          /> */}
             <div
               className=""
               style={{ whiteSpace: "pre-line" }}
@@ -156,7 +147,6 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
                       </CardContent>
                       <CardFooter>{image.caption}</CardFooter>
                     </Card>
-                    {/* <img src={image.url} className="max-w-sm max-h-[500px] " /> */}
                   </>
                 ))}
             </div>

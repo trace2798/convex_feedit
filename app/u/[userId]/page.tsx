@@ -1,29 +1,25 @@
 "use client";
-import CommentCard from "@/components/comment/comment-card";
-import MiniCreatePost from "@/components/mini-create-post";
 import PostCard from "@/components/post-card";
-import PostFeed from "@/components/post-feed";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { useApiMutation } from "@/hooks/use-api-mutation";
-import { useQuery } from "convex/react";
-import { Settings } from "lucide-react";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { Suspense } from "react";
-import { toast } from "sonner";
-import UserCommentBox from "./_components/user-comment-box";
-import { useRouter } from "next/navigation";
-import { format, formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { Separator } from "@/components/ui/separator";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { useQuery } from "convex/react";
+import { format, formatDistanceToNow } from "date-fns";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Suspense } from "react";
+import { toast } from "sonner";
+import UserCommentBox from "./_components/user-comment-box";
+import { Post } from "@/types";
 
 interface PageProps {
   params: {
@@ -170,7 +166,7 @@ const Page = ({ params }: PageProps) => {
                     </a>
                     {formatDistanceToNow(post._creationTime)}
                   </h1>
-                  <PostCard key={index} post={post} />
+                  <PostCard key={index} post={post as Post} />
                 </div>
               </>
             ))}

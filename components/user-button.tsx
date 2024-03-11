@@ -71,6 +71,9 @@ const UserButton: FC<UserButtonProps> = ({ data, status }) => {
             <Link href={`/u/${data?.user?.id}`}>Profile</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild className="hover:cursor-pointer">
+            <Link href={`/u/${data?.user?.id}/draft`}>Drafts</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className="hover:cursor-pointer">
             <Link href={`/chat`}>Conversation</Link>
           </DropdownMenuItem>
           <DropdownMenuItem
