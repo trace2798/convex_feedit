@@ -15,7 +15,13 @@ import { useMemo, useState } from "react";
 import PostVotes from "./_components/post-votes";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { toast } from "sonner";
-import { Card, CardFooter, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { AlertModal } from "@/components/modals/alert-modal";
 
 interface SubRedditPostPageProps {
@@ -59,7 +65,9 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
   const postInfo = useQuery(api.posts.getById, {
     postId: params.postId as Id<"posts">,
   });
-
+  const imagesInfo = useQuery(api.files.getByPostId, {
+    postId: params.postId as Id<"posts">,
+  });
   if (postInfo === undefined) {
     return (
       <div>
@@ -134,6 +142,24 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
               style={{ whiteSpace: "pre-line" }}
               dangerouslySetInnerHTML={{ __html: post.content as string }}
             />
+            <div className="mt-10 grid grid-cols-3">
+              {imagesInfo &&
+                imagesInfo?.length > 0 &&
+                imagesInfo?.map((image, index) => (
+                  <>
+                    <Card key={index} className="max-w-sm  overflow-hidden">
+                      <CardContent className="mt-5 max-h-[384px] overflow-hidden">
+                        <img
+                          src={image.url as string | undefined}
+                          className="object-cover"
+                        />
+                      </CardContent>
+                      <CardFooter>{image.caption}</CardFooter>
+                    </Card>
+                    {/* <img src={image.url} className="max-w-sm max-h-[500px] " /> */}
+                  </>
+                ))}
+            </div>
           </div>
           <div className="flex justify-between">
             <PostVotes
@@ -157,6 +183,7 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
               )}
             </div>
           </div>
+
           <div className="mt-5">
             <CommentBox
               currentUserId={data?.user.id as string}

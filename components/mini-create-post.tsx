@@ -39,7 +39,7 @@ const MiniCreatePost: FC<MiniCreatePostProps> = ({
       onPublicGroup: onPublicGroup,
     })
       .then(
-        (documentId) => router.push(`/g/${groupId}/post/${documentId}`),
+        (id) => router.push(`/g/${groupId}/post/${id}`)
         // (documentId) => router.push(`/g/${groupId}/post/${documentId}/edit`),
         // toast.success("Post created")
         // window.location.reload() as any

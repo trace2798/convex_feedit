@@ -31,7 +31,7 @@ export const createFile = mutation({
     groupId: v.id("group"),
     userId: v.id("users"),
     type: v.literal("image"),
-    postId: v.optional(v.id("posts")),
+    postId: v.id("posts"),
   },
   async handler(ctx, args) {
     // const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -48,5 +48,41 @@ export const createFile = mutation({
       type: args.type,
       userId: args.userId,
     });
+  },
+});
+
+export const getByPostId = query({
+  args: { postId: v.id("posts") },
+  handler: async (ctx, args) => {
+    const images = await ctx.db
+      .query("files")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+
+    // Create a new array to hold the images with their URLs
+    const imagesWithUrls = [];
+
+    // Iterate over each image and add the URL to its info
+    for (let image of images) {
+      const url = await ctx.storage.getUrl(image.fileId);
+      imagesWithUrls.push({ ...image, url });
+    }
+
+    return imagesWithUrls;
+  },
+});
+
+export const deleteById = mutation({
+  args: {
+    postId: v.id("posts"),
+    fileId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    const image = await ctx.db
+      .query("files")
+      .withIndex("by_fileId", (q) => q.eq("fileId", args.fileId))
+      .collect();
+    await ctx.db.delete(image[0]._id);
+    await ctx.storage.delete(args.fileId);
   },
 });

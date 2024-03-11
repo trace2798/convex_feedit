@@ -77,8 +77,8 @@ const Page = ({ params }: PageProps) => {
       headers: { "Content-Type": fileType },
       body: values.file[0],
     });
-    const { storageId: newStorageId } = await result.json();
-    storageId = newStorageId;
+    const { storageId } = await result.json();
+    
     const types = {
       "image/png": "image",
     } as Record<string, Doc<"files">["type"]>;
@@ -87,7 +87,7 @@ const Page = ({ params }: PageProps) => {
       await createFile({
         caption: values.caption,
         fileId: storageId,
-        // postId: "" as Id<"posts">,
+        postId: "" as Id<"posts">,
         groupId: params.groupId as Id<"group">,
         userId: data.user.id as Id<"users">,
         type: types[fileType],
