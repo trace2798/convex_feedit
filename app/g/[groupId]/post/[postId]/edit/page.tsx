@@ -73,7 +73,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
     }
   }, [post]);
 
-  if (postInfo || group || user === undefined) {
+  if (postInfo === undefined) {
     return (
       <div>
         <div className="md:max-w-3xl lg:max-w-4xl mx-auto mt-10">
@@ -172,10 +172,16 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
     <div>
       <div className="h-full flex-col items-center sm:items-start justify-between">
         <div className="flex flex-col mb-5">
-          {/* <Link href={`/g/${group._id}`}>
-            <h1 className="hover:text-indigo-500">g/{group[0].name}</h1>
-          </Link> */}
-          <h1 className="text-muted-foreground text-sm">by u/{user[0].name}</h1>
+          {group && user && (
+            <>
+              <Link href={`/g/${group[0]._id}`}>
+                <h1 className="hover:text-indigo-500">g/{group[0].name}</h1>
+              </Link>
+              <h1 className="text-muted-foreground text-sm">
+                by u/{user[0].name}
+              </h1>
+            </>
+          )}
         </div>
         <h1 className="font-bold text-3xl mb-5">
           <Input
