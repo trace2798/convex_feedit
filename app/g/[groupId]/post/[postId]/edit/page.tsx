@@ -15,27 +15,35 @@ import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { Group, Post } from "@/types";
 import { useMutation, useQuery } from "convex/react";
-import { Trash } from "lucide-react";
+import { Image, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { CarouselDemo } from "@/components/carousel-demo";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface SubRedditPostPageProps {
   params: {
     postId: string;
   };
 }
-
-// const formSchema = z.object({
-//   title: z.string().min(1, "Required"),
-//   content: z.string().min(1, "Required").max(15000, "Too long"),
-//   caption: z.string().min(1, "Required"),
-//   file: z
-//     .custom<FileList>((val) => val instanceof FileList, "Required")
-//     .refine((files) => files.length > 0, `Required`),
-// });
 
 const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   const { data } = useSession();
@@ -197,57 +205,76 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
             editable={true}
           />
         </div>
-        <div className="mt-10 grid grid-cols-3">
-          {imagesInfo &&
-            imagesInfo?.length > 0 &&
-            imagesInfo?.map((image, index) => (
-              <>
-                <Card key={index} className="max-w-sm  overflow-hidden">
-                  <CardHeader onClick={() => handleDelete(image.fileId)}>
-                    <Trash />
-                  </CardHeader>
-                  <CardContent className="mt-5 max-h-[384px] overflow-hidden">
-                    <img
-                      src={image.url as string | undefined}
-                      className="object-cover"
-                    />
-                  </CardContent>
-                  <CardFooter>{image.caption}</CardFooter>
-                </Card>
-                {/* <img src={image.url} className="max-w-sm max-h-[500px] " /> */}
-              </>
-            ))}
-        </div>
-
-        <div className="mt-5">
-          <Card className="max-w-sm">
-            <CardContent>
+        <div className="mt-3 mb-5">
+          <Dialog>
+            <DialogTrigger>
+              {" "}
+              <Button variant="outline">
+                Add Image <Image className="w-4 h-4 ml-3" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add image with caption to your post</DialogTitle>
+              </DialogHeader>
               <Input
                 type="file"
                 accept="image/*"
                 ref={imageInput}
                 onChange={(event) => setSelectedImage(event.target.files![0])}
-                className="ms-2 btn btn-primary"
+                className="btn btn-primary"
                 disabled={selectedImage !== null}
               />
-            </CardContent>
-            <CardFooter>
               <Input
                 value={caption}
                 placeholder={post?.title}
                 onChange={(e) => setCaption(e.target.value)}
               />
-            </CardFooter>
-          </Card>
-
-          <Button
-            type="submit"
-            // disabled={form.formState.isSubmitting}
-            onClick={handleImage}
-            className="flex gap-1"
-          >
-            Submit
-          </Button>
+              <DialogFooter>
+                <Button
+                  type="submit"
+                  onClick={handleImage}
+                  className="flex gap-1"
+                >
+                  Upload Image
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div className="mt-10 flex justify-center ">
+          {imagesInfo && imagesInfo.length > 0 && (
+            <Carousel className="w-full max-w-sm">
+              <CarouselContent>
+                {imagesInfo.map((image, index) => (
+                  <CarouselItem key={index}>
+                    <div className="p-1">
+                      <Card>
+                        <CardHeader onClick={() => handleDelete(image.fileId)}>
+                          <Trash />
+                        </CardHeader>
+                        <CardContent className="flex my-3 aspect-square items-center justify-center p-6 max-h-[385px] overflow-hidden">
+                          <img
+                            src={image.url as string | undefined}
+                            className="object-cover"
+                          />
+                        </CardContent>
+                        {image.caption && (
+                          <CardFooter>{image.caption}</CardFooter>
+                        )}
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {imagesInfo.length > 1 && (
+                <>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </>
+              )}
+            </Carousel>
+          )}
         </div>
 
         <div className="w-full mt-5 flex justify-between pb-5">

@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
-  CardTitle
+  CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
@@ -21,6 +22,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import PostVotes from "./_components/post-votes";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface SubRedditPostPageProps {
   params: {
@@ -133,7 +141,7 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
               style={{ whiteSpace: "pre-line" }}
               dangerouslySetInnerHTML={{ __html: post.content as string }}
             />
-            <div className="mt-10 grid grid-cols-3">
+            {/* <div className="mt-10 grid grid-cols-3">
               {imagesInfo &&
                 imagesInfo?.length > 0 &&
                 imagesInfo?.map((image, index) => (
@@ -149,6 +157,39 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
                     </Card>
                   </>
                 ))}
+            </div> */}
+            <div className="mt-10 flex justify-center ">
+              {imagesInfo && imagesInfo.length > 0 && (
+                <Carousel className="w-full max-w-sm">
+                  <CarouselContent>
+                    {imagesInfo.map((image, index) => (
+                      <CarouselItem key={index}>
+                        <div className="p-1">
+                          <Card className="border-none">
+                            <CardContent className="flex rounded-lg my-3 aspect-square items-center justify-center p-6 max-h-[385px] overflow-hidden">
+                              <img
+                                src={image.url as string | undefined}
+                                className="object-cover"
+                              />
+                            </CardContent>
+                            {image.caption && (
+                              <CardDescription className="ml-6 text-base">
+                                {image.caption}
+                              </CardDescription>
+                            )}
+                          </Card>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  {imagesInfo.length > 1 && (
+                    <>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </>
+                  )}
+                </Carousel>
+              )}
             </div>
           </div>
           <div className="flex justify-between">
