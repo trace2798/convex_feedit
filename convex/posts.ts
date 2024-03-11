@@ -193,6 +193,65 @@ export const getGeneralFeed = query({
   },
 });
 
+// export const getPersonalizedFeed = query({
+//   args: {
+//     isPublic: v.boolean(),
+//     paginationOpts: paginationOptsValidator,
+//     userId: v.id("users"),
+//   },
+//   handler: async (ctx, args) => {
+//     const userGroups = await ctx.db
+//       .query("group_members")
+//       .withIndex("by_user", (q) => q.eq("userId", args.userId))
+//       .collect();
+//     let posts = [];
+
+//     // Loop over the user's groups and fetch the posts
+//     for (let group of userGroups) {
+//       const groupPosts = await ctx.db
+//         .query("posts")
+//         .withIndex("by_group", (q) => q.eq("groupId", group.groupId))
+//         .paginate(args.paginationOpts)
+//       posts = [...posts, ...groupPosts];
+//     }
+
+//     // Return the posts
+//     return posts;
+//   },
+// });
+
+export const getPersonalizedFeed = query({
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const userGroups = await ctx.db
+      .query("group_members")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+    console.log("GROUPS USER", userGroups);
+    let postsWithGroupAndUserDetails = [] as any;
+
+    // Loop over the user's groups and fetch the posts
+    for (let group of userGroups) {
+      const groupPosts = await ctx.db
+        .query("posts")
+        .withIndex("by_group", (q) => q.eq("groupId", group.groupId))
+        .filter((q) => q.eq(q.field("isPublic"), true))
+        .collect();
+
+      postsWithGroupAndUserDetails = [
+        ...postsWithGroupAndUserDetails,
+        ...groupPosts,
+      ];
+    }
+
+    // Return the posts
+    return postsWithGroupAndUserDetails;
+  },
+});
+
+
 export const deletePost = mutation({
   args: {
     userId: v.string(),

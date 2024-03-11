@@ -13,55 +13,35 @@ import {
 } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GeneralFeed from "./general-feed";
+import { Id } from "@/convex/_generated/dataModel";
+import { Post } from "@/types";
+import PostFeed from "../post-feed";
 
-const CustomFeed = ({}) => {
-  //   const { results, status, loadMore } = usePaginatedQuery(
-  //     api.posts.getCustomFeed,
-  //     { isPublic: true },
-  //     { initialNumItems: 3 }
-  //   );
-
-  //   useEffect(() => {
-  //     if (!results) return;
-
-  //     const handleScroll = () => {
-  //       const page = document.documentElement;
-  //       const closeToBottom =
-  //         page.scrollHeight - page.scrollTop - page.clientHeight < 100;
-  //       if (closeToBottom && status === "CanLoadMore") {
-  //         loadMore(1);
-  //       }
-  //     };
-
-  //     handleScroll();
-  //     document.addEventListener("scroll", handleScroll);
-  //     return () => document.removeEventListener("scroll", handleScroll);
-  //   }, [status, loadMore, results]);
-
-  //   if (results === undefined) {
-  //     return (
-  //       <div className="flex flex-col space-y-5">
-  //         <CustomFeed.Skeleton />
-  //         <CustomFeed.Skeleton />
-  //       </div>
-  //     );
-  //   }
-
+const CustomFeed = ({ currentUserId }: { currentUserId?: string }) => {
+  // const { results, status, loadMore } = usePaginatedQuery(
+  //   api.posts.getPersonalizedFeed,
+  //   { isPublic: true },
+  //   { initialNumItems: 3 }, {userId: currentUserId} }
+  // );
+  const posts = useQuery(api.posts.getPersonalizedFeed, {
+    userId: currentUserId as Id<"users">,
+  });
+  console.log("CUSTOM FEED ===>", posts);
   return (
     <>
       <div>
-        {/* {results.map((post) => (
-          <>
-            <PostCard post={post} group={post.group} />
-          </>
-        ))} */}
         <Tabs defaultValue="custom">
           <TabsList>
             <TabsTrigger value="custom">Personalize</TabsTrigger>
             <TabsTrigger value="general">Discover</TabsTrigger>
           </TabsList>
           <TabsContent value="custom">
-            Make changes to your account here.
+          <PostFeed initialPosts={posts} currentUserId={currentUserId} />
+            {/* {posts.map((post: Post) => (
+              <>
+             
+              </>
+            ))} */}
           </TabsContent>
           <TabsContent value="general" className="w-fill">
             <GeneralFeed />

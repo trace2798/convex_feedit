@@ -55,7 +55,7 @@ export default function Home() {
       )}
       <div className="flex flex-col md:flex-row py-6">
         <div className="md:flex-grow md:w-4/5 md:pr-5 lg:pr-10">
-          {data ? <CustomFeed /> : <GeneralFeed />}
+          {data ? <CustomFeed currentUserId={data.user.id as string} /> : <GeneralFeed />}
         </div>
         <div className="h-fit md:w-1/5 flex flex-col space-y-5">
           <div className="border border-slate-300 dark:border-slate-800 rounded-lg">

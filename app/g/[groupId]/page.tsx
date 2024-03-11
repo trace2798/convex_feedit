@@ -64,8 +64,8 @@ const Page = ({ params }: PageProps) => {
       })
       .catch(() => toast.error("Oops! Something went wrong."));
   };
-  const checkMembershipAndRole = () => {
-    const member = members?.members?.find((m) => m.userId === data?.user?.id);
+  const checkMembershipAndRole = (currentUserId: string) => {
+    const member = members?.members?.find((m) => m.userId === currentUserId);
     if (member) {
       return member.memberRole; // return the role of the member
     }
@@ -81,6 +81,10 @@ const Page = ({ params }: PageProps) => {
         toast.success("Successful");
       })
       .catch(() => toast.error("Oops! Something went wrong."));
+  };
+  const isMember = () => {
+    const member = members?.members?.find((m) => m.userId === data?.user?.id);
+    return !!member; // return true if the member exists, false otherwise
   };
 
   if (initialPosts === undefined) {
@@ -110,9 +114,11 @@ const Page = ({ params }: PageProps) => {
             <h1 className="font-bold text-3xl md:text-4xl h-14">
               g/{group[0].name}
             </h1>
-            {data && (
+            {data && isMember() && (
               <div className="max-w-xl flex ">
-                {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
+                {["Admin", "Owner"].includes(
+                  checkMembershipAndRole(data.user.id as string)
+                ) && (
                   <Link href={`/g/${params.groupId}/settings`}>
                     <Button variant="ghost">
                       <Settings className="text-muted-foreground hover:text-indigo-400" />
@@ -120,7 +126,9 @@ const Page = ({ params }: PageProps) => {
                   </Link>
                 )}
 
-                {["Admin", "Owner"].includes(checkMembershipAndRole()) ? (
+                {["Admin", "Owner"].includes(
+                  checkMembershipAndRole(data.user.id as string)
+                ) ? (
                   <Button disabled variant="outline">
                     Leave
                   </Button>
@@ -131,6 +139,11 @@ const Page = ({ params }: PageProps) => {
                 )}
               </div>
             )}
+            {!isMember() && (
+              <Button variant="outline" onClick={handleJoinGroup}>
+                Join
+              </Button>
+            )}
           </div>
 
           {data && (
@@ -140,7 +153,10 @@ const Page = ({ params }: PageProps) => {
               onPublicGroup={true}
             />
           )}
-          <PostFeed initialPosts={posts as Post[]} currentUserId={data?.user?.id} />
+          <PostFeed
+            initialPosts={posts as Post[]}
+            currentUserId={data?.user?.id}
+          />
         </Suspense>
       </>
     );
@@ -154,14 +170,18 @@ const Page = ({ params }: PageProps) => {
           </h1>
           {data && (
             <div className="max-w-xl flex ">
-              {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
+              {["Admin", "Owner"].includes(
+                checkMembershipAndRole(data.user.id as string)
+              ) && (
                 <Link href={`/g/${params.groupId}/request`}>
                   <Button variant="ghost">
                     <Bell className="text-muted-foreground hover:text-indigo-400" />
                   </Button>{" "}
                 </Link>
               )}
-              {["Admin", "Owner"].includes(checkMembershipAndRole()) && (
+              {["Admin", "Owner"].includes(
+                checkMembershipAndRole(data.user.id as string)
+              ) && (
                 <Link href={`/g/${params.groupId}/settings`}>
                   <Button variant="ghost">
                     <Settings className="text-muted-foreground hover:text-indigo-400" />
@@ -169,14 +189,18 @@ const Page = ({ params }: PageProps) => {
                 </Link>
               )}
 
-              {["Admin", "Owner"].includes(checkMembershipAndRole()) ? (
+              {["Admin", "Owner"].includes(
+                checkMembershipAndRole(data.user.id as string)
+              ) ? (
                 <Button disabled variant="outline">
                   Leave
                 </Button>
               ) : (
                 ""
               )}
-              {["Member", "Mod"].includes(checkMembershipAndRole()) ? (
+              {["Member", "Mod"].includes(
+                checkMembershipAndRole(data.user.id as string)
+              ) ? (
                 <Button
                   className=""
                   variant="outline"
@@ -218,7 +242,10 @@ const Page = ({ params }: PageProps) => {
               groupId={params.groupId as Id<"group">}
               onPublicGroup={false}
             />
-            <PostFeed initialPosts={posts as Post[]} currentUserId={data?.user?.id} />
+            <PostFeed
+              initialPosts={posts as Post[]}
+              currentUserId={data?.user?.id}
+            />
           </>
         )}
         {data && !members?.members.find((m) => m.userId === data?.user?.id) && (

@@ -26,7 +26,6 @@ const MiniCreatePost: FC<MiniCreatePostProps> = ({
   onPublicGroup,
 }) => {
   const router = useRouter();
-  const pathname = usePathname();
   const { mutate, pending } = useApiMutation(api.posts.createAsDraft);
 
   const handleCreate = () => {
@@ -40,9 +39,6 @@ const MiniCreatePost: FC<MiniCreatePostProps> = ({
     })
       .then(
         (id) => router.push(`/g/${groupId}/post/${id}`)
-        // (documentId) => router.push(`/g/${groupId}/post/${documentId}/edit`),
-        // toast.success("Post created")
-        // window.location.reload() as any
       )
       .catch(() => toast.error("Failed to create post"));
   };
