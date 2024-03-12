@@ -9,8 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AvatarFallback } from "@radix-ui/react-avatar";
-import { User } from "next-auth";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FC } from "react";
@@ -39,7 +38,7 @@ const UserButton: FC<UserButtonProps> = ({ data, status }) => {
         <DropdownMenuTrigger asChild className="overflow-visible">
           <Button className="rounded-full h-8 w-8 aspect-square bg-slate-400">
             <Avatar className="relative w-8 h-8">
-              {data?.user?.image ? (
+              {data?.user.image ? (
                 <div className="relative aspect-square h-full w-full">
                   <AvatarImage src={data.user.image} />
                 </div>
@@ -56,7 +55,7 @@ const UserButton: FC<UserButtonProps> = ({ data, status }) => {
           <div className="flex items-center justify-start gap-2 p-2">
             <div className="flex flex-col space-y-0.5 leading-none">
               {data?.user?.username && (
-                <p className="font-medium text-sm ">{data?.user?.username}</p>
+                <p className="font-medium text-sm ">u/{data?.user?.username}</p>
               )}
               {data?.user?.email && (
                 <p className="w-[200px] truncate text-xs ">

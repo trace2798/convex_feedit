@@ -2,23 +2,11 @@
 
 import {
   ChevronDown,
-  ChevronRight,
-  MoreHorizontal,
-  Plus,
-  Trash,
+  ChevronRight
 } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
 import CommentCard from "./comment-card";
 
 interface ItemProps {

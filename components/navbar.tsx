@@ -1,19 +1,28 @@
 "use client";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Code2Icon, MessageCircle } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useLoginModal } from "@/store/use-login-modal";
-import UserButton from "./user-button";
-import { SearchCommand } from "./search-command";
+import { Button } from "@/components/ui/button";
 import { useSearch } from "@/hooks/use-search";
+import { useLoginModal } from "@/store/use-login-modal";
+import { Code2Icon } from "lucide-react";
+import { useSession } from "next-auth/react";
+import UserButton from "./user-button";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { User } from "@/types";
+import { redirect } from "next/navigation";
 
 export const Navbar = () => {
   const { data, status } = useSession();
   const { onOpen } = useLoginModal();
   const search = useSearch();
+  if (status === "loading") {
+    <h1>Loading</h1>;
+  }
+  // const user = useQuery(api.users.getByEmail, {
+  //   email: data?.user?.email as string,
+  // });
   return (
     <>
       <div className="fixed top-0 w-full h-14 px-4 border-b border-muted backdrop-blur-md shadow-sm flex items-center z-50">
@@ -21,6 +30,7 @@ export const Navbar = () => {
           <Link href="/">
             <Code2Icon />
           </Link>
+      
           <div className="flex items-center align-center space-x-5">
             {/* <SearchCommand/> */}
             <Link href={"/chat"}>
