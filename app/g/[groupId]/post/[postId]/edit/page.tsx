@@ -51,6 +51,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   const [newtitle, setNewTitle] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [caption, setCaption] = useState("");
   const imageInput = useRef<HTMLInputElement>(null);
 
@@ -131,6 +132,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   };
 
   const handleImage = async () => {
+    setIsUploading(true);
     const postUrl = await generateUploadUrl({
       userId: data?.user.id as Id<"users">,
     });
@@ -164,9 +166,11 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
       setIsFileDialogOpen(false);
 
       toast.success("File Uploaded");
+      setIsUploading(false);
     } catch (err) {
       console.log("", err);
       toast.error("Upload Failed");
+      setIsUploading(false);
     }
   };
 
@@ -234,6 +238,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
                 <Button
                   type="submit"
                   onClick={handleImage}
+                  disabled={isUploading || selectedImage === null}
                   className="flex gap-1"
                 >
                   Upload Image
