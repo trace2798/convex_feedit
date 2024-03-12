@@ -299,7 +299,7 @@ export const getDraftByUserId = query({
     const posts = await ctx.db
       .query("posts")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
-      .filter((q) => q.eq(q.field("isPublic"), true))
+      .filter((q) => q.eq(q.field("isPublic"), false))
       .order("desc")
       .paginate(args.paginationOpts);
     console.log("posts GENERAL FEED SERVER ==>", posts);
