@@ -12,6 +12,7 @@ export type Post = {
   fileId: Id<"_storage"> | null | undefined;
   onPublicGroup: boolean;
   tags?: string[]; // assuming v.id("tag") returns a string
+  _creationTime: number;
 };
 
 export type Group = {
@@ -22,7 +23,6 @@ export type Group = {
   isPublic: boolean;
 };
 
-
 export type User = {
   _id: Id<"users">;
   _creationTime: number;
@@ -31,4 +31,4 @@ export type User = {
   image?: string | undefined;
   email: string;
   username: string;
-}
+};

@@ -1,9 +1,11 @@
 "use client";
-import { api } from "@/convex/_generated/api";
-import { usePaginatedQuery, useQuery } from "convex/react";
-import { FC, useEffect } from "react";
-import PostCard from "../post-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { Group, Post, User } from "@/types";
+import { useQuery } from "convex/react";
+import PostCard from "../post-card";
 import {
   Card,
   CardContent,
@@ -11,31 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GeneralFeed from "./general-feed";
-import { Id } from "@/convex/_generated/dataModel";
-import { Group, Post, User } from "@/types";
-import PostFeed from "../post-feed";
 
 const CustomFeed = ({ currentUserId }: { currentUserId?: string }) => {
-  // const { results, status, loadMore } = usePaginatedQuery(
-  //   api.posts.getPersonalizedFeed,
-  //   { isPublic: true },
-  //   { initialNumItems: 3 }, {userId: currentUserId} }
-  // );
-  // const posts = usePaginatedQuery(api.posts.getPersonalizedFeed, {
-  //   userId: currentUserId as Id<"users">,
-
-  // });
   const posts = useQuery(api.posts.getPersonalizedFeed, {
     userId: currentUserId as Id<"users">,
   });
-  // const { results, status, loadMore } = usePaginatedQuery(
-  //   api.posts.getPersonalizedFeed,
-  //   { userId: currentUserId as Id<"users"> },
-  //   { initialNumItems: 5 },
-  // );
-  // console.log("CUSTOM FEED ===>", results);
   return (
     <>
       <div>
@@ -54,10 +37,9 @@ const CustomFeed = ({ currentUserId }: { currentUserId?: string }) => {
                 currentUserId={currentUserId}
               />
             ))}
-            {/* <PostFeed initialPosts={posts} group={} currentUserId={currentUserId} /> */}
           </TabsContent>
           <TabsContent value="general" className="w-fill">
-            <GeneralFeed />
+            <GeneralFeed currentUserId={currentUserId} />
           </TabsContent>
         </Tabs>
       </div>

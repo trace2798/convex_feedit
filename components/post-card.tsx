@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { formatDistanceToNow } from "date-fns";
 
 interface PostCardProps {
   post: Post;
@@ -26,12 +27,18 @@ const PostCard: FC<PostCardProps> = ({ post, user, group, currentUserId }) => {
         <Link href={`/g/${post.groupId}/post/${post._id}`} key={post._id}>
           <CardHeader>
             {group && (
-              <Link
-                href={`/${group.isPublic ? "g" : "g"}/${group._id}`}
-                className="text-sm text-muted-foreground hover:text-red-400"
-              >
-                g/{group.name}
-              </Link>
+              <div>
+                <Link
+                  href={`/${group.isPublic ? "g" : "g"}/${group._id}`}
+                  className="text-sm text-muted-foreground hover:text-red-400"
+                >
+                  g/{group.name}
+                </Link>
+                &nbsp;|&nbsp;
+                <span className="text-sm text-muted-foreground">
+                  {formatDistanceToNow(post._creationTime)}
+                </span>
+              </div>
             )}
             {user && (
               <Link
