@@ -279,26 +279,45 @@ export const deletePost = mutation({
   },
 });
 
+// export const getDraftByUserId = query({
+//   args: { userId: v.id("users") },
+//   handler: async (ctx, args) => {
+//     const posts = await ctx.db
+//       .query("posts")
+//       .withIndex("by_user", (q) => q.eq("userId", args.userId))
+//       .filter((q) => q.eq(q.field("isPublic"), false))
+//       .order("desc")
+//       .collect();
+
+//     return posts;
+//   },
+// });
+
 export const getDraftByUserId = query({
-  args: { userId: v.id("users") },
+  args: { userId: v.id("users"), paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
-    // const group = await ctx.db
-    //   .query("group")
-    //   .filter((q) => q.eq(q.field("_id"), args.groupId))
-    //   .collect();
-    // if (!group[0].isPublic && !args.userId) {
-    //   return {
-    //     posts: [],
-    //     group: group,
-    //   };
-    // }
     const posts = await ctx.db
       .query("posts")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
-      .filter((q) => q.eq(q.field("isPublic"), false))
+      .filter((q) => q.eq(q.field("isPublic"), true))
       .order("desc")
-      .collect();
-
-    return posts;
+      .paginate(args.paginationOpts);
+    console.log("posts GENERAL FEED SERVER ==>", posts);
+    const postsWithGroupAndUserDetails = await Promise.all(
+      posts.page.map(async (post) => {
+        const group = await ctx.db.get(post.groupId);
+        const user = await ctx.db.get(post.userId); // fetch user details
+        return { ...post, group, user }; // include user details in the post
+      })
+    );
+    console.log(
+      "posts with group GENERAL FEED SERVER ==>",
+      postsWithGroupAndUserDetails
+    );
+    return {
+      page: postsWithGroupAndUserDetails,
+      isDone: posts.isDone,
+      continueCursor: posts.continueCursor,
+    };
   },
 });
