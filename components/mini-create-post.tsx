@@ -27,19 +27,16 @@ const MiniCreatePost: FC<MiniCreatePostProps> = ({
 }) => {
   const router = useRouter();
   const { mutate, pending } = useApiMutation(api.posts.createAsDraft);
-
+  console.log("SESSION SESSION ===>", session);
   const handleCreate = () => {
     mutate({
       userId: session?.user.id as Id<"users">,
       groupId: groupId as Id<"group">,
       title: "",
       content: "",
-      username: session?.user.name as string,
       onPublicGroup: onPublicGroup,
     })
-      .then(
-        (id) => router.push(`/g/${groupId}/post/${id}`)
-      )
+      .then((id) => router.push(`/g/${groupId}/post/${id}`))
       .catch(() => toast.error("Failed to create post"));
   };
 

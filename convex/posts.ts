@@ -6,7 +6,6 @@ import { paginationOptsValidator } from "convex/server";
 export const create = mutation({
   args: {
     userId: v.string(),
-    username: v.string(),
     title: v.string(),
     groupId: v.string(),
     content: v.optional(v.string()),
@@ -14,6 +13,14 @@ export const create = mutation({
     fileId: v.optional(v.id("_storage")),
   },
   handler: async (ctx, args) => {
+    const existingUser = await ctx.db.get(args.userId as Id<"users">);
+
+    console.log("USERINFO", existingUser);
+
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
     const post = await ctx.db.insert("posts", {
       title: args.title,
       isArchived: false,
@@ -24,7 +31,7 @@ export const create = mutation({
       userId: args.userId as Id<"users">,
       groupId: args.groupId as Id<"group">,
       content: args.content,
-      username: args.username,
+      username: existingUser?.username as string,
       onPublicGroup: args.onPublicGroup,
       fileId: args.fileId,
     });
@@ -36,7 +43,6 @@ export const create = mutation({
 export const createAsDraft = mutation({
   args: {
     userId: v.string(),
-    username: v.string(),
     title: v.string(),
     groupId: v.string(),
     content: v.optional(v.string()),
@@ -44,15 +50,13 @@ export const createAsDraft = mutation({
     fileId: v.optional(v.id("_storage")),
   },
   handler: async (ctx, args) => {
-    // const identity = await ctx.auth.getUserIdentity();
+    const existingUser = await ctx.db.get(args.userId as Id<"users">);
 
-    // if (!identity) {
-    //   throw new Error("Not authenticated");
-    // }
-    // // console.log(identity, "IDENTITY");
-    // const userId = identity.subject;
-    // // console.log(userId, "USER ID");
-    // const userName = identity.name || "Anonymous";
+    console.log("USERINFO", existingUser);
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
     const post = await ctx.db.insert("posts", {
       title: "untitled",
       isArchived: false,
@@ -63,7 +67,7 @@ export const createAsDraft = mutation({
       userId: args.userId as Id<"users">,
       groupId: args.groupId as Id<"group">,
       content: args.content,
-      username: args.username,
+      username: existingUser?.username as string,
       onPublicGroup: args.onPublicGroup,
       fileId: args.fileId,
     });
@@ -192,92 +196,6 @@ export const getGeneralFeed = query({
     };
   },
 });
-
-// export const getPersonalizedFeed = query({
-//   args: {
-//     userId: v.id("users"),
-//     paginationOpts: paginationOptsValidator,
-//   },
-//   handler: async (ctx, args) => {
-//     const userGroups = await ctx.db
-//       .query("group_members")
-//       .withIndex("by_user", (q) => q.eq("userId", args.userId))
-//       .collect();
-//     console.log("GROUPS USER", userGroups);
-//     let postsWithGroupAndUserDetails = [] as any;
-
-//     // Loop over the user's groups and fetch the posts
-//     for (let group of userGroups) {
-//       const groupPosts = await ctx.db
-//         .query("posts")
-//         .withIndex("by_group", (q) => q.eq("groupId", group.groupId))
-//         .filter((q) => q.eq(q.field("isPublic"), true))
-//         .order("desc")
-//         .paginate(args.paginationOpts);
-//       const postsWithGroupAndUserDetails = await Promise.all(
-//         groupPosts.page.map(async (post) => {
-//           const group = await ctx.db.get(post.groupId);
-//           const user = await ctx.db.get(post.userId); // fetch user details
-//           return { ...post, group, user }; // include user details in the post
-//         })
-//       );
-
-//       // postsWithGroupAndUserDetails = [
-//       //   ...postsWithGroupAndUserDetails,
-//       //   ...groupPosts,
-//       // ];
-//       postsWithGroupAndUserDetails = [
-//         page: postsWithGroupAndUserDetails,
-//         isDone: groupPosts.isDone,
-//         continueCursor: groupPosts.continueCursor,
-//       ];
-//     }
-
-//     // Return the posts
-//     return postsWithGroupAndUserDetails;
-//   },
-// });
-
-// export const getPersonalizedFeed = query({
-//   args: {
-//     paginationOpts: paginationOptsValidator,
-//     userId: v.id("users"),
-//   },
-//   handler: async (ctx, args) => {
-//     const userGroups = await ctx.db
-//       .query("group_members")
-//       .withIndex("by_user", (q) => q.eq("userId", args.userId))
-//       .collect();
-//     console.log("GROUPS USER", userGroups);
-//     let allPosts = [];
-
-//     // Loop over the user's groups and fetch the posts
-//     for (let group of userGroups) {
-//       const groupPosts = await ctx.db
-//         .query("posts")
-//         .withIndex("by_group", (q) => q.eq("groupId", group.groupId))
-//         .filter((q) => q.eq(q.field("isPublic"), true))
-//         .order("desc")
-//         .paginate(args.paginationOpts);
-//       const postsWithGroupAndUserDetails = await Promise.all(
-//         groupPosts.page.map(async (post) => {
-//           const group = await ctx.db.get(post.groupId);
-//           const user = await ctx.db.get(post.userId); // fetch user details
-//           return { ...post, group, user }; // include user details in the post
-//         })
-//       );
-
-//       allPosts.push({
-//         page: postsWithGroupAndUserDetails,
-//         isDone: groupPosts.isDone,
-//         continueCursor: groupPosts.continueCursor,
-//       });
-//     }
-
-//     // Return the posts
-//     return allPosts;
-//   },
-// });
 
 export const getPersonalizedFeed = query({
   args: {

@@ -14,7 +14,13 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, currentUserId }) => {
     <>
       <div className="space-y-5">
         {initialPosts?.map((post, index) => (
-          <PostCard key={index} post={post} currentUserId={currentUserId} />
+          <PostCard
+            key={index}
+            post={post}
+            currentUserId={currentUserId}
+            username={post.username as string}
+            createdAt={post._creationTime as number}
+          />
         ))}
       </div>
     </>

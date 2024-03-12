@@ -110,7 +110,6 @@ const Page = ({ params }: PageProps) => {
       groupId: params.groupId as Id<"group">,
       content: content,
       title: title,
-      username: data?.user.name,
       onPublicGroup: group?.isPublic ? true : false,
       fileId: storageId,
     })
@@ -127,7 +126,6 @@ const Page = ({ params }: PageProps) => {
       groupId: params.groupId as Id<"group">,
       content: content,
       title: title,
-      username: data?.user.name,
       onPublicGroup: true,
     })
       .then((id) => {

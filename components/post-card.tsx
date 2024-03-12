@@ -16,9 +16,18 @@ interface PostCardProps {
   currentUserId?: string;
   group?: Group;
   user?: User;
+  username?: string;
+  createdAt?: number;
 }
 
-const PostCard: FC<PostCardProps> = ({ post, user, group, currentUserId }) => {
+const PostCard: FC<PostCardProps> = ({
+  post,
+  username,
+  user,
+  group,
+  currentUserId,
+  createdAt,
+}) => {
   console.log(post);
 
   return (
@@ -40,12 +49,25 @@ const PostCard: FC<PostCardProps> = ({ post, user, group, currentUserId }) => {
                 </span>
               </div>
             )}
+            {createdAt && (
+              <span className="text-sm text-muted-foreground">
+                {formatDistanceToNow(createdAt)}
+              </span>
+            )}
             {user && (
               <Link
                 href={`/u/${user._id}`}
                 className="text-sm text-muted-foreground hover:text-red-400"
               >
                 u/{user.username}
+              </Link>
+            )}
+            {username && (
+              <Link
+                href={`/u/${post.userId}`}
+                className="text-sm text-muted-foreground hover:text-red-400"
+              >
+                u/{username}
               </Link>
             )}
             <CardTitle>{post.title}</CardTitle>
