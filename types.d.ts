@@ -21,3 +21,14 @@ export type Group = {
   ownerId: Id<"users">;
   isPublic: boolean;
 };
+
+
+export type User = {
+  _id: Id<"users">;
+  _creationTime: number;
+  name?: string | undefined;
+  emailVerified?: string | undefined;
+  image?: string | undefined;
+  email: string;
+  username: string;
+}

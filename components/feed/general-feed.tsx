@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Post } from "@/types";
+import { Group, Post, User } from "@/types";
 
 const GeneralFeed = ({ currentUserId }: { currentUserId?: string }) => {
   const { results, status, loadMore } = usePaginatedQuery(
@@ -49,10 +49,14 @@ const GeneralFeed = ({ currentUserId }: { currentUserId?: string }) => {
   return (
     <>
       <div>
-        {results.map((post) => (
-          <>
-            <PostCard post={post as Post} group={post.group} />
-          </>
+        {results.map((post, index) => (
+          <PostCard
+            key={index}
+            post={post as Post}
+            group={post.group as Group}
+            user={post.user as User}
+            currentUserId={currentUserId}
+          />
         ))}
       </div>
     </>

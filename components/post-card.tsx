@@ -1,5 +1,5 @@
 import PostVotes from "@/app/g/[groupId]/post/[postId]/_components/post-votes";
-import { Post } from "@/types";
+import { Group, Post, User } from "@/types";
 import Link from "next/link";
 import { FC } from "react";
 import {
@@ -13,10 +13,11 @@ import {
 interface PostCardProps {
   post: Post;
   currentUserId?: string;
-  group?: any;
+  group?: Group;
+  user?: User;
 }
 
-const PostCard: FC<PostCardProps> = ({ post, group, currentUserId }) => {
+const PostCard: FC<PostCardProps> = ({ post, user, group, currentUserId }) => {
   console.log(post);
 
   return (
@@ -30,6 +31,14 @@ const PostCard: FC<PostCardProps> = ({ post, group, currentUserId }) => {
                 className="text-sm text-muted-foreground hover:text-red-400"
               >
                 g/{group.name}
+              </Link>
+            )}
+            {user && (
+              <Link
+                href={`/u/${user._id}`}
+                className="text-sm text-muted-foreground hover:text-red-400"
+              >
+                u/{user.username}
               </Link>
             )}
             <CardTitle>{post.title}</CardTitle>

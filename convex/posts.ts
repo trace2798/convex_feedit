@@ -195,7 +195,51 @@ export const getGeneralFeed = query({
 
 // export const getPersonalizedFeed = query({
 //   args: {
-//     isPublic: v.boolean(),
+//     userId: v.id("users"),
+//     paginationOpts: paginationOptsValidator,
+//   },
+//   handler: async (ctx, args) => {
+//     const userGroups = await ctx.db
+//       .query("group_members")
+//       .withIndex("by_user", (q) => q.eq("userId", args.userId))
+//       .collect();
+//     console.log("GROUPS USER", userGroups);
+//     let postsWithGroupAndUserDetails = [] as any;
+
+//     // Loop over the user's groups and fetch the posts
+//     for (let group of userGroups) {
+//       const groupPosts = await ctx.db
+//         .query("posts")
+//         .withIndex("by_group", (q) => q.eq("groupId", group.groupId))
+//         .filter((q) => q.eq(q.field("isPublic"), true))
+//         .order("desc")
+//         .paginate(args.paginationOpts);
+//       const postsWithGroupAndUserDetails = await Promise.all(
+//         groupPosts.page.map(async (post) => {
+//           const group = await ctx.db.get(post.groupId);
+//           const user = await ctx.db.get(post.userId); // fetch user details
+//           return { ...post, group, user }; // include user details in the post
+//         })
+//       );
+
+//       // postsWithGroupAndUserDetails = [
+//       //   ...postsWithGroupAndUserDetails,
+//       //   ...groupPosts,
+//       // ];
+//       postsWithGroupAndUserDetails = [
+//         page: postsWithGroupAndUserDetails,
+//         isDone: groupPosts.isDone,
+//         continueCursor: groupPosts.continueCursor,
+//       ];
+//     }
+
+//     // Return the posts
+//     return postsWithGroupAndUserDetails;
+//   },
+// });
+
+// export const getPersonalizedFeed = query({
+//   args: {
 //     paginationOpts: paginationOptsValidator,
 //     userId: v.id("users"),
 //   },
@@ -204,24 +248,40 @@ export const getGeneralFeed = query({
 //       .query("group_members")
 //       .withIndex("by_user", (q) => q.eq("userId", args.userId))
 //       .collect();
-//     let posts = [];
+//     console.log("GROUPS USER", userGroups);
+//     let allPosts = [];
 
 //     // Loop over the user's groups and fetch the posts
 //     for (let group of userGroups) {
 //       const groupPosts = await ctx.db
 //         .query("posts")
 //         .withIndex("by_group", (q) => q.eq("groupId", group.groupId))
-//         .paginate(args.paginationOpts)
-//       posts = [...posts, ...groupPosts];
+//         .filter((q) => q.eq(q.field("isPublic"), true))
+//         .order("desc")
+//         .paginate(args.paginationOpts);
+//       const postsWithGroupAndUserDetails = await Promise.all(
+//         groupPosts.page.map(async (post) => {
+//           const group = await ctx.db.get(post.groupId);
+//           const user = await ctx.db.get(post.userId); // fetch user details
+//           return { ...post, group, user }; // include user details in the post
+//         })
+//       );
+
+//       allPosts.push({
+//         page: postsWithGroupAndUserDetails,
+//         isDone: groupPosts.isDone,
+//         continueCursor: groupPosts.continueCursor,
+//       });
 //     }
 
 //     // Return the posts
-//     return posts;
+//     return allPosts;
 //   },
 // });
 
 export const getPersonalizedFeed = query({
   args: {
+    // paginationOpts: paginationOptsValidator,
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
@@ -230,7 +290,7 @@ export const getPersonalizedFeed = query({
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .collect();
     console.log("GROUPS USER", userGroups);
-    let postsWithGroupAndUserDetails = [] as any;
+    let allPosts = [];
 
     // Loop over the user's groups and fetch the posts
     for (let group of userGroups) {
@@ -238,19 +298,23 @@ export const getPersonalizedFeed = query({
         .query("posts")
         .withIndex("by_group", (q) => q.eq("groupId", group.groupId))
         .filter((q) => q.eq(q.field("isPublic"), true))
+        .order("desc")
         .collect();
+      const postsWithGroupAndUserDetails = await Promise.all(
+        groupPosts.map(async (post) => {
+          const group = await ctx.db.get(post.groupId);
+          const user = await ctx.db.get(post.userId); // fetch user details
+          return { ...post, group, user }; // include user details in the post
+        })
+      );
 
-      postsWithGroupAndUserDetails = [
-        ...postsWithGroupAndUserDetails,
-        ...groupPosts,
-      ];
+      allPosts.push(...postsWithGroupAndUserDetails);
     }
 
     // Return the posts
-    return postsWithGroupAndUserDetails;
+    return allPosts;
   },
 });
-
 
 export const deletePost = mutation({
   args: {

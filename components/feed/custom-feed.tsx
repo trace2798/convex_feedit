@@ -14,7 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GeneralFeed from "./general-feed";
 import { Id } from "@/convex/_generated/dataModel";
-import { Post } from "@/types";
+import { Group, Post, User } from "@/types";
 import PostFeed from "../post-feed";
 
 const CustomFeed = ({ currentUserId }: { currentUserId?: string }) => {
@@ -23,10 +23,19 @@ const CustomFeed = ({ currentUserId }: { currentUserId?: string }) => {
   //   { isPublic: true },
   //   { initialNumItems: 3 }, {userId: currentUserId} }
   // );
+  // const posts = usePaginatedQuery(api.posts.getPersonalizedFeed, {
+  //   userId: currentUserId as Id<"users">,
+
+  // });
   const posts = useQuery(api.posts.getPersonalizedFeed, {
     userId: currentUserId as Id<"users">,
   });
-  console.log("CUSTOM FEED ===>", posts);
+  // const { results, status, loadMore } = usePaginatedQuery(
+  //   api.posts.getPersonalizedFeed,
+  //   { userId: currentUserId as Id<"users"> },
+  //   { initialNumItems: 5 },
+  // );
+  // console.log("CUSTOM FEED ===>", results);
   return (
     <>
       <div>
@@ -36,12 +45,16 @@ const CustomFeed = ({ currentUserId }: { currentUserId?: string }) => {
             <TabsTrigger value="general">Discover</TabsTrigger>
           </TabsList>
           <TabsContent value="custom">
-          <PostFeed initialPosts={posts} currentUserId={currentUserId} />
-            {/* {posts.map((post: Post) => (
-              <>
-             
-              </>
-            ))} */}
+            {posts?.map((post, index) => (
+              <PostCard
+                key={index}
+                post={post as Post}
+                group={post.group as Group}
+                user={post.user as User}
+                currentUserId={currentUserId}
+              />
+            ))}
+            {/* <PostFeed initialPosts={posts} group={} currentUserId={currentUserId} /> */}
           </TabsContent>
           <TabsContent value="general" className="w-fill">
             <GeneralFeed />
