@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { internal } from "./_generated/api";
+import { paginationOptsValidator } from "convex/server";
 
 export const sendMessage = mutation({
   args: {
@@ -17,24 +18,26 @@ export const sendMessage = mutation({
       isArchived: false,
       lastMessageSentAt: Date.now(),
     });
-
+    await ctx.db.patch(args.conversationId, { lastMessageSentAt: Date.now() })
     return chat;
   },
 });
 
 export const getByConversationId = query({
-  args: { conversationId: v.id("conversation") },
+  args: {
+    conversationId: v.id("conversation"),
+    paginationOpts: paginationOptsValidator,
+  },
   handler: async (ctx, args) => {
     const messages = await ctx.db
       .query("messages")
       .withIndex("by_conversation", (q) =>
         q.eq("conversationId", args.conversationId as Id<"conversation">)
       )
-      .collect();
+      .order("desc")
+      .paginate(args.paginationOpts);
 
-    return {
-      messages,
-    };
+    return messages;
   },
 });
 
