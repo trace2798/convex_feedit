@@ -51,7 +51,7 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
       <div className="flex justify-center h-[40vh] items-center">
         <Card className="border-none">
           <CardTitle className="text-center">
-            You don't have the privileges to this page
+            You don&apos;t have the privileges to this page
           </CardTitle>
         </Card>
       </div>

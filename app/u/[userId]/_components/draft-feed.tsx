@@ -9,7 +9,6 @@ import { Group, Post, User } from "@/types";
 import { usePaginatedQuery } from "convex/react";
 import Link from "next/link";
 import { FC, useEffect } from "react";
-("use client");
 
 interface DraftFeedProps {
   currentUserId: string;
