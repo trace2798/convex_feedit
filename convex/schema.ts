@@ -165,6 +165,7 @@ export default defineSchema({
     conversationId: v.id("conversation"),
     isArchived: v.boolean(),
     lastMessageSentAt: v.optional(v.number()),
+    username: v.string(),
   })
     .index("by_user", ["userId"])
     .index("by_conversation", ["conversationId"]),

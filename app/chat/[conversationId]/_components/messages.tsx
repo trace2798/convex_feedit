@@ -9,6 +9,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { useApiMutation } from "@/hooks/use-api-mutation";
+import Link from "next/link";
 
 export type HomeMessage = {
   _id: Id<"messages">;
@@ -17,6 +18,7 @@ export type HomeMessage = {
   userId: Id<"users">;
   conversationId: Id<"conversation">;
   isArchived: boolean;
+  username: string;
 };
 
 interface ChatMessagesProps {
@@ -48,10 +50,22 @@ const ChatMessages: FC<ChatMessagesProps> = ({
   return (
     <>
       <div
-        className={`mb-3 mt-5  items-baseline relative ${
+        className={`mb-3 mt-5 group hover:cursor-pointer  items-baseline relative ${
           isOwnMessage ? "flex flex-col justify-end" : "flex-row"
         }`}
       >
+        {isOwnMessage && (
+          <div className="flex justify-end w-full ">
+            <Button
+              className="hidden group-hover:flex cursor-pointer  -bottom-7 p-0 text-right right-2 transition"
+              onClick={handleDelete}
+              aria-label="Trash button to delete Message. Mod of the chat can delete all the messages."
+              variant="ghost"
+            >
+              <Trash className="w-4 h-4 mx-4 group-hover:text-red-700 text-slate-950 dark:text-neutral-200" />
+            </Button>
+          </div>
+        )}
         <div
           className={`${
             isOwnMessage ? "ml-auto bg-indigo-400" : " bg-slate-800"
@@ -62,7 +76,13 @@ const ChatMessages: FC<ChatMessagesProps> = ({
               isOwnMessage ? "text-muted" : "text-slate-400"
             } font-bold`}
           >
-            {isOwnMessage ? "(you)" : ""}
+            {isOwnMessage ? (
+              <Link href={`/u/${message.userId}`}>
+                {message.username} (you)
+              </Link>
+            ) : (
+              <Link href={`/u/${message.userId}`}>{message.username}</Link>
+            )}
           </p>
           <p className="text-white">
             {message.isArchived
@@ -83,18 +103,18 @@ const ChatMessages: FC<ChatMessagesProps> = ({
           </p>
         </div>
 
-        {isOwnMessage && (
-          <div className="flex flex-col justify-between">
+        {/* {isOwnMessage && (
+          <div className="flex justify-end w-full ">
             <Button
-              className="cursor-pointer -bottom-7 p-0 text-right right-2 transition"
+              className="hidden group-hover:flex cursor-pointer  -bottom-7 p-0 text-right right-2 transition"
               onClick={handleDelete}
               aria-label="Trash button to delete Message. Mod of the chat can delete all the messages."
               variant="ghost"
             >
-              <Trash className="w-4 h-4 mx-4 hover:text-red-700 text-slate-950 dark:text-neutral-200" />
+              <Trash className="w-4 h-4 mx-4 group-hover:text-red-700 text-slate-950 dark:text-neutral-200" />
             </Button>
           </div>
-        )}
+        )} */}
       </div>
     </>
   );

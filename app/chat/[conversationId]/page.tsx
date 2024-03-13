@@ -1,18 +1,17 @@
 "use client";
+import { Spinner } from "@/components/spinner";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { cn } from "@/lib/utils";
-import { usePaginatedQuery, useQuery } from "convex/react";
+import { usePaginatedQuery } from "convex/react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { ElementRef, FC, Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import ChatMessages from "./_components/messages";
-import { Spinner } from "@/components/spinner";
-
 interface ConversationIdPageProps {
   params: {
     conversationId: string;
@@ -20,22 +19,19 @@ interface ConversationIdPageProps {
 }
 
 const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
-  const { data } = useSession();
-  if (!data) {
+  const { data: userData } = useSession();
+  if (!userData) {
     redirect("/");
   }
   const scrollRef = useRef<ElementRef<"div">>(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
   const { mutate, pending } = useApiMutation(api.messages.sendMessage);
-  // const { mutate: convoLastSeen, pending: convoPending } = useApiMutation(
-  //   api.conversation.updateLastSeen
-  // );
+
   const sendMessage = () => {
     setLoading(true);
     mutate({
-      userId: data?.user.id,
+      userId: userData?.user.id,
       content: message,
       conversationId: params.conversationId as Id<"conversation">,
     })
@@ -60,80 +56,10 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
     { conversationId: params.conversationId as Id<"conversation"> },
     { initialNumItems: 15 }
   );
-  // useEffect(() => {
-  //   if (!results) return;
-  //   const handleScroll = () => {
-  //     const page = document.documentElement;
-  //     console.log("PAGE", page);
-  //     const closeToBottom =
-  //       page.scrollHeight - page.scrollTop - page.clientHeight < 100;
-  //     if (closeToBottom && status === "CanLoadMore") {
-  //       loadMore(1);
-  //     }
-  //   };
 
-  //   handleScroll();
-  //   document.addEventListener("scroll", handleScroll);
-  //   return () => document.removeEventListener("scroll", handleScroll);
-  // }, [status, loadMore, results]);
-
-  // // const loadMoreRef = useRef(null);
-  // // useEffect(() => {
-  // //   if (!loadMoreRef.current || status !== "CanLoadMore") return;
-
-  // //   const observer = new IntersectionObserver(
-  // //     ([entry]) => {
-  // //       if (entry.isIntersecting) {
-  // //         loadMore(1);
-  // //       }
-  // //     },
-  // //     { root: scrollRef.current, threshold: 1.0 }
-  // //   );
-
-  // //   observer.observe(loadMoreRef.current);
-
-  // //   return () => observer.disconnect();
-  // // }, [status, loadMore]);
-
-  // console.log("MESSAGES", results);
-  // useEffect(() => {
-  //   if (scrollRef.current) {
-  //     setTimeout(() => {
-  //       (scrollRef.current as ElementRef<"div">).scrollIntoView({
-  //         behavior: "smooth",
-  //       });
-  //     }, 100); // Adjust delay as needed
-  //   }
-  // }, [results]);
-  // useEffect(() => {
-  //   // Store the current length of results
-  //   const currentLength = results ? results.length : 0;
-
-  //   const handleScroll = () => {
-  //     const page = document.documentElement;
-  //     const closeToTop = page.scrollTop < 100;
-  //     if (closeToTop && status === "CanLoadMore") {
-  //       loadMore(1);
-  //     }
-  //   };
-
-  //   handleScroll();
-  //   document.addEventListener("scroll", handleScroll);
-
-  //   // Scroll to bottom only when a new message is sent
-  //   if (scrollRef.current && results && results.length > currentLength) {
-  //     setTimeout(() => {
-  //       (scrollRef.current as ElementRef<"div">).scrollIntoView({
-  //         behavior: "smooth",
-  //       });
-  //     }, 100); // Adjust delay as needed
-  //   }
-
-  //   return () => document.removeEventListener("scroll", handleScroll);
-  // }, [status, loadMore, results]);
   useEffect(() => {
     if (scrollRef.current && results.length < 10) {
-    // if (scrollRef.current && results.length < 10) {
+      // if (scrollRef.current && results.length < 10) {
       setTimeout(() => {
         (scrollRef.current as ElementRef<"div">).scrollIntoView({
           behavior: "smooth",
@@ -143,7 +69,6 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
     const handleScroll = () => {
       const page = document.documentElement;
       const closeToTop = page.scrollTop < 100;
-      // Add a condition to only load more messages when the user has scrolled a certain distance from the top
       if (closeToTop && status === "CanLoadMore" && page.scrollTop > 200) {
         loadMore(20);
       }
@@ -152,6 +77,7 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
     document.addEventListener("scroll", handleScroll);
     return () => document.removeEventListener("scroll", handleScroll);
   }, [status, loadMore]);
+
   return (
     <>
       <Suspense fallback={<Spinner size={"lg"} />}>
@@ -177,9 +103,9 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
                 .map((message, index) => (
                   <ChatMessages
                     conversationId={params.conversationId}
-                    currentUserId={data?.user.id as Id<"users">}
+                    currentUserId={userData?.user.id as Id<"users">}
                     message={message}
-                    isOwnMessage={message.userId === data.user.id}
+                    isOwnMessage={message.userId === userData.user.id}
                     key={index}
                   />
                 ))
@@ -187,6 +113,7 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
 
             <div ref={scrollRef} />
           </ScrollArea>
+
           <Input
             type="text"
             disabled={loading || pending}

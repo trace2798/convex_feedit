@@ -11,12 +11,18 @@ export const sendMessage = mutation({
     conversationId: v.id("conversation"),
   },
   handler: async (ctx, args) => {
+
+    const user = await ctx.db.get(args.userId);
+    if(!user){
+      throw new Error("User not found");
+    }
     const chat = await ctx.db.insert("messages", {
       userId: args.userId,
       content: args.content,
       conversationId: args.conversationId,
       isArchived: false,
       lastMessageSentAt: Date.now(),
+      username: user?.username
     });
     await ctx.db.patch(args.conversationId, { lastMessageSentAt: Date.now() })
     return chat;
