@@ -7,6 +7,7 @@ import { redirect, usePathname } from "next/navigation";
 import { MemberTable } from "./_components/client";
 import { Id } from "@/convex/_generated/dataModel";
 import { useSession } from "next-auth/react";
+import { Card, CardTitle } from "@/components/ui/card";
 
 interface GroupIdSettingsPageProps {}
 
@@ -25,7 +26,33 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
   }
   if (!data) {
     redirect("/");
-    return null;
+  }
+  const currentUser = members?.membersWithUserInfo.find(
+    (member) => member.userId === data.user.id
+  );
+  console.log("CURRENT USER, currentUser", currentUser);
+  if (!currentUser) {
+    return (
+      <div className="flex justify-center h-[40vh] items-center">
+        <Card className="border-none">
+          <CardTitle className="text-center">
+            You do not have access to this page
+          </CardTitle>
+        </Card>
+      </div>
+    );
+  }
+
+  if (currentUser.memberRole !== ("Owner" || "Admin")) {
+    return (
+      <div className="flex justify-center h-[40vh] items-center">
+        <Card className="border-none">
+          <CardTitle className="text-center">
+            You don't have the privileges to this page
+          </CardTitle>
+        </Card>
+      </div>
+    );
   }
 
   console.log("ALL USERS", allUser);

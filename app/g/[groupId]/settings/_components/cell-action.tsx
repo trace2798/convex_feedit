@@ -17,12 +17,17 @@ import { api } from "@/convex/_generated/api";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { toast } from "sonner";
 import { MemberColumn } from "./columns";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface CellActionProps {
   data: MemberColumn;
+  currentUserId?: Id<"users">;
 }
 
-export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+export const CellAction: React.FC<CellActionProps> = ({
+  data,
+  currentUserId,
+}) => {
   console.log(data);
   const router = useRouter();
   const params = useParams();
@@ -33,7 +38,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onConfirm = async () => {
     try {
       setLoading(true);
-      mutate({ memberId: data?._id });
+      mutate({ memberId: data?._id, currentUserId: currentUserId });
       const response = null;
       console.log(response);
       router.refresh();
@@ -70,13 +75,6 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem onClick={() => onCopy(data?._id || "")}>
             <Copy className="mr-2 h-4 w-4" /> Copy Id
           </DropdownMenuItem>
-          {/* <DropdownMenuItem
-            onClick={() =>
-              router.push(`/${params.storeId}/billboards/${data.id}`)
-            }
-          >
-            <Edit className="mr-2 h-4 w-4" /> Update
-          </DropdownMenuItem> */}
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Remove
           </DropdownMenuItem>

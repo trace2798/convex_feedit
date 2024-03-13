@@ -6,13 +6,17 @@ import { Separator } from "@/components/ui/separator";
 import { useMemberModal } from "@/hooks/use-member-modal";
 import { useParams } from "next/navigation";
 import { MemberColumn, columns } from "./columns";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface MemberTableProps {
   data: MemberColumn[];
   currentUserId: string;
 }
 
-export const MemberTable: React.FC<MemberTableProps> = ({ data }) => {
+export const MemberTable: React.FC<MemberTableProps> = ({
+  data,
+  currentUserId,
+}) => {
   const params = useParams();
   const id = params.organizationId;
   console.log(id);
@@ -27,7 +31,12 @@ export const MemberTable: React.FC<MemberTableProps> = ({ data }) => {
         description="Manage member for your organization"
       />
       <Separator className="my-5" />
-      <DataTable searchKey="userInfo" columns={columns} data={data} />
+      {/* <DataTable searchKey="userInfo" columns={columns} data={data} /> */}
+      <DataTable
+        columns={columns}
+        data={data}
+        currentUserId={currentUserId as Id<"users">}
+      />
       <Separator />
     </>
   );

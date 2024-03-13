@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -10,7 +9,9 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -19,20 +20,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchKey: string;
+  // searchKey: string;
+  currentUserId: Id<"users">;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  searchKey,
-}: DataTableProps<TData, TValue>) {
+  currentUserId,
+}: // searchKey,
+DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
     data,
@@ -46,10 +48,10 @@ export function DataTable<TData, TValue>({
     },
   });
   // console.log("DATA TABLE ==>", data);
-  console.log("SEARCH", searchKey)
+  // console.log("SEARCH", searchKey)
   return (
     <div>
-      <div className="flex items-center py-4">
+      {/* <div className="flex items-center py-4">
        
         <Input
           placeholder="Search"
@@ -59,7 +61,7 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-      </div>
+      </div> */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>

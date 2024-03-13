@@ -171,7 +171,17 @@ export const addMember = mutation({
   },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
+    const existingUser = await ctx.db
+      .query("group_members")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId as Id<"users">))
+      .filter((q) => q.eq(q.field("groupId"), args.groupId as Id<"group">))
+      .unique();
 
+      // console.log("EXISTING USER", existingUser)
+    // const existingUser = await ctx.db.get(args.userId as Id<"users">);
+    if (existingUser) {
+      throw new Error("User already a member");
+    }
     const group_member = await ctx.db.insert("group_members", {
       userId: args.userId as Id<"users">,
       groupId: args.groupId as Id<"group">,
@@ -186,7 +196,7 @@ export const addMember = mutation({
 export const removeMember = mutation({
   args: {
     memberId: v.id("group_members"),
-    currentUserId: v.id("users"),
+    // currentUserId: v.id("users"),
   },
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
