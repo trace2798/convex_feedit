@@ -18,6 +18,8 @@ import { useApiMutation } from "@/hooks/use-api-mutation";
 import { toast } from "sonner";
 import { MemberColumn } from "./columns";
 import { Id } from "@/convex/_generated/dataModel";
+import { useUpdateRoleModal } from "@/store/use-update-role-modal";
+import { memberRoles } from "@/convex/schema";
 
 interface CellActionProps {
   data: MemberColumn;
@@ -28,6 +30,7 @@ export const CellAction: React.FC<CellActionProps> = ({
   data,
   currentUserId,
 }) => {
+  const { onOpen } = useUpdateRoleModal();
   console.log(data);
   const router = useRouter();
   const params = useParams();
@@ -77,6 +80,9 @@ export const CellAction: React.FC<CellActionProps> = ({
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Remove
+          </DropdownMenuItem>
+          <DropdownMenuItem  onClick={() => onOpen(data?._id, data?.memberRole)} >
+            <Trash className="mr-2 h-4 w-4" /> Update Role
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

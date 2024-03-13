@@ -42,8 +42,11 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
       </div>
     );
   }
-
-  if (currentUser.memberRole !== ("Owner" || "Admin")) {
+  // console.log("CURRENT USER ROle", currentUser.memberRole);
+  if (
+    currentUser.memberRole !== "Owner" &&
+    currentUser.memberRole !== "Admin"
+  ) {
     return (
       <div className="flex justify-center h-[40vh] items-center">
         <Card className="border-none">

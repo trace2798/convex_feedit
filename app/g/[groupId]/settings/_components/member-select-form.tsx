@@ -166,8 +166,8 @@ const MemberSelectForm = ({
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-0">
                   <Command>
-                    <CommandInput placeholder="Search user..." />
-                    <CommandEmpty>No user found.</CommandEmpty>
+                    <CommandInput placeholder="Search role..." />
+                    <CommandEmpty>No role found.</CommandEmpty>
                     <CommandGroup>
                       {roles.map((role: string, index) => (
                         <CommandItem

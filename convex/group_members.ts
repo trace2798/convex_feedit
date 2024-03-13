@@ -177,7 +177,7 @@ export const addMember = mutation({
       .filter((q) => q.eq(q.field("groupId"), args.groupId as Id<"group">))
       .unique();
 
-      // console.log("EXISTING USER", existingUser)
+    // console.log("EXISTING USER", existingUser)
     // const existingUser = await ctx.db.get(args.userId as Id<"users">);
     if (existingUser) {
       throw new Error("User already a member");
@@ -209,6 +209,38 @@ export const removeMember = mutation({
       throw new Error("Cannot delete owner");
     }
     await ctx.db.delete(args.memberId);
+    // const group = await ctx.db
+    //   .query("group")
+    //   .filter((q) => q.eq(q.field("_id"), args.groupId))
+    //   .collect();
+    // const group_member = await ctx.db.insert("group_members", {
+    //   userId: args.userId as Id<"users">,
+    //   groupId: args.groupId as Id<"group">,
+    //   memberRole: args.memberRoles as "Member" | "Mod" | "Admin" | "Owner",
+    // });
+
+    // console.log("group member", group_member);
+  },
+});
+
+export const updateRole = mutation({
+  args: {
+  id: v.id("group_members"),
+    memberRole: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // const identity = await ctx.auth.getUserIdentity();
+    const member = await ctx.db.get(args.id);
+    console.log(member);
+    if (!member) {
+      throw new Error("Not found");
+    }
+    if (member.memberRole == "Owner") {
+      throw new Error("Cannot delete owner");
+    }
+    await ctx.db.patch(args.id, {
+      memberRole: args.memberRole as "Member" | "Mod" | "Admin" | "Owner",
+    });
     // const group = await ctx.db
     //   .query("group")
     //   .filter((q) => q.eq(q.field("_id"), args.groupId))
