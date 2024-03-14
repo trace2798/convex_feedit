@@ -38,7 +38,7 @@ const Page = () => {
         }
       })
       .catch(() => toast.error(`Failed to create group`));
-    console.log("MUTATE", mutate.arguments);
+    // console.log("MUTATE", mutate.arguments);
   };
   return (
     <div className="container flex items-center h-full max-w-3xl mx-auto">

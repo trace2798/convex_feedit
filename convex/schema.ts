@@ -81,10 +81,12 @@ export default defineSchema({
     requestOutcome: requestOutcome,
     acceptedBy: v.optional(v.id("users")),
     acceptedAt: v.optional(v.number()),
+    isArchived: v.optional(v.boolean()),
   })
     .index("by_group", ["groupId"])
     .index("by_user", ["userId"])
-    .index("by_group_user", ["groupId", "userId"]),
+    .index("by_group_user", ["groupId", "userId"])
+    .index("isArchived", ["isArchived"]),
   group_members: defineTable({
     userId: v.id("users"),
     groupId: v.id("group"),

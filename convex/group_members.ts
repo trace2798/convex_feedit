@@ -84,7 +84,7 @@ export const getMemberByGroupIdandUserId = query({
         .query("group_join_request")
         .withIndex("by_group_user", (q) =>
           q.eq("groupId", args.groupId).eq("userId", args.userId as Id<"users">)
-        )
+        ).filter((q) => q.eq(q.field("isArchived"), false))
         .collect();
 
       return {

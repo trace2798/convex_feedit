@@ -15,6 +15,7 @@ export const joinGroupRequest = mutation({
           .eq("groupId", args.groupId as Id<"group">)
           .eq("userId", args.userId as Id<"users">)
       )
+      .filter((q) => q.eq(q.field("isArchived"), false))
       .collect();
 
     // If the member already exists
@@ -28,6 +29,7 @@ export const joinGroupRequest = mutation({
         userId: args.userId as Id<"users">,
         groupId: args.groupId as Id<"group">,
         requestOutcome: "Pending",
+        isArchived: false,
       });
       return newRequest;
     }
@@ -47,14 +49,18 @@ export const cancelGroupRequest = mutation({
           .eq("groupId", args.groupId as Id<"group">)
           .eq("userId", args.userId as Id<"users">)
       )
-      .collect();
+      .unique();
 
-    if (existingRequest.length === 0) {
+    if (!existingRequest) {
       throw new Error("Request not found");
+    }
+
+    if (existingRequest.userId !== args.userId) {
+      throw new Error("Unauthorized");
     }
     // If the member already exists
 
-    const cancelRequest = await ctx.db.delete(existingRequest[0]._id);
+    const cancelRequest = await ctx.db.delete(existingRequest._id);
 
     return cancelRequest;
   },
@@ -63,8 +69,6 @@ export const cancelGroupRequest = mutation({
 export const getById = query({
   args: { groupId: v.id("group"), userId: v.id("users") },
   handler: async (ctx, args) => {
-    // const identity = await ctx.auth.getUserIdentity();
-    // // console.log("IDENTITY ===>", identity);
     const existingRequestStatus = await ctx.db
       .query("group_join_request")
       .withIndex("by_group_user", (q) =>
@@ -78,77 +82,29 @@ export const getById = query({
       return;
     }
 
-    //   if (snippet.isPublished && !snippet.isArchived) {
-    //     return snippet;
-    //   }
-
-    //   if (snippet.isPublic) {
-    //     return snippet;
-    //   }
-
-    // if (!identity) {
-    //   throw new Error("Not authenticated");
-    // }
-
-    //   if (snippet.isPublic) {
-    //     return snippet;
-    //   }
-
-    //   const userId = identity.subject;
-
-    //   if (snippet.userId !== userId) {
-    //     throw new Error("Unauthorized");
-    //   }
-
-    // const presence = await ctx.db
-    //   .query("presence")
-    //   .withIndex("by_user", (q) => q.eq("userId", userId))
-    //   .unique();
-    // // console.log(presence);
-    // if (presence) {
-    //   await ctx.db.patch(presence._id, {
-    //     lastActive: Date.now(),
-    //     location: snippet._id,
-    //   });
-    // }
-    // await ctx.runMutation(internal.snippet.incrementCount, {
-    //   id: args.snippetId as Id<"snippets">,
-    // });
-
     return existingRequestStatus;
   },
 });
 
 export const getByGroupId = query({
-  args: { groupId: v.id("group"), userId: v.optional(v.id("users")) },
+  args: { groupId: v.id("group") },
 
   handler: async (ctx, args) => {
-    // const identity = await ctx.auth.getUserIdentity();
-    // // console.log("IDENTITY ===>", identity);
-    // if (!args.userId) {
-    //   throw new Error("Not Authorized");
-    // }
-    // const userInfo = await ctx.db
-    //   .query("group_members")
-    //   .withIndex("by_user", (q) => q.eq("userId", args.userId as Id<"users">))
-    //   .collect();
-    // if (userInfo.length === 0) {
-    //   throw new Error("Not Authorized");
-    // }
-    // if (userInfo[0].userId !== args.userId) {
-    //   throw new Error("Not Authorized");
-    // }
-    // if (userInfo[0].memberRole !== "Admin" || "Owner") {
-    //   throw new Error("Not Authorized");
-    // }
     const existingRequest = await ctx.db
       .query("group_join_request")
       .withIndex("by_group", (q) =>
         q.eq("groupId", args.groupId as Id<"group">)
       )
       .collect();
+    const requestsWithUserDetails = await Promise.all(
+      existingRequest.map(async (request) => {
+        // const group = await ctx.db.get(post.groupId);
+        const user = await ctx.db.get(request.userId); // fetch user details
+        return { ...request, user }; // include user details in the post
+      })
+    );
 
-    return existingRequest;
+    return requestsWithUserDetails;
   },
 });
 
@@ -161,17 +117,14 @@ export const approveJoinRequest = mutation({
   handler: async (ctx, args) => {
     const existingRequest = await ctx.db.get(args.id);
 
-  
     if (!existingRequest) {
-    
       return "Something went wrong";
-    }
-   
-    else {
+    } else {
       const approvedReq = await ctx.db.patch(args.id, {
         requestOutcome: "Approved",
         acceptedBy: args.userId,
         acceptedAt: Date.now(),
+        isArchived: true,
       });
 
       await ctx.db.insert("group_members", {
@@ -181,6 +134,30 @@ export const approveJoinRequest = mutation({
       });
 
       return approvedReq;
+    }
+  },
+});
+
+export const rejectJoinRequest = mutation({
+  args: {
+    userId: v.id("users"),
+    groupId: v.string(),
+    id: v.id("group_join_request"),
+  },
+  handler: async (ctx, args) => {
+    const existingRequest = await ctx.db.get(args.id);
+
+    if (!existingRequest) {
+      return "Something went wrong";
+    } else {
+      const rejectReq = await ctx.db.patch(args.id, {
+        requestOutcome: "Rejected",
+        acceptedBy: args.userId,
+        acceptedAt: Date.now(),
+        isArchived: true,
+      });
+
+      return rejectReq;
     }
   },
 });
