@@ -13,6 +13,7 @@ export type Post = {
   onPublicGroup: boolean;
   tags?: string[]; // assuming v.id("tag") returns a string
   _creationTime: number;
+  aiGeneratedBrief?: string;
 };
 
 export type Group = {

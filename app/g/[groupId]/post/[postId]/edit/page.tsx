@@ -23,14 +23,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { Post } from "@/types";
-import { useMutation, useQuery } from "convex/react";
-import { Image, Trash } from "lucide-react";
+import { useAction, useMutation, useQuery } from "convex/react";
+import { Image, Sparkles, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -47,10 +53,12 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   const { data } = useSession();
   const [newcontent, setNewContent] = useState("");
   const [newtitle, setNewTitle] = useState("");
+  const [aicontent, setAIcontent] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [caption, setCaption] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
   const imageInput = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
@@ -59,7 +67,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   const createFile = useMutation(api.files.createFile);
   const handleDeleteFromDB = useMutation(api.files.deleteById);
   const { mutate, pending } = useApiMutation(api.posts.update);
-
+  const sendMessage = useAction(api.openai.chat);
   const { mutate: publishMutate, pending: publishPending } = useApiMutation(
     api.posts.publish
   );
@@ -81,6 +89,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
     if (post) {
       setNewContent(post.content as string);
       setNewTitle(post.title);
+      setAIcontent(post.aiGeneratedBrief as string);
     }
   }, [post]);
 
@@ -207,6 +216,22 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
       fileId: fileId,
     }).then(() => toast.success("Deleted"));
   };
+
+  const handleAIContentChange = (value: string) => {
+    setAIcontent(value);
+  };
+
+  const handleSendMessage = async (text: string, userId: string) => {
+    setIsGenerating(true);
+    await sendMessage({
+      content: text,
+      postId: params.postId as Id<"posts">,
+      userId: userId as Id<"users">,
+    });
+    setIsGenerating(false);
+  };
+
+  console.log("handleSendMessage", handleSendMessage);
   return (
     <div>
       <div className="h-full flex-col items-center sm:items-start justify-between">
@@ -235,6 +260,48 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
             initialContent={post?.content}
             editable={true}
           />
+        </div>
+        <div>
+          <Textarea
+            className="mt-3"
+            placeholder="TLDR"
+            value={aicontent}
+            onChange={(event) => handleAIContentChange(event.target.value)}
+          >
+            {post?.aiGeneratedBrief}
+          </Textarea>
+          <HoverCard>
+            <HoverCardTrigger>
+              {" "}
+              <Button
+                disabled={
+                  pending || isGenerating
+                  // aiCount >= 10 ||
+                  // isGenerating ||
+                  // snippet.content?.length == 0
+                }
+                aria-label="Explain With AI"
+                onClick={() =>
+                  handleSendMessage(
+                    newcontent ?? post?.content,
+
+                    data?.user.id as Id<"users">
+                  )
+                }
+                className="font-medium mt-5 hover:text-indigo-400"
+                variant="ghost"
+              >
+                <Sparkles className="hover:text-indigo-400 w-5 h-5" />
+                &nbsp; Explain Content with AI
+              </Button>
+            </HoverCardTrigger>
+            <HoverCardContent className="text-sm">
+              10 AI generation for free. <br />
+              <span className="text-muted-foreground">
+                {/* Current Count: {aiCount} */}
+              </span>
+            </HoverCardContent>
+          </HoverCard>
         </div>
         <div className="mt-3 mb-5">
           <Dialog>

@@ -23,6 +23,7 @@ import type * as group from "../group.js";
 import type * as group_join_request from "../group_join_request.js";
 import type * as group_members from "../group_members.js";
 import type * as messages from "../messages.js";
+import type * as openai from "../openai.js";
 import type * as posts from "../posts.js";
 import type * as sessions from "../sessions.js";
 import type * as tag from "../tag.js";
@@ -47,6 +48,7 @@ declare const fullApi: ApiFromModules<{
   group_join_request: typeof group_join_request;
   group_members: typeof group_members;
   messages: typeof messages;
+  openai: typeof openai;
   posts: typeof posts;
   sessions: typeof sessions;
   tag: typeof tag;

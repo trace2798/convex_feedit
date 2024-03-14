@@ -150,6 +150,11 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
               style={{ whiteSpace: "pre-line" }}
               dangerouslySetInnerHTML={{ __html: post.content as string }}
             />
+            <div className="mt-5">
+              {post.aiGeneratedBrief && (
+                <div>TLDR: {post.aiGeneratedBrief}</div>
+              )}
+            </div>
             <div className="mt-10 flex justify-center ">
               {imagesInfo && imagesInfo.length > 0 && (
                 <Carousel

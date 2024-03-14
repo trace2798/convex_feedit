@@ -79,11 +79,17 @@ const PostCard: FC<PostCardProps> = ({
             )}
             <CardTitle>{post.title}</CardTitle>
             <CardDescription className="line-clamp-3">
-              <div
-                className=""
-                style={{ whiteSpace: "pre-line" }}
-                dangerouslySetInnerHTML={{ __html: post.content as string }}
-              />
+              {post.aiGeneratedBrief ? (
+                <div>{post.aiGeneratedBrief}</div>
+              ) : (
+                <>
+                  <div
+                    className=""
+                    style={{ whiteSpace: "pre-line" }}
+                    dangerouslySetInnerHTML={{ __html: post.content as string }}
+                  />
+                </>
+              )}
             </CardDescription>
           </CardHeader>
         </Link>

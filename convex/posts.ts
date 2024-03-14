@@ -371,3 +371,32 @@ export const getDraftByUserId = query({
     };
   },
 });
+
+export const updateAIcontent = mutation({
+  args: {
+    id: v.id("posts"),
+    aiGeneratedBrief: v.string(),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...rest } = args;
+
+    const existingPost = await ctx.db.get(args.id);
+
+    if (!existingPost) {
+      throw new Error("Not found");
+    }
+
+    if (existingPost.userId !== args.userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const post = await ctx.db.patch(args.id, {
+      ...rest,
+      updatedAt: new Date().getTime(),
+      aiGeneratedBrief: args.aiGeneratedBrief,
+    });
+
+    return post;
+  },
+});
