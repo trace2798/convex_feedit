@@ -32,6 +32,7 @@ export default defineSchema({
     emailVerified: v.optional(v.string()),
     image: v.optional(v.string()),
     username: v.string(),
+    aiCount: v.optional(v.number()),
   }).index("by_user_email", ["email"]),
   /**
    * * Session table

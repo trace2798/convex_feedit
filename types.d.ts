@@ -32,4 +32,5 @@ export type User = {
   image?: string | undefined;
   email: string;
   username: string;
+  aiCount?: number;
 };

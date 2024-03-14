@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { paginationOptsValidator } from "convex/server";
 
@@ -372,7 +372,7 @@ export const getDraftByUserId = query({
   },
 });
 
-export const updateAIcontent = mutation({
+export const updateAIcontent = internalMutation({
   args: {
     id: v.id("posts"),
     aiGeneratedBrief: v.string(),

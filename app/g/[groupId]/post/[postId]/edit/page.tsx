@@ -53,7 +53,6 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   const { data } = useSession();
   const [newcontent, setNewContent] = useState("");
   const [newtitle, setNewTitle] = useState("");
-  const [aicontent, setAIcontent] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -89,10 +88,13 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
     if (post) {
       setNewContent(post.content as string);
       setNewTitle(post.title);
-      setAIcontent(post.aiGeneratedBrief as string);
+      // setAIcontent(post.aiGeneratedBrief as string);
     }
   }, [post]);
 
+  useEffect(() => {
+    console.log("newcontent changed:", newcontent);
+  }, [newcontent]);
   if (postInfo === undefined) {
     return (
       <div>
@@ -217,21 +219,41 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
     }).then(() => toast.success("Deleted"));
   };
 
-  const handleAIContentChange = (value: string) => {
-    setAIcontent(value);
-  };
+  // const handleAIContentChange = (value: string) => {
+  //   setAIcontent(value);
+  // };
 
-  const handleSendMessage = async (text: string, userId: string) => {
+  const handleSendMessage = async () => {
     setIsGenerating(true);
     await sendMessage({
-      content: text,
+      content: newcontent,
       postId: params.postId as Id<"posts">,
-      userId: userId as Id<"users">,
+      userId: data?.user.id as Id<"users">,
     });
+    setNewContent(newcontent);
+    setNewTitle(newtitle);
     setIsGenerating(false);
   };
+  // const handleSendMessage = () => {
+  //   setIsGenerating(true);
+  //   return sendMessage({
+  //     content: newcontent ?? post?.content,
+  //     postId: params.postId as Id<"posts">,
+  //     userId: data?.user.id as Id<"users">,
+  //   })
+  //     .then(() => {
+  //       setIsGenerating(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       setIsGenerating(false);
+  //     });
+  // };
 
-  console.log("handleSendMessage", handleSendMessage);
+  // console.log("handleSendMessage", handleSendMessage);
+  console.log("newcontent", newcontent);
+  console.log("newtitle", newtitle);
+
   return (
     <div>
       <div className="h-full flex-col items-center sm:items-start justify-between">
@@ -263,10 +285,11 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
         </div>
         <div>
           <Textarea
-            className="mt-3"
-            placeholder="TLDR"
-            value={aicontent}
-            onChange={(event) => handleAIContentChange(event.target.value)}
+            className="mt-3 h-fit"
+            placeholder="AI generated TLDR to show the use of Convex internal mutations"
+            value={post?.aiGeneratedBrief}
+            disabled
+            // onChange={(event) => handleAIContentChange(event.target.value)}
           >
             {post?.aiGeneratedBrief}
           </Textarea>
@@ -274,20 +297,9 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
             <HoverCardTrigger>
               {" "}
               <Button
-                disabled={
-                  pending || isGenerating
-                  // aiCount >= 10 ||
-                  // isGenerating ||
-                  // snippet.content?.length == 0
-                }
+                disabled={pending || isGenerating}
                 aria-label="Explain With AI"
-                onClick={() =>
-                  handleSendMessage(
-                    newcontent ?? post?.content,
-
-                    data?.user.id as Id<"users">
-                  )
-                }
+                onClick={() => handleSendMessage()}
                 className="font-medium mt-5 hover:text-indigo-400"
                 variant="ghost"
               >
@@ -296,10 +308,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
               </Button>
             </HoverCardTrigger>
             <HoverCardContent className="text-sm">
-              10 AI generation for free. <br />
-              <span className="text-muted-foreground">
-                {/* Current Count: {aiCount} */}
-              </span>
+              This is to show the use of convex Internal Mutation <br />
             </HoverCardContent>
           </HoverCard>
         </div>

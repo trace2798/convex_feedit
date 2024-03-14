@@ -24,7 +24,7 @@ export const create = mutation({
         emailVerified: args.emailVerified,
         image: args.image,
         username: nanoid(10),
-        // aiCount: 0,
+        aiCount: 0,
         // role: "User",
       })
       .catch((err) => {
@@ -175,5 +175,18 @@ export const getAllInfoById = query({
       createdGroups,
       joinedGroups,
     };
+  },
+});
+
+
+export const increaseUserAICount = internalMutation({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user || user.aiCount === undefined) {
+      return null;
+    }
+    const updatedAICount = user?.aiCount + 1;
+    await ctx.db.patch(args.userId, { aiCount: updatedAICount });
   },
 });
