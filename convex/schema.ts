@@ -66,9 +66,11 @@ export default defineSchema({
     description: v.optional(v.string()),
     ownerId: v.id("users"),
     isPublic: v.boolean(),
+    numberOfPost: v.number(),
   })
     .index("by_owner", ["ownerId"])
     .index("by_visible", ["isPublic"])
+    .index("by_name", ["name"])
     .searchIndex("search_name", {
       searchField: "name",
       filterFields: ["name"],

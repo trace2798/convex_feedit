@@ -8,29 +8,6 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { api } from "@/convex/_generated/api";
-import { Doc, Id } from "@/convex/_generated/dataModel";
-import { useApiMutation } from "@/hooks/use-api-mutation";
-import { Group, Post } from "@/types";
-import { useMutation, useQuery } from "convex/react";
-import { Image, Trash } from "lucide-react";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { CarouselDemo } from "@/components/carousel-demo";
 import {
   Carousel,
   CarouselContent,
@@ -38,6 +15,27 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/convex/_generated/api";
+import { Doc, Id } from "@/convex/_generated/dataModel";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { Post } from "@/types";
+import { useMutation, useQuery } from "convex/react";
+import { Image, Trash } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface SubRedditPostPageProps {
   params: {
@@ -110,10 +108,10 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
       isPublic: true,
     })
       .then(() => {
-        toast.success("Post updated");
+        toast.success("Post Published");
         router.push(`/g/${post?.groupId}/post/${post?._id}`);
       })
-      .catch(() => toast.error("Failed to update post"));
+      .catch(() => toast.error("Failed to publish post"));
   };
 
   const handleSaveAsDraft = () => {

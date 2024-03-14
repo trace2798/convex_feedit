@@ -37,7 +37,8 @@ const Page = () => {
           router.push(`/g/${id}`);
         }
       })
-      .catch(() => toast.error("Failed to create group"));
+      .catch(() => toast.error(`Failed to create group`));
+    console.log("MUTATE", mutate.arguments);
   };
   return (
     <div className="container flex items-center h-full max-w-3xl mx-auto">
@@ -62,8 +63,11 @@ const Page = () => {
             />
           </div>
         </div>
-        <div>
+        <div className="w-fit">
           <Label>Group Privacy</Label>
+          <h1 className="text-sm mt-2 text-muted-foreground">
+            By default Public
+          </h1>
           <HoverCard>
             <HoverCardTrigger className="flex mt-5 flex-col group">
               <Switch.Root
@@ -74,11 +78,14 @@ const Page = () => {
                 <Switch.Thumb className="w-6 h-6 data-[state=checked]:bg-white bg-gray-200 shadow-sm block rounded-full transition data-[state=checked]:translate-x-[18px]" />
               </Switch.Root>
             </HoverCardTrigger>
+            <HoverCardContent>
+              {isPublic ? <h1>Public</h1> : <h1>Private</h1>}
+            </HoverCardContent>
           </HoverCard>
         </div>
         <div className="flex justify-end gap-4">
           <Button
-            disabled={pending}
+            disabled={pending || input.length === 0}
             variant="secondary"
             onClick={() => router.back()}
           >

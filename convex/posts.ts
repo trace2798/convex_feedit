@@ -35,7 +35,16 @@ export const create = mutation({
       onPublicGroup: args.onPublicGroup,
       fileId: args.fileId,
     });
-
+    // Fetch the current group
+    const group = await ctx.db.get(args.groupId as Id<"group">);
+    console.log("group", group);
+    // Increment the numberOfPost count
+    const updatedNumberOfPost = (group?.numberOfPost || 0) + 1;
+    console.log("updatedNumberOfPost", updatedNumberOfPost);
+    // Update the group with the new count
+    await ctx.db.patch(args.groupId as Id<"group">, {
+      numberOfPost: updatedNumberOfPost,
+    });
     return post;
   },
 });
@@ -162,6 +171,17 @@ export const update = mutation({
       ...rest,
     });
 
+    if (args.isPublic === true) {
+      const group = await ctx.db.get(existingPost.groupId as Id<"group">);
+      // Increment the numberOfPost count
+      const updatedNumberOfPost = (group?.numberOfPost || 0) + 1;
+      console.log("updatedNumberOfPost", updatedNumberOfPost);
+      // Update the group with the new count
+      await ctx.db.patch(existingPost.groupId as Id<"group">, {
+        numberOfPost: updatedNumberOfPost,
+      });
+    }
+
     return post;
   },
 });
@@ -278,20 +298,6 @@ export const deletePost = mutation({
     await ctx.db.delete(args.postId);
   },
 });
-
-// export const getDraftByUserId = query({
-//   args: { userId: v.id("users") },
-//   handler: async (ctx, args) => {
-//     const posts = await ctx.db
-//       .query("posts")
-//       .withIndex("by_user", (q) => q.eq("userId", args.userId))
-//       .filter((q) => q.eq(q.field("isPublic"), false))
-//       .order("desc")
-//       .collect();
-
-//     return posts;
-//   },
-// });
 
 export const getDraftByUserId = query({
   args: { userId: v.id("users"), paginationOpts: paginationOptsValidator },
