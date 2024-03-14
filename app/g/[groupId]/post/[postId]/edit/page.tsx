@@ -173,9 +173,6 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
     });
     const { storageId } = await result.json();
 
-    // const types = {
-    //   "image/png": "image",
-    // } as Record<string, Doc<"files">["type"]>;
     const types = {
       "image/png": "image",
       "image/jpeg": "image",
@@ -234,22 +231,6 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
     setNewTitle(newtitle);
     setIsGenerating(false);
   };
-  // const handleSendMessage = () => {
-  //   setIsGenerating(true);
-  //   return sendMessage({
-  //     content: newcontent ?? post?.content,
-  //     postId: params.postId as Id<"posts">,
-  //     userId: data?.user.id as Id<"users">,
-  //   })
-  //     .then(() => {
-  //       setIsGenerating(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //       setIsGenerating(false);
-  //     });
-  // };
-
   // console.log("handleSendMessage", handleSendMessage);
   console.log("newcontent", newcontent);
   console.log("newtitle", newtitle);
