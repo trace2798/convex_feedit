@@ -29,6 +29,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface SubRedditPostPageProps {
   params: {
@@ -141,23 +149,6 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
               style={{ whiteSpace: "pre-line" }}
               dangerouslySetInnerHTML={{ __html: post.content as string }}
             />
-            {/* <div className="mt-10 grid grid-cols-3">
-              {imagesInfo &&
-                imagesInfo?.length > 0 &&
-                imagesInfo?.map((image, index) => (
-                  <>
-                    <Card key={index} className="max-w-sm  overflow-hidden">
-                      <CardContent className="mt-5 max-h-[384px] overflow-hidden">
-                        <img
-                          src={image.url as string | undefined}
-                          className="object-cover"
-                        />
-                      </CardContent>
-                      <CardFooter>{image.caption}</CardFooter>
-                    </Card>
-                  </>
-                ))}
-            </div> */}
             <div className="mt-10 flex justify-center ">
               {imagesInfo && imagesInfo.length > 0 && (
                 <Carousel className="w-full max-w-sm">
@@ -165,19 +156,36 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
                     {imagesInfo.map((image, index) => (
                       <CarouselItem key={index}>
                         <div className="p-1">
-                          <Card className="border-none">
-                            <CardContent className="flex rounded-lg my-3 aspect-square items-center justify-center p-6 max-h-[385px] overflow-hidden">
-                              <img
-                                src={image.url as string | undefined}
-                                className="object-cover"
-                              />
-                            </CardContent>
-                            {image.caption && (
-                              <CardDescription className="ml-6 text-base">
-                                {image.caption}
-                              </CardDescription>
-                            )}
-                          </Card>
+                          <Dialog>
+                            <DialogContent className="max-w-2xl">
+                              <DialogHeader>
+                                <div>
+                                  <img
+                                    src={image.url as string | undefined}
+                                    className="object-cover"
+                                  />
+                                </div>
+                                <DialogDescription>
+                                  {image.caption}
+                                </DialogDescription>
+                              </DialogHeader>
+                            </DialogContent>
+                            <Card className="border-none">
+                              <CardContent className="flex rounded-lg my-3 aspect-square items-center justify-center p-6 max-h-[385px] overflow-hidden">
+                                <DialogTrigger>
+                                  <img
+                                    src={image.url as string | undefined}
+                                    className="object-cover"
+                                  />
+                                </DialogTrigger>
+                              </CardContent>
+                              {image.caption && (
+                                <CardDescription className="ml-6 text-base">
+                                  {image.caption}
+                                </CardDescription>
+                              )}
+                            </Card>
+                          </Dialog>
                         </div>
                       </CarouselItem>
                     ))}

@@ -21,7 +21,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -143,8 +143,17 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
     });
     const { storageId } = await result.json();
 
+    // const types = {
+    //   "image/png": "image",
+    // } as Record<string, Doc<"files">["type"]>;
     const types = {
       "image/png": "image",
+      "image/jpeg": "image",
+      "image/jpg": "image",
+      "image/gif": "image",
+      "image/webp": "image",
+      "image/svg+xml": "image",
+      "image/bmp": "image",
     } as Record<string, Doc<"files">["type"]>;
 
     try {
@@ -169,6 +178,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
       console.log("", err);
       toast.error("Upload Failed");
       setIsUploading(false);
+      setSelectedImage(null);
     }
   };
 
