@@ -22,6 +22,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import PostVotes from "./_components/post-votes";
+import Autoplay from "embla-carousel-autoplay";
 import {
   Carousel,
   CarouselContent,
@@ -151,18 +152,25 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
             />
             <div className="mt-10 flex justify-center ">
               {imagesInfo && imagesInfo.length > 0 && (
-                <Carousel className="w-full max-w-sm">
+                <Carousel
+                  className="w-full max-w-sm"
+                  plugins={[
+                    Autoplay({
+                      delay: 5000,
+                    }),
+                  ]}
+                >
                   <CarouselContent>
                     {imagesInfo.map((image, index) => (
                       <CarouselItem key={index}>
                         <div className="p-1">
                           <Dialog>
-                            <DialogContent className="max-w-2xl">
+                            <DialogContent className="2xl:absolute 2xl:left-[27%] 2xl:border-none">
                               <DialogHeader>
-                                <div>
+                                <div className="2xl:z-[100] 2xl:w-[1400px]">
                                   <img
                                     src={image.url as string | undefined}
-                                    className="object-cover"
+                                    className="2xl:object-fill 2xl:w-[1800px] 2xl:h-[768px]"
                                   />
                                 </div>
                                 <DialogDescription>

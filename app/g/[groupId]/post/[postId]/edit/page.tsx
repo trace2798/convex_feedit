@@ -297,7 +297,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
             className="w-[380px]"
             onClick={handlePublish}
           >
-            Publish
+            Update & Publish
           </Button>
           <Button
             disabled={pending}
@@ -306,7 +306,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
             className="w-[380px]"
             onClick={handleSaveAsDraft}
           >
-            Save as Draft
+            Update & Save as Draft
           </Button>
         </div>
       </div>
