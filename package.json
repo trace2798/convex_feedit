@@ -42,6 +42,7 @@
     "next-auth": "^5.0.0-beta.13",
     "next-themes": "^0.2.1",
     "novel": "^0.2.7",
+    "openai": "^4.29.0",
     "query-string": "^9.0.0",
     "react": "^18",
     "react-dom": "^18",

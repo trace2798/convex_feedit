@@ -5,7 +5,6 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -28,14 +27,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-import { use, useState } from "react";
-// import { addMember } from "@/app/(platform)/dashboard/organization/[organizationId]/settings/_components/member-action";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useApiMutation } from "@/hooks/use-api-mutation";
+import { cn } from "@/lib/utils";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   groupId: z.string().min(2).max(50),

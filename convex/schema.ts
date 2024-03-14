@@ -108,6 +108,7 @@ export default defineSchema({
     tags: v.optional(v.array(v.id("tag"))),
     onPublicGroup: v.optional(v.boolean()),
     fileId: v.optional(v.id("_storage")),
+    aiGeneratedBrief: v.optional(v.string()),
   })
     .index("by_user", ["userId"])
     .index("by_group", ["groupId"])

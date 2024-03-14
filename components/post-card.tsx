@@ -44,9 +44,11 @@ const PostCard: FC<PostCardProps> = ({
                   g/{group.name}
                 </Link>
                 &nbsp;|&nbsp;
-                <span className="text-sm text-muted-foreground">
-                  {formatDistanceToNow(post._creationTime)}
-                </span>
+                {post.publishedAt !== null && (
+                  <span className="text-sm text-muted-foreground">
+                    {formatDistanceToNow(post.publishedAt)}
+                  </span>
+                )}
               </div>
             )}
             {createdAt && (
@@ -54,6 +56,11 @@ const PostCard: FC<PostCardProps> = ({
                 {formatDistanceToNow(createdAt)}
               </span>
             )}
+            {/* {post.publishedAt && (
+              <span className="text-sm text-muted-foreground">
+                {formatDistanceToNow(post.publishedAt)}
+              </span>
+            )} */}
             {user && (
               <Link
                 href={`/u/${user._id}`}

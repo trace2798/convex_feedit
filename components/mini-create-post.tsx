@@ -35,6 +35,7 @@ const MiniCreatePost: FC<MiniCreatePostProps> = ({
       title: "",
       content: "",
       onPublicGroup: onPublicGroup,
+      publishedAt: null,
     })
       .then((id) => router.push(`/g/${groupId}/post/${id}/edit`))
       .catch(() => toast.error("Failed to create post"));

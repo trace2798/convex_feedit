@@ -57,6 +57,7 @@ export const createAsDraft = mutation({
     content: v.optional(v.string()),
     onPublicGroup: v.optional(v.boolean()),
     fileId: v.optional(v.id("_storage")),
+    publishedAt: v.optional(v.union(v.null(), v.number())),
   },
   handler: async (ctx, args) => {
     const existingUser = await ctx.db.get(args.userId as Id<"users">);
@@ -70,7 +71,7 @@ export const createAsDraft = mutation({
       title: "untitled",
       isArchived: false,
       isPublic: false,
-      publishedAt: new Date().getTime(),
+      publishedAt: args.publishedAt as number,
       tags: [],
       updatedAt: new Date().getTime(),
       userId: args.userId as Id<"users">,
@@ -169,6 +170,49 @@ export const update = mutation({
 
     const post = await ctx.db.patch(args.id, {
       ...rest,
+      updatedAt: new Date().getTime(),
+    });
+
+    if (args.isPublic === true) {
+      const group = await ctx.db.get(existingPost.groupId as Id<"group">);
+      // Increment the numberOfPost count
+      const updatedNumberOfPost = (group?.numberOfPost || 0) + 1;
+      console.log("updatedNumberOfPost", updatedNumberOfPost);
+      // Update the group with the new count
+      await ctx.db.patch(existingPost.groupId as Id<"group">, {
+        numberOfPost: updatedNumberOfPost,
+      });
+    }
+
+    return post;
+  },
+});
+
+export const publish = mutation({
+  args: {
+    id: v.id("posts"),
+    title: v.string(),
+    content: v.optional(v.string()),
+    userId: v.id("users"),
+    isPublic: v.optional(v.boolean()),
+    publishedAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...rest } = args;
+
+    const existingPost = await ctx.db.get(args.id);
+
+    if (!existingPost) {
+      throw new Error("Not found");
+    }
+
+    if (existingPost.userId !== args.userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const post = await ctx.db.patch(args.id, {
+      ...rest,
+      updatedAt: new Date().getTime(),
     });
 
     if (args.isPublic === true) {

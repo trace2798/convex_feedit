@@ -27,7 +27,7 @@ import {
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const roles = ["Member", "Admin", "Mod"];
+const roles = ["Member", "Admin"];
 
 export const RenameModal = () => {
   const { mutate, pending } = useApiMutation(api.group_members.updateRole);

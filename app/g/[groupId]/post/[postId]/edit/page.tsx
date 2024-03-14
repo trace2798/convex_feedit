@@ -60,6 +60,10 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   const handleDeleteFromDB = useMutation(api.files.deleteById);
   const { mutate, pending } = useApiMutation(api.posts.update);
 
+  const { mutate: publishMutate, pending: publishPending } = useApiMutation(
+    api.posts.publish
+  );
+
   const postInfo = useQuery(api.posts.getById, {
     postId: params.postId as Id<"posts">,
   });
@@ -100,6 +104,22 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   }
 
   const handlePublish = () => {
+    publishMutate({
+      id: post?._id,
+      userId: data?.user.id as Id<"users">,
+      content: newcontent ?? post?.content,
+      title: newtitle ?? post?.title,
+      isPublic: true,
+      publishedAt: new Date().getTime(),
+    })
+      .then(() => {
+        toast.success("Post Published");
+        router.push(`/g/${post?.groupId}/post/${post?._id}`);
+      })
+      .catch(() => toast.error("Failed to publish post"));
+  };
+
+  const handleUpdate = () => {
     mutate({
       id: post?._id,
       userId: data?.user.id as Id<"users">,
@@ -113,7 +133,6 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
       })
       .catch(() => toast.error("Failed to publish post"));
   };
-
   const handleSaveAsDraft = () => {
     mutate({
       id: post?._id,
@@ -291,14 +310,26 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
         </div>
 
         <div className="w-full mt-5 flex justify-between pb-5">
-          <Button
-            disabled={pending}
-            type="submit"
-            className="w-[380px]"
-            onClick={handlePublish}
-          >
-            Update & Publish
-          </Button>
+          {post?.publishedAt ? (
+            <Button
+              disabled={pending}
+              type="submit"
+              className="w-[380px]"
+              onClick={handleUpdate}
+            >
+              Update
+            </Button>
+          ) : (
+            <Button
+              disabled={pending}
+              type="submit"
+              className="w-[380px]"
+              onClick={handlePublish}
+            >
+              Update & Publish
+            </Button>
+          )}
+
           <Button
             disabled={pending}
             type="submit"

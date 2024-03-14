@@ -84,7 +84,8 @@ export const getMemberByGroupIdandUserId = query({
         .query("group_join_request")
         .withIndex("by_group_user", (q) =>
           q.eq("groupId", args.groupId).eq("userId", args.userId as Id<"users">)
-        ).filter((q) => q.eq(q.field("isArchived"), false))
+        )
+        .filter((q) => q.eq(q.field("isArchived"), false))
         .collect();
 
       return {
@@ -209,23 +210,12 @@ export const removeMember = mutation({
       throw new Error("Cannot delete owner");
     }
     await ctx.db.delete(args.memberId);
-    // const group = await ctx.db
-    //   .query("group")
-    //   .filter((q) => q.eq(q.field("_id"), args.groupId))
-    //   .collect();
-    // const group_member = await ctx.db.insert("group_members", {
-    //   userId: args.userId as Id<"users">,
-    //   groupId: args.groupId as Id<"group">,
-    //   memberRole: args.memberRoles as "Member" | "Mod" | "Admin" | "Owner",
-    // });
-
-    // console.log("group member", group_member);
   },
 });
 
 export const updateRole = mutation({
   args: {
-  id: v.id("group_members"),
+    id: v.id("group_members"),
     memberRole: v.string(),
   },
   handler: async (ctx, args) => {
@@ -236,21 +226,10 @@ export const updateRole = mutation({
       throw new Error("Not found");
     }
     if (member.memberRole == "Owner") {
-      throw new Error("Cannot delete owner");
+      throw new Error("Owner role cannot be changed");
     }
     await ctx.db.patch(args.id, {
       memberRole: args.memberRole as "Member" | "Mod" | "Admin" | "Owner",
     });
-    // const group = await ctx.db
-    //   .query("group")
-    //   .filter((q) => q.eq(q.field("_id"), args.groupId))
-    //   .collect();
-    // const group_member = await ctx.db.insert("group_members", {
-    //   userId: args.userId as Id<"users">,
-    //   groupId: args.groupId as Id<"group">,
-    //   memberRole: args.memberRoles as "Member" | "Mod" | "Admin" | "Owner",
-    // });
-
-    // console.log("group member", group_member);
   },
 });
