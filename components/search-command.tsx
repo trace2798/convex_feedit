@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { File } from "lucide-react";
 import { useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import {
   CommandDialog,
@@ -13,14 +12,15 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { useSearch } from "@/hooks/use-search";
 import { api } from "@/convex/_generated/api";
+import { useSearch } from "@/hooks/use-search";
+import { useDebounce } from "usehooks-ts";
 
 export const SearchCommand = () => {
-  //   const { user } = useUser();
-  const [search, setSearch] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const debouncedValue = useDebounce(searchValue, 1000);
   const router = useRouter();
-  const posts = useQuery(api.posts.getSearch, { search: search });
+  const posts = useQuery(api.posts.getSearch, { search: debouncedValue });
   console.log("posts", posts);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -57,7 +57,7 @@ export const SearchCommand = () => {
     <CommandDialog open={isOpen} onOpenChange={onClose}>
       <CommandInput
         placeholder={`Search PostIT...`}
-        onValueChange={setSearch}
+        onValueChange={setSearchValue}
       />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
