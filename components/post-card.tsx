@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import { formatDistanceToNow } from "date-fns";
+import PostBookmark from "@/app/g/[groupId]/post/[postId]/_components/post-bookmark";
 
 interface PostCardProps {
   post: Post;
@@ -93,8 +94,13 @@ const PostCard: FC<PostCardProps> = ({
             </CardDescription>
           </CardHeader>
         </Link>
-        <CardFooter>
+        <CardFooter className="flex justify-between">
           <PostVotes
+            postId={post._id}
+            userId={currentUserId}
+            groupId={post.groupId}
+          />
+          <PostBookmark
             postId={post._id}
             userId={currentUserId}
             groupId={post.groupId}

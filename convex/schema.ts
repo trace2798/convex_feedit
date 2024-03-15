@@ -189,4 +189,12 @@ export default defineSchema({
     .index("by_messageId", ["messageId"])
     .index("by_user1Id", ["user1Id"])
     .index("by_user2Id", ["user2Id"]),
+  bookmarked_posts: defineTable({
+    postId: v.id("posts"),
+    userId: v.id("users"),
+    groupId: v.id("group"),
+  })
+    .index("by_user", ["userId"])
+    .index("by_post", ["postId"])
+    .index("by_user_post", ["userId", "postId"]),
 });
