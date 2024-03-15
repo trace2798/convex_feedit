@@ -33,24 +33,47 @@ export const bookmark = mutation({
 });
 
 export const getByPostId = query({
-    args: { postId: v.id("posts") },
-    handler: async (ctx, args) => {
-      const bookmarks = await ctx.db
-        .query("bookmarked_posts")
-        .withIndex("by_post", (q) => q.eq("postId", args.postId))
-        .collect();
-      //   const posts = await ctx.db
-      //     .query("posts")
-      //     .filter((q) => q.eq(q.field("groupId"), args.groupId))
-      //     .order("desc")
-      //     .collect();
-  
-      //   if (!posts) {
-      //     throw new Error("Not found");
-      //   }
-  
-      return {
-        bookmarks,
-      };
-    },
-  });
+  args: { postId: v.id("posts") },
+  handler: async (ctx, args) => {
+    const bookmarks = await ctx.db
+      .query("bookmarked_posts")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+    //   const posts = await ctx.db
+    //     .query("posts")
+    //     .filter((q) => q.eq(q.field("groupId"), args.groupId))
+    //     .order("desc")
+    //     .collect();
+
+    //   if (!posts) {
+    //     throw new Error("Not found");
+    //   }
+
+    return {
+      bookmarks,
+    };
+  },
+});
+
+export const getByUserId = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const bookmarks = await ctx.db
+      .query("bookmarked_posts")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+    //   const posts = await ctx.db
+    //     .query("posts")
+    //     .filter((q) => q.eq(q.field("groupId"), args.groupId))
+    //     .order("desc")
+    //     .collect();
+
+    //   if (!posts) {
+    //     throw new Error("Not found");
+    //   }
+
+    return {
+      bookmarks,
+    };
+  },
+});

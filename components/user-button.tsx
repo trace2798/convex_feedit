@@ -75,6 +75,9 @@ const UserButton: FC<UserButtonProps> = ({ data, status }) => {
           <DropdownMenuItem asChild className="hover:cursor-pointer">
             <Link href={`/chat`}>Conversation</Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild className="hover:cursor-pointer">
+            <Link href={`/u/${data?.user?.id}/bookmark`}>Saved Posts</Link>
+          </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={() => signOut()}
