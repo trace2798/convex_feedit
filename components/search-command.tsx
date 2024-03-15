@@ -15,6 +15,7 @@ import {
 import { api } from "@/convex/_generated/api";
 import { useSearch } from "@/hooks/use-search";
 import { useDebounce } from "usehooks-ts";
+import { Lock } from "lucide-react";
 
 export const SearchCommand = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -68,8 +69,11 @@ export const SearchCommand = () => {
               value={`${post._id}-${post.title}`}
               title={post.title}
               onSelect={() => onSelect(post.groupId, post._id)}
+              className="hover:cursor-pointer"
             >
-              <span>{post.title}</span>
+              <h1>
+                {post.title} {post.onPublicGroup ? "(public)" : <Lock />}
+              </h1>
             </CommandItem>
           ))}
         </CommandGroup>
