@@ -21,7 +21,6 @@ export const SearchCommand = () => {
   const [searchValue, setSearchValue] = useState("");
   const debouncedValue = useDebounce(searchValue, 1000);
   const router = useRouter();
-  // const posts = useQuery(api.posts.getSearch, {  });
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.posts.getSearch,

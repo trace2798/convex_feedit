@@ -38,8 +38,22 @@ export const getSearch = query({
 });
 
 export const get = query({
-  args: { paginationOpts: paginationOptsValidator },
+  args: {
+    search: v.optional(v.string()),
+    paginationOpts: paginationOptsValidator,
+  },
   handler: async (ctx, args) => {
+    const name = args.search as string;
+
+    if (name) {
+      const searchGroups = await ctx.db
+        .query("group")
+        .withSearchIndex("search_name", (q) => q.search("name", name))
+        .paginate(args.paginationOpts);
+
+      return searchGroups;
+    }
+
     const groups = await ctx.db.query("group").paginate(args.paginationOpts);
     return groups;
   },
