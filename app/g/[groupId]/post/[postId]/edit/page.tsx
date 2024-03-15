@@ -7,6 +7,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import {
   Carousel,
@@ -36,7 +37,7 @@ import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { Post } from "@/types";
 import { useAction, useMutation, useQuery } from "convex/react";
-import { Image, Sparkles, Trash } from "lucide-react";
+import { Home, Image, Sparkles, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -231,9 +232,26 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
     setNewTitle(newtitle);
     setIsGenerating(false);
   };
-  // console.log("handleSendMessage", handleSendMessage);
+
   console.log("newcontent", newcontent);
   console.log("newtitle", newtitle);
+
+  if (post?.userId !== data?.user.id) {
+    return (
+      <div className="flex justify-center h-[40vh] items-center">
+        <Card className="border-none">
+          <CardTitle className="text-center">
+            You are not authorize to perform this action
+          </CardTitle>
+          <CardFooter className="mt-5 flex justify-center items-center">
+            <Link href={"/"}>
+              <Button variant="ghost" className="hover:text-indigo-500">Back Home <Home className="ml-5 w-4 h-4"/></Button>
+            </Link>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>
