@@ -400,3 +400,27 @@ export const updateAIcontent = internalMutation({
     return post;
   },
 });
+
+export const getSearch = query({
+  args: {
+    search: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // const identity = await ctx.auth.getUserIdentity();
+
+    // if (!identity) {
+    //   throw new Error("Unauthorized");
+    // }
+
+    const title = args.search as string;
+
+    const posts = await ctx.db
+      .query("posts")
+      .withSearchIndex("search_title", (q) =>
+        q.search("title", title).eq("isPublic", true).eq("isArchived", false)
+      )
+      .collect();
+    console.log("SEARCH POST", posts);
+    return posts;
+  },
+});

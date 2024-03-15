@@ -18,9 +18,10 @@ import { api } from "@/convex/_generated/api";
 
 export const SearchCommand = () => {
   //   const { user } = useUser();
+  const [search, setSearch] = useState("");
   const router = useRouter();
-  const documents = useQuery(api.group.getSearch, { search: "" });
-
+  const posts = useQuery(api.posts.getSearch, { search: search });
+  console.log("posts", posts);
   const [isMounted, setIsMounted] = useState(false);
 
   const toggle = useSearch((store) => store.toggle);
@@ -43,8 +44,8 @@ export const SearchCommand = () => {
     return () => document.removeEventListener("keydown", down);
   }, [toggle]);
 
-  const onSelect = (id: string) => {
-    router.push(`/g/${id}`);
+  const onSelect = (groupId: string, id: string) => {
+    router.push(`/g/${groupId}/post/${id}`);
     onClose();
   };
 
@@ -54,23 +55,21 @@ export const SearchCommand = () => {
 
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
-      <CommandInput placeholder={`Search PostIT...`} />
+      <CommandInput
+        placeholder={`Search PostIT...`}
+        onValueChange={setSearch}
+      />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Documents">
-          {documents?.map((document) => (
+        <CommandGroup heading="Posts">
+          {posts?.map((post) => (
             <CommandItem
-              key={document._id}
-              value={`${document._id}-${document.name}`}
-              title={document.name}
-              onSelect={() => onSelect(document._id)}
+              key={post._id}
+              value={`${post._id}-${post.title}`}
+              title={post.title}
+              onSelect={() => onSelect(post.groupId, post._id)}
             >
-              {/* {document.icon ? (
-                <p className="mr-2 text-[18px]">{document.icon}</p>
-              ) : (
-                <File className="mr-2 h-4 w-4" />
-              )} */}
-              <span>{document.name}</span>
+              <span>{post.title}</span>
             </CommandItem>
           ))}
         </CommandGroup>

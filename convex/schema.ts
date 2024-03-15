@@ -117,7 +117,11 @@ export default defineSchema({
     .index("by_username", ["username"])
     .index("by_public", ["isPublic"])
     .index("by_public_feed", ["isPublic", "isArchived"])
-    .index("by_public_onPublicGroup", ["onPublicGroup", "isPublic"]),
+    .index("by_public_onPublicGroup", ["onPublicGroup", "isPublic"])
+    .searchIndex("search_title", {
+      searchField: "title",
+      filterFields: ["isPublic", "isArchived"],
+    }),
   files: defineTable({
     caption: v.optional(v.string()),
     fileId: v.id("_storage"),
