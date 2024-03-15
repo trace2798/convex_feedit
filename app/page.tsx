@@ -2,25 +2,6 @@
 import CustomFeed from "@/components/feed/custom-feed";
 import GeneralFeed from "@/components/feed/general-feed";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { api } from "@/convex/_generated/api";
-import { useLoginModal } from "@/store/use-login-modal";
-import { useTagModal } from "@/store/use-tag-modal";
-import { usePaginatedQuery } from "convex/react";
-import {
-  Calculator,
-  Calendar,
-  Group,
-  Lock,
-  User,
-  CreditCard,
-  Settings,
-  Smile,
-} from "lucide-react";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { Suspense, useState } from "react";
 import {
   Command,
   CommandEmpty,
@@ -29,10 +10,30 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
-import { useDebounce } from "usehooks-ts";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/convex/_generated/api";
+import { useLoginModal } from "@/store/use-login-modal";
+import { useTagModal } from "@/store/use-tag-modal";
+import { usePaginatedQuery } from "convex/react";
+import { Lock } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useDebounce } from "usehooks-ts";
 export default function Home() {
   const router = useRouter();
   const { onOpen } = useLoginModal();
@@ -44,7 +45,7 @@ export default function Home() {
   const { results, status, loadMore } = usePaginatedQuery(
     api.group.get,
     { search: debouncedValue },
-    { initialNumItems: 10 }
+    { initialNumItems: 5 }
   );
   console.log(results);
 
@@ -54,29 +55,79 @@ export default function Home() {
 
   return (
     <>
-      <div>
-        {data ? (
-          <>
-            <Link
-              className={buttonVariants({
-                className: "w-full mt-4 mb-6",
-              })}
-              href={`/g/create`}
-            >
-              Create Group
-            </Link>
-          </>
-        ) : (
-          <>
-            <Button
-              className="w-full mb-5"
-              variant={"outline"}
-              onClick={onOpen}
-            >
-              Create Group
-            </Button>
-          </>
-        )}
+      <div className="max-md:flex justify-evenly hidden">
+        <div>
+          {data ? (
+            <>
+              <Link
+                className={buttonVariants({
+                  className: "w-full mb-6",
+                  variant: "outline",
+                })}
+                href={`/g/create`}
+              >
+                Create Group
+              </Link>
+            </>
+          ) : (
+            <>
+              <Button
+                className="w-full mb-5"
+                variant={"outline"}
+                onClick={onOpen}
+              >
+                Create Group
+              </Button>
+            </>
+          )}
+        </div>
+        <div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary">Search Group</Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Search Group</SheetTitle>
+                <SheetDescription>
+                  Search functionality is make using Convex withSearchIndex
+                </SheetDescription>
+              </SheetHeader>
+              <Suspense fallback={<Skeleton className="h-4 w-full" />}>
+                <Command className="rounded-lg border-none shadow-md">
+                  <CommandInput
+                    placeholder="Search Group"
+                    onValueChange={setSearchValue}
+                  />
+                  <CommandList>
+                    <CommandEmpty>No results found.</CommandEmpty>
+                    <CommandGroup heading="Suggestions" className="">
+                      {results?.map((g, index) => (
+                        <CommandItem
+                          key={index}
+                          value={`${g._id}-${g.name}`}
+                          title={g.name}
+                          onSelect={() => onSelect(g._id)}
+                        >
+                          <div className="flex hover:cursor-pointer justify-between w-full items-center align-middle">
+                            {g.name}
+                            {g.isPublic ? "" : <Lock className="w-4 h-4" />}
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                    <CommandSeparator />
+                  </CommandList>
+                </Command>
+                <div className="text-center text-sm hover:cursor-pointer text-muted-foreground">
+                  {status === "CanLoadMore" && (
+                    <div onClick={() => loadMore(3)}>Load More</div>
+                  )}
+                </div>
+              </Suspense>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
       {data ? (
         <div className="flex justify-between items-center align-middle max-md:flex-col">
