@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { usePaginatedQuery, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -21,8 +21,15 @@ export const SearchCommand = () => {
   const [searchValue, setSearchValue] = useState("");
   const debouncedValue = useDebounce(searchValue, 1000);
   const router = useRouter();
-  const posts = useQuery(api.posts.getSearch, { search: debouncedValue });
-  console.log("posts", posts);
+  // const posts = useQuery(api.posts.getSearch, {  });
+
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.posts.getSearch,
+    { search: debouncedValue },
+    { initialNumItems: 10 }
+  );
+
+  console.log("posts", results);
   const [isMounted, setIsMounted] = useState(false);
 
   const toggle = useSearch((store) => store.toggle);
@@ -63,18 +70,25 @@ export const SearchCommand = () => {
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Posts">
-          {posts?.map((post) => (
-            <CommandItem
-              key={post._id}
-              value={`${post._id}-${post.title}`}
-              title={post.title}
-              onSelect={() => onSelect(post.groupId, post._id)}
-              className="hover:cursor-pointer"
-            >
-              <h1>
-                {post.title} {post.onPublicGroup ? "(public)" : <Lock />}
-              </h1>
-            </CommandItem>
+          {results?.map((post) => (
+            <div key={post._id}>
+              <CommandItem
+                value={`${post._id}-${post.title}`}
+                title={post.title}
+                onSelect={() => onSelect(post.groupId, post._id)}
+                className="hover:cursor-pointer flex flex-col"
+              >
+                <div className="flex  justify-between w-full">
+                  {post.title}{" "}
+                  {post.onPublicGroup ? "" : <Lock className="h-4 w-4" />}
+                </div>
+              </CommandItem>
+              <div className="text-center text-sm hover:cursor-pointer text-muted-foreground">
+                {status === "CanLoadMore" && (
+                  <div onClick={() => loadMore(10)}>Load More</div>
+                )}
+              </div>
+            </div>
           ))}
         </CommandGroup>
       </CommandList>
