@@ -39,16 +39,7 @@ export const getByPostId = query({
       .query("bookmarked_posts")
       .withIndex("by_post", (q) => q.eq("postId", args.postId))
       .collect();
-    //   const posts = await ctx.db
-    //     .query("posts")
-    //     .filter((q) => q.eq(q.field("groupId"), args.groupId))
-    //     .order("desc")
-    //     .collect();
-
-    //   if (!posts) {
-    //     throw new Error("Not found");
-    //   }
-
+    
     return {
       bookmarks,
     };
@@ -69,15 +60,6 @@ export const getByUserId = query({
         return { ...bookmarks, post, group };
       })
     );
-    //   const posts = await ctx.db
-    //     .query("posts")
-    //     .filter((q) => q.eq(q.field("groupId"), args.groupId))
-    //     .order("desc")
-    //     .collect();
-
-    //   if (!posts) {
-    //     throw new Error("Not found");
-    //   }
 
     return {
       bookmarks: bookmarksWithGroupDetails,

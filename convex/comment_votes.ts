@@ -7,7 +7,8 @@ export const getByCommentId = query({
   handler: async (ctx, args) => {
     const votes = await ctx.db
       .query("comment_vote")
-      .filter((q) => q.eq(q.field("commentId"), args.commentId))
+      .withIndex("by_comment", (q) => q.eq("commentId", args.commentId))
+      // .filter((q) => q.eq(q.field("commentId"), args.commentId))
       .collect();
     //   const posts = await ctx.db
     //     .query("posts")
@@ -35,9 +36,12 @@ export const upvote = mutation({
   handler: async (ctx, args) => {
     const existingVote = await ctx.db
       .query("comment_vote")
+      .withIndex("by_comment", (q) =>
+        q.eq("commentId", args.commentId as Id<"comments">)
+      )
       .filter((q) => q.eq(q.field("postId"), args.postId))
       .filter((q) => q.eq(q.field("userId"), args.userId))
-      .filter((q) => q.eq(q.field("commentId"), args.commentId))
+
       .collect();
     console.log("existingVote", existingVote);
     if (existingVote.length > 0 && existingVote[0].voteType === "UP") {
@@ -70,9 +74,12 @@ export const downVote = mutation({
   handler: async (ctx, args) => {
     const existingVote = await ctx.db
       .query("comment_vote")
+      .withIndex("by_comment", (q) =>
+        q.eq("commentId", args.commentId as Id<"comments">)
+      )
       .filter((q) => q.eq(q.field("postId"), args.postId))
       .filter((q) => q.eq(q.field("userId"), args.userId))
-      .filter((q) => q.eq(q.field("commentId"), args.commentId))
+
       .collect();
     console.log("existingVote", existingVote);
     if (existingVote.length > 0 && existingVote[0].voteType === "DOWN") {
