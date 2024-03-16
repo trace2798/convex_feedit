@@ -62,6 +62,13 @@ export const getByUserId = query({
       .query("bookmarked_posts")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .collect();
+    const bookmarksWithGroupDetails = await Promise.all(
+      bookmarks.map(async (bookmark) => {
+        const post = await ctx.db.get(bookmark.postId);
+        const group = await ctx.db.get(bookmark.groupId);
+        return { ...bookmarks, post, group };
+      })
+    );
     //   const posts = await ctx.db
     //     .query("posts")
     //     .filter((q) => q.eq(q.field("groupId"), args.groupId))
@@ -73,7 +80,7 @@ export const getByUserId = query({
     //   }
 
     return {
-      bookmarks,
+      bookmarks: bookmarksWithGroupDetails,
     };
   },
 });
