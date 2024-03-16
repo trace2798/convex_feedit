@@ -5,14 +5,20 @@ import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./toolbar";
 import Underline from "@tiptap/extension-underline";
 
-const Tiptap = ({ onChange, content, initialContent }: any) => {
+const Tiptap = ({
+  onChange,
+  content,
+  initialContent,
+  showToolbar = true,
+  editable = true,
+}: any) => {
   const handleChange = (newContent: string) => {
     onChange(newContent);
   };
   const editor = useEditor({
     extensions: [StarterKit, Underline],
     content: initialContent || content || "",
-
+    editable: editable,
     editorProps: {
       attributes: {
         class:
@@ -26,7 +32,7 @@ const Tiptap = ({ onChange, content, initialContent }: any) => {
 
   return (
     <div className="w-full rounded-lg border">
-      <Toolbar editor={editor} content={content} />
+      {showToolbar && <Toolbar editor={editor} content={content} />}
       <EditorContent
         style={{ whiteSpace: "pre-line" }}
         editor={editor}

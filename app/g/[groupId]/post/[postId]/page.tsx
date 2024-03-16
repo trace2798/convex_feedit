@@ -38,6 +38,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import Tiptap from "@/components/editor/tiptap";
 
 interface SubRedditPostPageProps {
   params: {
@@ -145,10 +146,16 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
           </div>
           <h1 className="font-bold text-3xl mb-5">{post?.title}</h1>
           <div className="h-full">
-            <div
+            {/* <div
               className=""
               style={{ whiteSpace: "pre-line" }}
               dangerouslySetInnerHTML={{ __html: post.content as string }}
+            /> */}
+            <Tiptap
+              // onChange={() => {}}
+              initialContent={post?.content}
+              editable={false}
+              showToolbar={false}
             />
             <div className="mt-5">
               {post.aiGeneratedBrief && (
