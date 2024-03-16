@@ -44,7 +44,7 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
         // router.push(`/g/${params.groupId}/post/${id}`);
       })
       .catch(() => toast.error("Failed to comment"));
-      // .catch((error) => console.log(error));
+    // .catch((error) => console.log(error));
   };
 
   const { mutate: replyMutation, pending: replyPending } = useApiMutation(
@@ -69,7 +69,7 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
         // router.push(`/g/${params.groupId}/post/${id}`);
       })
       .catch(() => toast.error("Failed to comment"));
-      // .catch((error) => console.log(error));
+    // .catch((error) => console.log(error));
   };
 
   const handleCancel = () => {
@@ -92,7 +92,7 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
           onChange={(e) => setContent(e.target.value)}
         />
         <div className="space-x-5 mt-3">
-          {currentUserId} {postId} {groupId} {commentId}
+          {/* {currentUserId} {postId} {groupId} {commentId} */}
           <Button
             disabled={pending || !content || replyPending}
             onClick={
