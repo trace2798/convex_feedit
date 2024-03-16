@@ -19,7 +19,7 @@ const BookMarkPage: FC<BookMarkPageProps> = ({}) => {
     userId: data?.user.id as Id<"users">,
   });
 
-  if (!bookmarkedPostByUserId) {
+  if (!bookmarkedPostByUserId || bookmarkedPostByUserId.bookmarks.length === 0) {
     return (
       <div className="flex justify-center h-[40vh] items-center">
         <Card className="border-none">

@@ -89,8 +89,6 @@ export const createAsDraft = mutation({
 export const getById = query({
   args: { postId: v.id("posts") },
   handler: async (ctx, args) => {
-    // const identity = await ctx.auth.getUserIdentity();
-    // // console.log("IDENTITY ===>", identity);
     const post = await ctx.db.get(args.postId as Id<"posts">);
     console.log("POST inside getByID", post);
     if (!post) {
@@ -153,7 +151,6 @@ export const update = mutation({
     title: v.string(),
     content: v.optional(v.string()),
     userId: v.id("users"),
-    isPublic: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const { id, ...rest } = args;
@@ -173,62 +170,51 @@ export const update = mutation({
       updatedAt: new Date().getTime(),
     });
 
-    if (args.isPublic === true) {
-      const group = await ctx.db.get(existingPost.groupId as Id<"group">);
-      // Increment the numberOfPost count
-      const updatedNumberOfPost = (group?.numberOfPost || 0) + 1;
-      console.log("updatedNumberOfPost", updatedNumberOfPost);
-      // Update the group with the new count
-      await ctx.db.patch(existingPost.groupId as Id<"group">, {
-        numberOfPost: updatedNumberOfPost,
-      });
-    }
-
     return post;
   },
 });
 
-export const publish = mutation({
-  args: {
-    id: v.id("posts"),
-    title: v.string(),
-    content: v.optional(v.string()),
-    userId: v.id("users"),
-    isPublic: v.optional(v.boolean()),
-    publishedAt: v.number(),
-  },
-  handler: async (ctx, args) => {
-    const { id, ...rest } = args;
+// export const publish = mutation({
+//   args: {
+//     id: v.id("posts"),
+//     title: v.string(),
+//     content: v.optional(v.string()),
+//     userId: v.id("users"),
+//     isPublic: v.optional(v.boolean()),
+//     publishedAt: v.number(),
+//   },
+//   handler: async (ctx, args) => {
+//     const { id, ...rest } = args;
 
-    const existingPost = await ctx.db.get(args.id);
+//     const existingPost = await ctx.db.get(args.id);
 
-    if (!existingPost) {
-      throw new Error("Not found");
-    }
+//     if (!existingPost) {
+//       throw new Error("Not found");
+//     }
 
-    if (existingPost.userId !== args.userId) {
-      throw new Error("Unauthorized");
-    }
+//     if (existingPost.userId !== args.userId) {
+//       throw new Error("Unauthorized");
+//     }
 
-    const post = await ctx.db.patch(args.id, {
-      ...rest,
-      updatedAt: new Date().getTime(),
-    });
+//     const post = await ctx.db.patch(args.id, {
+//       ...rest,
+//       updatedAt: new Date().getTime(),
+//     });
 
-    if (args.isPublic === true) {
-      const group = await ctx.db.get(existingPost.groupId as Id<"group">);
-      // Increment the numberOfPost count
-      const updatedNumberOfPost = (group?.numberOfPost || 0) + 1;
-      console.log("updatedNumberOfPost", updatedNumberOfPost);
-      // Update the group with the new count
-      await ctx.db.patch(existingPost.groupId as Id<"group">, {
-        numberOfPost: updatedNumberOfPost,
-      });
-    }
+//     if (args.isPublic === true) {
+//       const group = await ctx.db.get(existingPost.groupId as Id<"group">);
+//       // Increment the numberOfPost count
+//       const updatedNumberOfPost = (group?.numberOfPost || 0) + 1;
+//       console.log("updatedNumberOfPost", updatedNumberOfPost);
+//       // Update the group with the new count
+//       await ctx.db.patch(existingPost.groupId as Id<"group">, {
+//         numberOfPost: updatedNumberOfPost,
+//       });
+//     }
 
-    return post;
-  },
-});
+//     return post;
+//   },
+// });
 
 export const getGeneralFeed = query({
   args: { isPublic: v.boolean(), paginationOpts: paginationOptsValidator },
@@ -338,7 +324,31 @@ export const deletePost = mutation({
         await ctx.db.delete(comment_vote._id);
       });
     }
+    const bookmarks = await ctx.db
+      .query("bookmarked_posts")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+    if (bookmarks.length > 0) {
+      bookmarks.forEach(async (bookmark) => {
+        await ctx.db.delete(bookmark._id);
+      });
+    }
+    const images = await ctx.db
+      .query("files")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+    if (images.length > 0) {
+      images.forEach(async (image) => {
+        await ctx.db.delete(image._id);
+        await ctx.storage.delete(image.fileId);
+      });
+      
+    }
     // Finally, delete the post
+    const group = await ctx.db.get(args.groupId);
+    await ctx.db.patch(args.groupId, {
+      numberOfPost: (group?.numberOfPost || 0) - 1,
+    });
     await ctx.db.delete(args.postId);
   },
 });
@@ -417,5 +427,44 @@ export const getSearch = query({
       .paginate(args.paginationOpts);
     console.log("SEARCH POST", posts);
     return posts;
+  },
+});
+
+export const publishPost = mutation({
+  args: {
+    userId: v.string(),
+    // groupId: v.string(),
+    postId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existingUser = await ctx.db.get(args.userId as Id<"users">);
+
+    console.log("USERINFO", existingUser);
+
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
+    const existingPost = await ctx.db.get(args.postId as Id<"posts">);
+
+    if (!existingPost) {
+      throw new Error("Post not found");
+    }
+    if (existingPost.userId !== args.userId) {
+      throw new Error("Unauthorized");
+    }
+    if (existingPost.isPublic) {
+      const change = await ctx.db.patch(args.postId as Id<"posts">, {
+        isPublic: false,
+      });
+      return change;
+    }
+    const publishPost = await ctx.db.patch(args.postId as Id<"posts">, {
+      isPublic: true,
+      publishedAt: new Date().getTime(),
+      updatedAt: new Date().getTime(),
+    });
+
+    return publishPost;
   },
 });
