@@ -64,7 +64,6 @@ export const chat = action({
     // Pull the message content out of the response
     try {
       const messageContent = response.choices[0].message?.content;
-      // console.log("MESSAGE CONTENT", messageContent);
         await ctx.runMutation(internal.posts.updateAIcontent, {
           id: args.postId as Id<"posts">,
           aiGeneratedBrief: messageContent ?? "",
@@ -78,7 +77,6 @@ export const chat = action({
       //     snippetId: args.snippetId as Id<"snippets">,
       //     content: messageContent || "",
       //   });
-      console.log("MESSAGE CONTENT", messageContent);
       return messageContent;
     } catch (error) {
       console.log(error);

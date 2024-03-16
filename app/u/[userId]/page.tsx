@@ -32,7 +32,7 @@ const Page = ({ params }: PageProps) => {
   const info = useQuery(api.users.getAllInfoById, {
     id: params.userId as Id<"users">,
   });
-  console.log("INFO INFO", info);
+  // console.log("INFO INFO", info);
   const { data } = useSession();
   const { mutate, pending } = useApiMutation(api.conversation.create);
 

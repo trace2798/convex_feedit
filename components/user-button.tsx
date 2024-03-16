@@ -28,7 +28,7 @@ const UserButton: FC<UserButtonProps> = ({ data, status }) => {
         </Avatar>
       </>
     );
-  console.log("USER", data);
+  // console.log("USER", data);
   if (!data) {
     redirect("/");
   }

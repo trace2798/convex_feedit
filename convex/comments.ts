@@ -11,7 +11,7 @@ export const create = mutation({
     // parentComment: v.optional(v.id("comments")),
   },
   handler: async (ctx, args) => {
-    console.log("ARGS", args);
+  
     const comment = await ctx.db.insert("comments", {
       userId: args.userId,
       groupId: args.groupId,
@@ -33,7 +33,7 @@ export const createReply = mutation({
     parentComment: v.id("comments"),
   },
   handler: async (ctx, args) => {
-    console.log("ARGS", args);
+   
     const comment = await ctx.db.insert("comments", {
       userId: args.userId,
       groupId: args.groupId,

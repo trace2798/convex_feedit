@@ -18,7 +18,7 @@ interface PostVotesProps {
 
 const PostVotes: FC<PostVotesProps> = ({ postId, userId, groupId }) => {
   const { onOpen } = useLoginModal();
-  console.log(postId, userId, groupId);
+  // console.log(postId, userId, groupId);
   const [currentVote, setCurrentVote] = useState("");
   const [votesAmt, setVotesAmt] = useState(0);
   const votes = useQuery(api.votes.getByPostId, {
@@ -37,7 +37,7 @@ const PostVotes: FC<PostVotesProps> = ({ postId, userId, groupId }) => {
       votes?.votes.filter((vote) => vote.voteType === "DOWN").length || 0;
     setVotesAmt(upvotes - downvotes);
   }, [votes, userId]);
-  console.log(votes);
+  // console.log(votes);
   const { mutate, pending } = useApiMutation(api.votes.upvote);
   const { mutate: downVoteMutation, pending: downVotePending } = useApiMutation(
     api.votes.downVote

@@ -28,7 +28,7 @@ export const SearchCommand = () => {
     { initialNumItems: 10 }
   );
 
-  console.log("posts", results);
+  // console.log("posts", results);
   const [isMounted, setIsMounted] = useState(false);
 
   const toggle = useSearch((store) => store.toggle);

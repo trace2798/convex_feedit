@@ -14,7 +14,7 @@ interface CommentCardProps {
 }
 
 const CommentCard: FC<CommentCardProps> = ({ comment, currentUserId }) => {
-  console.log("COMMENT CARD", comment);
+  // console.log("COMMENT CARD", comment);
   return (
     <>
       <Card className="w-full break-words">

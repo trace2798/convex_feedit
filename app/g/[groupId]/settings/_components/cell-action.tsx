@@ -31,7 +31,7 @@ export const CellAction: React.FC<CellActionProps> = ({
   currentUserId,
 }) => {
   const { onOpen } = useUpdateRoleModal();
-  console.log(data);
+  // console.log(data);
   const router = useRouter();
   const params = useParams();
   const [open, setOpen] = useState(false);
@@ -43,7 +43,7 @@ export const CellAction: React.FC<CellActionProps> = ({
       setLoading(true);
       mutate({ memberId: data?._id, currentUserId: currentUserId });
       const response = null;
-      console.log(response);
+      // console.log(response);
       router.refresh();
     } catch (error) {
       toast.error("Failed to remove user");

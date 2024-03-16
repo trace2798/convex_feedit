@@ -46,19 +46,19 @@ interface SubRedditPostPageProps {
 }
 
 const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
-  console.log(params.postId);
+  // console.log(params.postId);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const { data } = useSession();
-  console.log(data);
-  console.log("PATHNAME", pathname);
+  // console.log(data);
+  // console.log("PATHNAME", pathname);
 
   const startIndex = pathname.indexOf("/g/") + 3; // Add 3 to skip "g/"
   const endIndex = pathname.indexOf("/post");
   const uniqueIdentifier = pathname.slice(startIndex, endIndex);
-  console.log(`The unique identifier is: ${uniqueIdentifier}`);
+  // console.log(`The unique identifier is: ${uniqueIdentifier}`);
   const { mutate, pending } = useApiMutation(api.posts.deletePost);
   const handlePostDelete = () => {
     router.push(`/g/${uniqueIdentifier}`);
@@ -100,7 +100,7 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
     return <div>Not found</div>;
   }
 
-  console.log(postInfo);
+  // console.log(postInfo);
   const { post, group, user } = postInfo;
 
   if (!group[0].isPublic && !data) {

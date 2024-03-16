@@ -108,7 +108,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("VALUES", values);
+    // console.log("VALUES", values);
     mutate({
       id: post?._id,
       userId: data?.user.id as Id<"users">,
@@ -181,7 +181,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
       toast.success("File Uploaded");
       setIsUploading(false);
     } catch (err) {
-      console.log("", err);
+      // console.log("", err);
       toast.error("Upload Failed");
       setIsUploading(false);
       setSelectedImage(null);
@@ -196,7 +196,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   };
 
   const handleSendMessage = async () => {
-    console.log("AI CONTENT", form.getValues("content"));
+    // console.log("AI CONTENT", form.getValues("content"));
     setIsGenerating(true);
     await sendMessage({
       content: form.getValues("content") ?? "",

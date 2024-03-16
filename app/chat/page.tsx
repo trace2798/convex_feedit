@@ -14,14 +14,14 @@ interface ChatPageProps {}
 
 const ChatPage: FC<ChatPageProps> = ({}) => {
   const { data } = useSession();
-  console.log(data, "DATA");
+  // console.log(data, "DATA");
   if (!data) {
     redirect("/");
   }
   const conversations = useQuery(api.conversation.getConversationByUserId, {
     userId: data?.user.id as Id<"users">,
   });
-  console.log(conversations, "CONVERSATIONS");
+  // console.log(conversations, "CONVERSATIONS");
   const sortedConversations = conversations?.sort(
     (a, b) => b.lastMessageSentAt - a.lastMessageSentAt
   );

@@ -98,7 +98,7 @@ const Page = ({ params }: PageProps) => {
 
       toast.success("File Uploaded");
     } catch (err) {
-      console.log("", err);
+      // console.log("", err);
       toast.error("Upload Failed");
     }
   }

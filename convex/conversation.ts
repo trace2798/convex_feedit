@@ -39,7 +39,6 @@ export const create = mutation({
       lastMessageSentAt: Date.now(),
     });
 
-    console.log("conversation conversation", conversation);
     return conversation;
   },
 });

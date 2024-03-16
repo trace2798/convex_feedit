@@ -30,7 +30,7 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
       onOpen();
       return;
     }
-    console.log("COMMENT ID", commentId);
+    // console.log("COMMENT ID", commentId);
     mutate({
       userId: currentUserId,
       groupId: groupId as Id<"group">,
@@ -43,8 +43,8 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
         setContent("");
         // router.push(`/g/${params.groupId}/post/${id}`);
       })
-      // .catch(() => toast.error("Failed to comment"));
-      .catch((error) => console.log(error));
+      .catch(() => toast.error("Failed to comment"));
+      // .catch((error) => console.log(error));
   };
 
   const { mutate: replyMutation, pending: replyPending } = useApiMutation(
@@ -55,7 +55,7 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
       onOpen();
       return;
     }
-    console.log("COMMENT ID", commentId);
+    // console.log("COMMENT ID", commentId);
     replyMutation({
       userId: currentUserId,
       groupId: groupId as Id<"group">,
@@ -68,8 +68,8 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
         setContent("");
         // router.push(`/g/${params.groupId}/post/${id}`);
       })
-      // .catch(() => toast.error("Failed to comment"));
-      .catch((error) => console.log(error));
+      .catch(() => toast.error("Failed to comment"));
+      // .catch((error) => console.log(error));
   };
 
   const handleCancel = () => {

@@ -17,7 +17,7 @@ export const bookmark = mutation({
           .eq("postId", args.postId as Id<"posts">)
       )
       .unique();
-    console.log("existingVote", existingBookmark);
+   
     if (existingBookmark) {
       await ctx.db.delete(existingBookmark._id);
       return;

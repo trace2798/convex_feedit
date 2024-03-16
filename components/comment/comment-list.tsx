@@ -39,7 +39,7 @@ export const CommentList = ({
     postId: params.postId as Id<"posts">,
     parentComment: parentCommentId,
   });
-  console.log("COMMENTS ALL, comments", comments);
+  // console.log("COMMENTS ALL, comments", comments);
 
   if (comments === undefined) {
     return (

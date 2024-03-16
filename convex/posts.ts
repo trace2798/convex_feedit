@@ -15,7 +15,7 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const existingUser = await ctx.db.get(args.userId as Id<"users">);
 
-    console.log("USERINFO", existingUser);
+    // console.log("USERINFO", existingUser);
 
     if (!existingUser) {
       throw new Error("User not found");
@@ -37,10 +37,10 @@ export const create = mutation({
     });
     // Fetch the current group
     const group = await ctx.db.get(args.groupId as Id<"group">);
-    console.log("group", group);
+    // console.log("group", group);
     // Increment the numberOfPost count
     const updatedNumberOfPost = (group?.numberOfPost || 0) + 1;
-    console.log("updatedNumberOfPost", updatedNumberOfPost);
+    // console.log("updatedNumberOfPost", updatedNumberOfPost);
     // Update the group with the new count
     await ctx.db.patch(args.groupId as Id<"group">, {
       numberOfPost: updatedNumberOfPost,

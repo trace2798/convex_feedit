@@ -25,7 +25,7 @@ interface PageProps {
 const Page = ({ params }: PageProps) => {
   const { data, status } = useSession();
   const path = usePathname();
-  console.log(path, "PATH PATH");
+  // console.log(path, "PATH PATH");
   const router = useRouter();
   const initialPosts = useQuery(api.posts.getByGroupId, {
     groupId: params.groupId as Id<"group">,
@@ -38,8 +38,8 @@ const Page = ({ params }: PageProps) => {
   });
   const { mutate: cancelRequestMutate, pending: cancelRequestPending } =
     useApiMutation(api.group_join_request.cancelGroupRequest);
-  console.log("MEMBERS MEMBERS ===+>", members);
-  console.log(initialPosts);
+  // console.log("MEMBERS MEMBERS ===+>", members);
+  // console.log(initialPosts);
   const { mutate, pending } = useApiMutation(api.group_members.joinGroup);
   const { mutate: sentRequestMutate, pending: sentRequestPending } =
     useApiMutation(api.group_join_request.joinGroupRequest);

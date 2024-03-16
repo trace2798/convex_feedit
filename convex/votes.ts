@@ -37,7 +37,6 @@ export const upvote = mutation({
       .filter((q) => q.eq(q.field("postId"), args.postId))
       .filter((q) => q.eq(q.field("userId"), args.userId))
       .collect();
-    console.log("existingVote", existingVote);
     if (existingVote.length > 0 && existingVote[0].voteType === "UP") {
       await ctx.db.delete(existingVote[0]._id);
       return;
@@ -69,7 +68,6 @@ export const downVote = mutation({
         .filter((q) => q.eq(q.field("postId"), args.postId))
         .filter((q) => q.eq(q.field("userId"), args.userId))
         .collect();
-      console.log("existingVote", existingVote);
       if (existingVote.length > 0 && existingVote[0].voteType === "DOWN") {
         await ctx.db.delete(existingVote[0]._id);
         return;

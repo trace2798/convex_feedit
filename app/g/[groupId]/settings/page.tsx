@@ -30,7 +30,7 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
   const currentUser = members?.membersWithUserInfo.find(
     (member) => member.userId === data.user.id
   );
-  console.log("CURRENT USER, currentUser", currentUser);
+  // console.log("CURRENT USER, currentUser", currentUser);
   if (!currentUser) {
     return (
       <div className="flex justify-center h-[40vh] items-center">
@@ -58,9 +58,9 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
     );
   }
 
-  console.log("ALL USERS", allUser);
-  console.log(groupId); // This will log the value between 'g/' and '/settings'
-  console.log("MEMBER USER INFO", members?.membersWithUserInfo);
+  // console.log("ALL USERS", allUser);
+  // console.log(groupId); // This will log the value between 'g/' and '/settings'
+  // console.log("MEMBER USER INFO", members?.membersWithUserInfo);
   return (
     <>
       <MemberSelectForm groupId={groupId} users={allUser} />

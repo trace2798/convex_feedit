@@ -47,7 +47,7 @@ export default function Home() {
     { search: debouncedValue },
     { initialNumItems: 5 }
   );
-  console.log(results);
+  // console.log(results);
 
   const onSelect = (id: string) => {
     router.push(`/g/${id}`);

@@ -44,9 +44,9 @@ interface EditorProps {
 const Editor = ({ onChange, initialContent, editable }: EditorProps) => {
   const { resolvedTheme } = useTheme();
   
-  const handleUpload = async (file: File) => {
-    console.log("INSIDE HANDLE UPLOAD");
-  };
+  // const handleUpload = async (file: File) => {
+  //   console.log("INSIDE HANDLE UPLOAD");
+  // };
 
   const editor: BlockNoteEditor = useBlockNote({
     editable,

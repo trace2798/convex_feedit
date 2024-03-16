@@ -21,7 +21,7 @@ interface RequestPageProps {
 
 const RequestPage: FC<RequestPageProps> = ({ params }) => {
   const { data, status } = useSession();
-  console.log("DATA", data);
+  // console.log("DATA", data);
   const request = useQuery(api.group_join_request.getByGroupId, {
     groupId: params.groupId as Id<"group">,
     // userId: data?.user.id as Id<"users">,
@@ -75,7 +75,7 @@ const RequestPage: FC<RequestPageProps> = ({ params }) => {
   const currentUser = members?.membersWithUserInfo.find(
     (member) => member.userId === data.user.id
   );
-  console.log("CURRENT USER, currentUser", currentUser);
+  // console.log("CURRENT USER, currentUser", currentUser);
   if (!currentUser) {
     return (
       <div className="flex justify-center h-[40vh] items-center">

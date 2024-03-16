@@ -19,9 +19,9 @@ export const MemberTable: React.FC<MemberTableProps> = ({
 }) => {
   const params = useParams();
   const id = params.organizationId;
-  console.log(id);
+  // console.log(id);
   const memberModal = useMemberModal();
-  console.log("DATA CLIENT", data);
+  // console.log("DATA CLIENT", data);
   // const flattenedData = [...data];
 
   return (

@@ -29,7 +29,7 @@ const PostCard: FC<PostCardProps> = ({
   currentUserId,
   createdAt,
 }) => {
-  console.log(post);
+  // console.log(post);
 
   return (
     <>

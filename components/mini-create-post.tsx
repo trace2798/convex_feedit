@@ -27,7 +27,7 @@ const MiniCreatePost: FC<MiniCreatePostProps> = ({
 }) => {
   const router = useRouter();
   const { mutate, pending } = useApiMutation(api.posts.createAsDraft);
-  console.log("SESSION SESSION ===>", session);
+  // console.log("SESSION SESSION ===>", session);
   const handleCreate = () => {
     mutate({
       userId: session?.user.id as Id<"users">,

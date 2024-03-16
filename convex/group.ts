@@ -70,7 +70,7 @@ export const create = mutation({
     if (!user) {
       throw new Error("Unauthorized. User not found");
     }
-    console.log("user", user);
+    // console.log("user", user);
     const existingGroup = await ctx.db
       .query("group")
       .withIndex("by_name", (q) => q.eq("name", args.name))
@@ -89,7 +89,7 @@ export const create = mutation({
       groupId: group as Id<"group">,
       memberRole: "Owner",
     });
-    console.log("group group", group);
+    // console.log("group group", group);
     return group;
   },
 });

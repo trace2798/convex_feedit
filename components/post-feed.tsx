@@ -9,7 +9,7 @@ interface PostFeedProps {
 }
 
 const PostFeed: FC<PostFeedProps> = ({ initialPosts, currentUserId }) => {
-  console.log(initialPosts);
+  // console.log(initialPosts);
   return (
     <>
       <div className="space-y-5">

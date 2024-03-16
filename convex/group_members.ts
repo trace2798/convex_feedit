@@ -171,15 +171,13 @@ export const addMember = mutation({
     memberRoles: v.string(),
   },
   handler: async (ctx, args) => {
-    // const identity = await ctx.auth.getUserIdentity();
+
     const existingUser = await ctx.db
       .query("group_members")
       .withIndex("by_user", (q) => q.eq("userId", args.userId as Id<"users">))
       .filter((q) => q.eq(q.field("groupId"), args.groupId as Id<"group">))
       .unique();
 
-    // console.log("EXISTING USER", existingUser)
-    // const existingUser = await ctx.db.get(args.userId as Id<"users">);
     if (existingUser) {
       throw new Error("User already a member");
     }
@@ -189,7 +187,7 @@ export const addMember = mutation({
       memberRole: args.memberRoles as "Member" | "Mod" | "Admin" | "Owner",
     });
 
-    console.log("group member", group_member);
+   
     return group_member;
   },
 });
@@ -202,7 +200,7 @@ export const removeMember = mutation({
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
     const member = await ctx.db.get(args.memberId);
-    console.log(member);
+   
     if (!member) {
       throw new Error("Not found");
     }
@@ -221,7 +219,7 @@ export const updateRole = mutation({
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
     const member = await ctx.db.get(args.id);
-    console.log(member);
+   
     if (!member) {
       throw new Error("Not found");
     }
