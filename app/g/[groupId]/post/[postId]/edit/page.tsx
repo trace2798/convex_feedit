@@ -246,7 +246,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
                 <h1 className="hover:text-indigo-500">g/{group[0].name}</h1>
               </Link>
               <h1 className="text-muted-foreground text-sm">
-                by u/{user[0].name}
+                by u/{user[0].username}
               </h1>
             </>
           )}
