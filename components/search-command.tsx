@@ -68,7 +68,7 @@ export const SearchCommand = () => {
       />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Posts">
+        <CommandGroup heading="Posts [made using convex search index]">
           {results?.map((post) => (
             <div key={post._id}>
               <CommandItem

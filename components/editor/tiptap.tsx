@@ -36,7 +36,6 @@ const Tiptap = ({
       <EditorContent
         style={{ whiteSpace: "pre-line" }}
         editor={editor}
-        className=""
       />
     </div>
   );

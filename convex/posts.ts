@@ -15,8 +15,6 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const existingUser = await ctx.db.get(args.userId as Id<"users">);
 
-    // console.log("USERINFO", existingUser);
-
     if (!existingUser) {
       throw new Error("User not found");
     }
@@ -35,13 +33,11 @@ export const create = mutation({
       onPublicGroup: args.onPublicGroup,
       fileId: args.fileId,
     });
-    // Fetch the current group
+  
     const group = await ctx.db.get(args.groupId as Id<"group">);
-    // console.log("group", group);
-    // Increment the numberOfPost count
+   
     const updatedNumberOfPost = (group?.numberOfPost || 0) + 1;
-    // console.log("updatedNumberOfPost", updatedNumberOfPost);
-    // Update the group with the new count
+  
     await ctx.db.patch(args.groupId as Id<"group">, {
       numberOfPost: updatedNumberOfPost,
     });
@@ -62,7 +58,6 @@ export const createAsDraft = mutation({
   handler: async (ctx, args) => {
     const existingUser = await ctx.db.get(args.userId as Id<"users">);
 
-    console.log("USERINFO", existingUser);
     if (!existingUser) {
       throw new Error("User not found");
     }
@@ -90,7 +85,7 @@ export const getById = query({
   args: { postId: v.id("posts") },
   handler: async (ctx, args) => {
     const post = await ctx.db.get(args.postId as Id<"posts">);
-    console.log("POST inside getByID", post);
+  
     if (!post) {
       throw new Error("Not found");
     }
@@ -174,48 +169,6 @@ export const update = mutation({
   },
 });
 
-// export const publish = mutation({
-//   args: {
-//     id: v.id("posts"),
-//     title: v.string(),
-//     content: v.optional(v.string()),
-//     userId: v.id("users"),
-//     isPublic: v.optional(v.boolean()),
-//     publishedAt: v.number(),
-//   },
-//   handler: async (ctx, args) => {
-//     const { id, ...rest } = args;
-
-//     const existingPost = await ctx.db.get(args.id);
-
-//     if (!existingPost) {
-//       throw new Error("Not found");
-//     }
-
-//     if (existingPost.userId !== args.userId) {
-//       throw new Error("Unauthorized");
-//     }
-
-//     const post = await ctx.db.patch(args.id, {
-//       ...rest,
-//       updatedAt: new Date().getTime(),
-//     });
-
-//     if (args.isPublic === true) {
-//       const group = await ctx.db.get(existingPost.groupId as Id<"group">);
-//       // Increment the numberOfPost count
-//       const updatedNumberOfPost = (group?.numberOfPost || 0) + 1;
-//       console.log("updatedNumberOfPost", updatedNumberOfPost);
-//       // Update the group with the new count
-//       await ctx.db.patch(existingPost.groupId as Id<"group">, {
-//         numberOfPost: updatedNumberOfPost,
-//       });
-//     }
-
-//     return post;
-//   },
-// });
-
 export const getGeneralFeed = query({
   args: { isPublic: v.boolean(), paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
@@ -227,7 +180,7 @@ export const getGeneralFeed = query({
       .filter((q) => q.eq(q.field("isArchived"), false))
       .order("desc")
       .paginate(args.paginationOpts);
-    console.log("posts GENERAL FEED SERVER ==>", posts);
+   
     const postsWithGroupAndUserDetails = await Promise.all(
       posts.page.map(async (post) => {
         const group = await ctx.db.get(post.groupId);
@@ -235,10 +188,7 @@ export const getGeneralFeed = query({
         return { ...post, group, user }; // include user details in the post
       })
     );
-    console.log(
-      "posts with group GENERAL FEED SERVER ==>",
-      postsWithGroupAndUserDetails
-    );
+    
     return {
       page: postsWithGroupAndUserDetails,
       isDone: posts.isDone,
@@ -257,10 +207,8 @@ export const getPersonalizedFeed = query({
       .query("group_members")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .collect();
-    console.log("GROUPS USER", userGroups);
     let allPosts = [];
 
-    // Loop over the user's groups and fetch the posts
     for (let group of userGroups) {
       const groupPosts = await ctx.db
         .query("posts")
@@ -271,15 +219,14 @@ export const getPersonalizedFeed = query({
       const postsWithGroupAndUserDetails = await Promise.all(
         groupPosts.map(async (post) => {
           const group = await ctx.db.get(post.groupId);
-          const user = await ctx.db.get(post.userId); // fetch user details
-          return { ...post, group, user }; // include user details in the post
+          const user = await ctx.db.get(post.userId); 
+          return { ...post, group, user };
         })
       );
 
       allPosts.push(...postsWithGroupAndUserDetails);
     }
 
-    // Return the posts
     return allPosts;
   },
 });
@@ -291,6 +238,13 @@ export const deletePost = mutation({
     groupId: v.id("group"),
   },
   handler: async (ctx, args) => {
+    const post = await ctx.db.get(args.postId);
+    if(!post) {
+      throw new Error("Post not found");
+    }
+    if (post.userId !== args.userId) {
+      throw new Error("Unauthorized");
+    }
     // Delete comments associated with the post
     const comments = await ctx.db
       .query("comments")
@@ -362,17 +316,13 @@ export const getDraftByUserId = query({
       .filter((q) => q.eq(q.field("isPublic"), false))
       .order("desc")
       .paginate(args.paginationOpts);
-    console.log("posts GENERAL FEED SERVER ==>", posts);
+    
     const postsWithGroupAndUserDetails = await Promise.all(
       posts.page.map(async (post) => {
         const group = await ctx.db.get(post.groupId);
-        const user = await ctx.db.get(post.userId); // fetch user details
-        return { ...post, group, user }; // include user details in the post
+        const user = await ctx.db.get(post.userId); 
+        return { ...post, group, user }; 
       })
-    );
-    console.log(
-      "posts with group GENERAL FEED SERVER ==>",
-      postsWithGroupAndUserDetails
     );
     return {
       page: postsWithGroupAndUserDetails,
@@ -413,7 +363,7 @@ export const updateAIcontent = internalMutation({
 
 export const getSearch = query({
   args: {
-    search: v.optional(v.string()),
+    search: v.string(),
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
@@ -425,7 +375,7 @@ export const getSearch = query({
         q.search("title", title).eq("isPublic", true).eq("isArchived", false)
       )
       .paginate(args.paginationOpts);
-    console.log("SEARCH POST", posts);
+  
     return posts;
   },
 });
@@ -433,13 +383,10 @@ export const getSearch = query({
 export const publishPost = mutation({
   args: {
     userId: v.string(),
-    // groupId: v.string(),
     postId: v.string(),
   },
   handler: async (ctx, args) => {
     const existingUser = await ctx.db.get(args.userId as Id<"users">);
-
-    console.log("USERINFO", existingUser);
 
     if (!existingUser) {
       throw new Error("User not found");

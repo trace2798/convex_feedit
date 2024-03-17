@@ -28,7 +28,7 @@ export const Navbar = () => {
           <div className="flex items-center align-center space-x-5">
             {/* <SearchCommand/> */}
             <Button variant={"ghost"} onClick={search.onOpen}>
-              <Search className="h-[1.2rem] w-[1.2rem]" />
+              <Search className="h-[1.2rem] w-[1.2rem]" />&nbsp;&nbsp;<span className="text-xs font-thin">ctrl + k</span>
             </Button>
             <Link href={"/chat"}>
               <Button variant="ghost">Chat</Button>
