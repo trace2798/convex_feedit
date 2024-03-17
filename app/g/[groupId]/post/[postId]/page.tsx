@@ -146,17 +146,17 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
           </div>
           <h1 className="font-bold text-3xl mb-5">{post?.title}</h1>
           <div className="h-full">
-            {/* <div
-              className=""
+            <div
+              className="flex flex-col justify-start  text-zinc-700 dark:text-neutral-300 items-start w-full gap-3 font-medium text-[16px] pt-4 rounded-bl-md rounded-br-md outline-none min-h-[40vh]"
               style={{ whiteSpace: "pre-line" }}
               dangerouslySetInnerHTML={{ __html: post.content as string }}
-            /> */}
-            <Tiptap
+            />
+            {/* <Tiptap
               // onChange={() => {}}
               initialContent={post?.content}
               editable={false}
               showToolbar={false}
-            />
+            /> */}
             <div className="mt-5">
               {post.aiGeneratedBrief && (
                 <div>TLDR: {post.aiGeneratedBrief}</div>
