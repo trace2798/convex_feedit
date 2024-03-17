@@ -62,7 +62,7 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
   // console.log(`The unique identifier is: ${uniqueIdentifier}`);
   const { mutate, pending } = useApiMutation(api.posts.deletePost);
   const handlePostDelete = () => {
-    router.push(`/g/${uniqueIdentifier}`);
+    router.push(`/`);
 
     router.refresh();
     mutate({
