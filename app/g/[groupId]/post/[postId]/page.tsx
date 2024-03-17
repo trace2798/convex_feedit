@@ -61,19 +61,33 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
   const uniqueIdentifier = pathname.slice(startIndex, endIndex);
   // console.log(`The unique identifier is: ${uniqueIdentifier}`);
   const { mutate, pending } = useApiMutation(api.posts.deletePost);
-  const handlePostDelete = () => {
-    router.push(`/`);
+  // const handlePostDelete = () => {
+  //   // router.refresh();
+  //   mutate({
+  //     userId: data?.user.id,
+  //     postId: params.postId as Id<"posts">,
+  //     groupId: group[0]._id,
+  //   })
+  //     .then(() => {
+  //       router.push(`/`);
+  //       toast.success("Post deleted");
+  //     })
+  //     .catch(() => toast.error("Failed to delete post"));
+  // };
 
-    router.refresh();
-    mutate({
-      userId: data?.user.id,
-      postId: params.postId as Id<"posts">,
-      groupId: group[0]._id,
-    })
-      .then(() => {
-        toast.success("Post deleted");
-      })
-      .catch(() => toast.error("Failed to delete post"));
+  const handlePostDelete = async () => {
+    try {
+      router.push(`/`);
+      await mutate({
+        userId: data?.user.id,
+        postId: params.postId as Id<"posts">,
+        groupId: group[0]._id,
+      });
+      toast.success("Post deleted");
+  
+    } catch (error) {
+      toast.error("Failed to delete post");
+    }
   };
 
   const postInfo = useQuery(api.posts.getById, {
