@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import GeneralFeed from "./general-feed";
+import Image from "next/image";
 
 const CustomFeed = ({ currentUserId }: { currentUserId?: string }) => {
   const posts = useQuery(api.posts.getPersonalizedFeed, {
@@ -28,6 +29,24 @@ const CustomFeed = ({ currentUserId }: { currentUserId?: string }) => {
             <TabsTrigger value="general">Discover</TabsTrigger>
           </TabsList>
           <TabsContent value="custom">
+            {posts?.length === 0 && (
+              <div className="flex flex-col items-center">
+                <Card className="border-none text-center my-10">
+                  <CardTitle>
+                    Your Personalized feed is empty. <br />
+                  </CardTitle>
+                  <CardTitle className="mt-5">
+                    Looks Like you have not joined any groups
+                  </CardTitle>
+                </Card>
+                <Image
+                  src={"/empty.jpg"}
+                  alt="empty state"
+                  width={300}
+                  height={300}
+                />
+              </div>
+            )}
             {posts?.map((post, index) => (
               <PostCard
                 key={index}
