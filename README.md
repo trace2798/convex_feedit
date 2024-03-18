@@ -1,4 +1,4 @@
-# PostIT: SHare with your group
+# PostIT: Share with your group
 This is a repository for my submission for Zero To One Hackathon by Convex, which took place from January 23 until March 18, 2024 (5:00 pm Pacific Time) 2024. 
 
 Features:
