@@ -1,13 +1,13 @@
 "use client";
-import { FC } from "react";
-import MemberSelectForm from "./_components/member-select-form";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { redirect, usePathname } from "next/navigation";
-import { MemberTable } from "./_components/client";
-import { Id } from "@/convex/_generated/dataModel";
-import { useSession } from "next-auth/react";
 import { Card, CardTitle } from "@/components/ui/card";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useQuery } from "convex/react";
+import { useSession } from "next-auth/react";
+import { redirect, usePathname } from "next/navigation";
+import { FC } from "react";
+import { MemberTable } from "./_components/client";
+import MemberSelectForm from "./_components/member-select-form";
 
 interface GroupIdSettingsPageProps {}
 
@@ -16,7 +16,6 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
   const path = usePathname();
   const pathParts = path.split("/");
   const groupId = pathParts[pathParts.indexOf("g") + 1];
-  const allUser = useQuery(api.users.getAllUsers);
   const members = useQuery(api.group_members.getMemberByGroupId, {
     groupId: groupId as Id<"group">,
   });
@@ -30,7 +29,7 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
   const currentUser = members?.membersWithUserInfo.find(
     (member) => member.userId === data.user.id
   );
-  // console.log("CURRENT USER, currentUser", currentUser);
+ 
   if (!currentUser) {
     return (
       <div className="flex justify-center h-[40vh] items-center">
@@ -42,7 +41,7 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
       </div>
     );
   }
-  // console.log("CURRENT USER ROle", currentUser.memberRole);
+ 
   if (
     currentUser.memberRole !== "Owner" &&
     currentUser.memberRole !== "Admin"
@@ -58,12 +57,10 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
     );
   }
 
-  // console.log("ALL USERS", allUser);
-  // console.log(groupId); // This will log the value between 'g/' and '/settings'
-  // console.log("MEMBER USER INFO", members?.membersWithUserInfo);
+ 
   return (
     <>
-      <MemberSelectForm groupId={groupId} users={allUser} />
+      <MemberSelectForm groupId={groupId} />
       {members && data && members.membersWithUserInfo && (
         <MemberTable
           currentUserId={data.user.id as string}

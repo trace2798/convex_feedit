@@ -32,6 +32,9 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { toast } from "sonner";
+import { useState } from "react";
+import { usePaginatedQuery } from "convex/react";
+import { useDebounce } from "usehooks-ts";
 
 const formSchema = z.object({
   groupId: z.string().min(2).max(50),
@@ -39,14 +42,15 @@ const formSchema = z.object({
   memberRole: z.string(),
 });
 const roles = ["Member", "Admin", "Mod"];
-const MemberSelectForm = ({
-  groupId,
-  users,
-}: {
-  groupId: string;
-  users: any;
-}) => {
-  // console.log(users, "USERS USERS");
+const MemberSelectForm = ({ groupId }: { groupId: string }) => {
+  const [searchValue, setSearchValue] = useState("");
+  const debouncedValue = useDebounce(searchValue, 1000);
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.users.getSearchByUsername,
+    { search: debouncedValue },
+    { initialNumItems: 15 }
+  );
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,7 +60,9 @@ const MemberSelectForm = ({
     },
   });
   type FormData = z.infer<typeof formSchema>;
+
   const { mutate, pending } = useApiMutation(api.group_members.addMember);
+
   const onSubmit: SubmitHandler<FormData> = async (values) => {
     mutate({
       userId: values.userId,
@@ -93,8 +99,9 @@ const MemberSelectForm = ({
                       )}
                     >
                       {field.value
-                        ? users.find((user: any) => user._id === field.value)
-                            ?.name
+                        ? results.find(
+                            (resultUser: any) => resultUser._id === field.value
+                          )?.username
                         : "Select User"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -102,31 +109,54 @@ const MemberSelectForm = ({
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-0">
                   <Command>
-                    <CommandInput placeholder="Search user..." />
-                    <CommandEmpty>No user found.</CommandEmpty>
-                    <CommandGroup>
-                      {Array.isArray(users) &&
-                        users.map((user: any) => (
+                    <CommandInput
+                      placeholder="Search user..."
+                      onValueChange={setSearchValue}
+                    />
+                    {results.length === 0 ? (
+                      <CommandEmpty>No user found.</CommandEmpty>
+                    ) : (
+                      <CommandGroup>
+                        {/* {results &&
+                          results.length > 0 &&
+                          results.map((result: any) => (
+                            <CommandItem
+                              value={result._id}
+                              key={result._id}
+                              onSelect={() => {
+                                form.setValue("userId", result._id);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  result._id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {result.username} {result.name}
+                            </CommandItem>
+                          ))} */}
+                        {results.map((result: any, index) => (
                           <CommandItem
-                            value={user._id}
-                            key={user._id}
+                            // value={result._id}
+                            // key={index}
                             onSelect={() => {
-                              form.setValue("userId", user._id);
+                              form.setValue("userId", result._id);
                             }}
                           >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                user._id === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {user.name}
+                            {result.username}
                           </CommandItem>
                         ))}
-                    </CommandGroup>
+                      </CommandGroup>
+                    )}
                   </Command>
+                  <div className="text-center text-sm hover:cursor-pointer text-muted-foreground">
+                    {status === "CanLoadMore" && (
+                      <div onClick={() => loadMore(3)}>Load More</div>
+                    )}
+                  </div>
                 </PopoverContent>
               </Popover>
               <FormDescription>

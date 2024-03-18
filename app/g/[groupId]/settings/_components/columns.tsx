@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { CellAction } from "./cell-action";
 import { Id } from "@/convex/_generated/dataModel";
-import { formatDistanceToNow } from "date-fns";
 
 export type MemberColumn = {
   userInfo: {
@@ -14,6 +13,7 @@ export type MemberColumn = {
     emailVerified?: string | undefined;
     image?: string | undefined;
     email: string;
+    username: string;
   } | null;
   _id: Id<"group_members">;
   _creationTime: number;
@@ -24,13 +24,11 @@ export type MemberColumn = {
 
 export const columns: ColumnDef<MemberColumn>[] = [
   {
-    accessorKey: "userInfo.name",
-    header: "Name",
+    accessorKey: "userInfo.username",
+    header: "Username",
     cell: ({ row }) => {
-      const userInfo = row.getValue("userInfo") as { name: string };
-      return (
-        <div className="capitalize">{userInfo ? userInfo.name : "N/A"}</div>
-      );
+      const userInfo = row.getValue("userInfo") as { username: string };
+      return <div className="">{userInfo ? userInfo.username : "N/A"}</div>;
     },
   },
   {
@@ -43,7 +41,7 @@ export const columns: ColumnDef<MemberColumn>[] = [
   },
   {
     accessorKey: "_creationTime",
-    header: "Date",
+    header: "Member Since",
     cell: ({ row }) => {
       const creationTime = row.getValue("_creationTime") as number;
       // Convert the timestamp to a Date object

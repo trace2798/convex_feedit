@@ -15,28 +15,6 @@ export const getById = query({
   },
 });
 
-export const getSearch = query({
-  args: {
-    search: v.string(),
-  },
-  handler: async (ctx, args) => {
-    // const identity = await ctx.auth.getUserIdentity();
-
-    // if (!identity) {
-    //   throw new Error("Not authenticated");
-    // }
-
-    // const userId = identity.subject;
-    const name = args.search as string;
-    const groups = await ctx.db
-      .query("group")
-      .withSearchIndex("search_name", (q) => q.search("name", name))
-      .collect();
-
-    return groups;
-  },
-});
-
 export const get = query({
   args: {
     search: v.optional(v.string()),

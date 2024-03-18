@@ -33,7 +33,12 @@ export default defineSchema({
     image: v.optional(v.string()),
     username: v.string(),
     aiCount: v.optional(v.number()),
-  }).index("by_user_email", ["email"]),
+  })
+    .index("by_user_email", ["email"])
+    .searchIndex("search_username", {
+      searchField: "username",
+      filterFields: ["username"],
+    }),
   /**
    * * Session table
    *

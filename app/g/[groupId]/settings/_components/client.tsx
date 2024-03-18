@@ -3,10 +3,9 @@
 import { Heading } from "@/components/heading";
 import { DataTable } from "@/components/ui/data-table";
 import { Separator } from "@/components/ui/separator";
-import { useMemberModal } from "@/hooks/use-member-modal";
+import { Id } from "@/convex/_generated/dataModel";
 import { useParams } from "next/navigation";
 import { MemberColumn, columns } from "./columns";
-import { Id } from "@/convex/_generated/dataModel";
 
 interface MemberTableProps {
   data: MemberColumn[];
@@ -18,11 +17,6 @@ export const MemberTable: React.FC<MemberTableProps> = ({
   currentUserId,
 }) => {
   const params = useParams();
-  const id = params.organizationId;
-  // console.log(id);
-  const memberModal = useMemberModal();
-  // console.log("DATA CLIENT", data);
-  // const flattenedData = [...data];
 
   return (
     <>
@@ -31,7 +25,6 @@ export const MemberTable: React.FC<MemberTableProps> = ({
         description="Manage member for your organization"
       />
       <Separator className="my-5" />
-      {/* <DataTable searchKey="userInfo" columns={columns} data={data} /> */}
       <DataTable
         columns={columns}
         data={data}

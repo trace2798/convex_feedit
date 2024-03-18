@@ -6,6 +6,7 @@ import {
   query,
 } from "./_generated/server";
 import { nanoid } from "nanoid";
+import { paginationOptsValidator } from "convex/server";
 
 const userArgs = {
   email: v.string(),
@@ -178,7 +179,6 @@ export const getAllInfoById = query({
   },
 });
 
-
 export const increaseUserAICount = internalMutation({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
@@ -188,5 +188,29 @@ export const increaseUserAICount = internalMutation({
     }
     const updatedAICount = user?.aiCount + 1;
     await ctx.db.patch(args.userId, { aiCount: updatedAICount });
+  },
+});
+
+export const getSearchByUsername = query({
+  args: {
+    search: v.optional(v.string()),
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, args) => {
+    const username = args.search as string;
+
+    if (username) {
+      const searchUsers = await ctx.db
+        .query("users")
+        .withSearchIndex("search_username", (q) =>
+          q.search("username", username)
+        )
+        .paginate(args.paginationOpts);
+
+      return searchUsers;
+    }
+
+    const users = await ctx.db.query("users").paginate(args.paginationOpts);
+    return users;
   },
 });

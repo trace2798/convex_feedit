@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Id } from "@/convex/_generated/dataModel";
+import { Input } from "./input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,6 +34,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   currentUserId,
+  // searchKey,
 }: // searchKey,
 DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -47,7 +49,6 @@ DataTableProps<TData, TValue>) {
       columnFilters,
     },
   });
-  // console.log("DATA TABLE ==>", data);
   // console.log("SEARCH", searchKey)
   return (
     <div>
