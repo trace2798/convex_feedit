@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://postit-omega.vercel.app"),
   openGraph: {
     title: "PostIT - Share with your group and the world",
-    description: "A fullstack web application for COnvex Zero to One hackathon",
+    description: "A fullstack web application for Convex Zero to One hackathon",
     url: "https://postit-omega.vercel.app",
     siteName: "postit-omega.vercel.app",
     images: ["https://postit-omega.vercel.app/og.png"],
