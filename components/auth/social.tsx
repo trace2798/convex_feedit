@@ -3,15 +3,19 @@
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export const Social = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
+  const [loading, setLoading] = useState(false);
 
-  const onClick = (provider: "google" | "github") => {
-    signIn(provider, {
+  const onClick = async (provider: "google" | "github") => {
+    setLoading(true);
+    await signIn(provider, {
       callbackUrl: callbackUrl || "/",
     });
+    setLoading(false);
   };
 
   return (
@@ -20,6 +24,7 @@ export const Social = () => {
         size="lg"
         className="w-[200px]"
         variant="outline"
+        disabled={loading}
         onClick={() => onClick("google")}
       >
         <svg
@@ -51,6 +56,7 @@ export const Social = () => {
         size="lg"
         className="w-[200px]"
         variant="outline"
+        disabled={loading}
         onClick={() => onClick("github")}
       >
         <svg
