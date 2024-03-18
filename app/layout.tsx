@@ -11,7 +11,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "PostIT",
   description: "A reddit inspired web application",
-  metadataBase: new URL('https://postit-omega.vercel.app'),
+  metadataBase: new URL("https://postit-omega.vercel.app"),
   openGraph: {
     title: "PostIT - Share with your group and the world",
     description: "A fullstack web application for COnvex Zero to One hackathon",
@@ -24,6 +24,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     images: ["https://postit-omega.vercel.app/og.png"],
   },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: `https://postit-omega.vercel.app/site.webmanifest`,
 };
 
 export default function RootLayout({
