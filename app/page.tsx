@@ -45,7 +45,7 @@ export default function Home() {
   const { results, status, loadMore } = usePaginatedQuery(
     api.group.get,
     { search: debouncedValue },
-    { initialNumItems: 5 }
+    { initialNumItems: 5 },
   );
   // console.log(results);
 

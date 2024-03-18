@@ -48,7 +48,7 @@ const CommentTextArea: FC<CommentTextAreaProps> = ({
   };
 
   const { mutate: replyMutation, pending: replyPending } = useApiMutation(
-    api.comments.createReply
+    api.comments.createReply,
   );
   const handleReply = () => {
     if (!currentUserId) {

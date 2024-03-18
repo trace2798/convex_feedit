@@ -25,7 +25,7 @@ export const SearchCommand = () => {
   const { results, status, loadMore } = usePaginatedQuery(
     api.posts.getSearch,
     { search: debouncedValue },
-    { initialNumItems: 10 }
+    { initialNumItems: 10 },
   );
 
   // console.log("posts", results);

@@ -13,7 +13,7 @@ export const joinGroupRequest = mutation({
       .withIndex("by_group_user", (q) =>
         q
           .eq("groupId", args.groupId as Id<"group">)
-          .eq("userId", args.userId as Id<"users">)
+          .eq("userId", args.userId as Id<"users">),
       )
       .filter((q) => q.eq(q.field("isArchived"), false))
       .collect();
@@ -47,7 +47,7 @@ export const cancelGroupRequest = mutation({
       .withIndex("by_group_user", (q) =>
         q
           .eq("groupId", args.groupId as Id<"group">)
-          .eq("userId", args.userId as Id<"users">)
+          .eq("userId", args.userId as Id<"users">),
       )
       .unique();
 
@@ -74,7 +74,7 @@ export const getById = query({
       .withIndex("by_group_user", (q) =>
         q
           .eq("groupId", args.groupId as Id<"group">)
-          .eq("userId", args.userId as Id<"users">)
+          .eq("userId", args.userId as Id<"users">),
       )
       .collect();
 
@@ -93,7 +93,7 @@ export const getByGroupId = query({
     const existingRequest = await ctx.db
       .query("group_join_request")
       .withIndex("by_group", (q) =>
-        q.eq("groupId", args.groupId as Id<"group">)
+        q.eq("groupId", args.groupId as Id<"group">),
       )
       .collect();
     const requestsWithUserDetails = await Promise.all(
@@ -101,7 +101,7 @@ export const getByGroupId = query({
         // const group = await ctx.db.get(post.groupId);
         const user = await ctx.db.get(request.userId); // fetch user details
         return { ...request, user }; // include user details in the post
-      })
+      }),
     );
 
     return requestsWithUserDetails;

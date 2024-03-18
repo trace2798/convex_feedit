@@ -81,7 +81,7 @@ export const CellAction: React.FC<CellActionProps> = ({
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Remove
           </DropdownMenuItem>
-          <DropdownMenuItem  onClick={() => onOpen(data?._id, data?.memberRole)} >
+          <DropdownMenuItem onClick={() => onOpen(data?._id, data?.memberRole)}>
             <Trash className="mr-2 h-4 w-4" /> Update Role
           </DropdownMenuItem>
         </DropdownMenuContent>

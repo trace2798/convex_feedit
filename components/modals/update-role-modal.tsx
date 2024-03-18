@@ -78,7 +78,7 @@ export const RenameModal = () => {
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      role === title ? "opacity-100" : "opacity-0"
+                      role === title ? "opacity-100" : "opacity-0",
                     )}
                   />
                   {role}

@@ -4,7 +4,7 @@ import { create } from "zustand";
 
 interface ITagModal {
   isOpen: boolean;
-//   initialValues: typeof defaultValues;
+  //   initialValues: typeof defaultValues;
   onOpen: () => void;
   onClose: () => void;
 }
@@ -18,7 +18,7 @@ export const useTagModal = create<ITagModal>((set) => ({
   onClose: () =>
     set({
       isOpen: false,
-    //   initialValues: defaultValues,
+      //   initialValues: defaultValues,
     }),
-//   initialValues: defaultValues,
+  //   initialValues: defaultValues,
 }));

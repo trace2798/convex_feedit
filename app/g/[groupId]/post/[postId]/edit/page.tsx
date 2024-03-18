@@ -84,7 +84,7 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
   const { mutate, pending } = useApiMutation(api.posts.update);
   const sendMessage = useAction(api.openai.chat);
   const { mutate: publishMutate, pending: publishPending } = useApiMutation(
-    api.posts.publishPost
+    api.posts.publishPost,
   );
   const postInfo = useQuery(api.posts.getById, {
     postId: params.postId as Id<"posts">,
@@ -298,7 +298,9 @@ const SubRedditEditPostPage = ({ params }: SubRedditPostPageProps) => {
                   <HoverCardTrigger>
                     {" "}
                     <Button
-                      disabled={pending || isGenerating || !form.getValues("content")}
+                      disabled={
+                        pending || isGenerating || !form.getValues("content")
+                      }
                       aria-label="Explain With AI"
                       onClick={() => handleSendMessage()}
                       className="font-medium mt-5 hover:text-indigo-400"

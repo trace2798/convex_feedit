@@ -93,7 +93,7 @@ const Page = ({ params }: PageProps) => {
                         {" "}
                         {format(
                           new Date(group._creationTime),
-                          "iiii, do MMMM, yyyy p"
+                          "iiii, do MMMM, yyyy p",
                         )}
                       </span>{" "}
                     </p>{" "}
@@ -136,7 +136,7 @@ const Page = ({ params }: PageProps) => {
                         {" "}
                         {format(
                           new Date(group._creationTime),
-                          "iiii, do MMMM, yyyy p"
+                          "iiii, do MMMM, yyyy p",
                         )}
                       </span>{" "}
                     </p>{" "}

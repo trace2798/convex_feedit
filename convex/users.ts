@@ -136,7 +136,7 @@ export const getAllInfoById = query({
       posts.map(async (post) => {
         const group = await ctx.db.get(post.groupId);
         return { ...post, group };
-      })
+      }),
     );
     const comments = await ctx.db
       .query("comments")
@@ -148,7 +148,7 @@ export const getAllInfoById = query({
         const post = await ctx.db.get(comment.postId);
         const group = await ctx.db.get(comment.groupId);
         return { ...comment, post, group };
-      })
+      }),
     );
 
     // Query for groups the user has created
@@ -166,7 +166,7 @@ export const getAllInfoById = query({
       joinedGroupMemberships.map(async (membership) => {
         const group = await ctx.db.get(membership.groupId);
         return { ...membership, group };
-      })
+      }),
     );
 
     return {
@@ -203,7 +203,7 @@ export const getSearchByUsername = query({
       const searchUsers = await ctx.db
         .query("users")
         .withSearchIndex("search_username", (q) =>
-          q.search("username", username)
+          q.search("username", username),
         )
         .paginate(args.paginationOpts);
 

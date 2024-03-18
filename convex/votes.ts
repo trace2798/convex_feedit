@@ -57,32 +57,32 @@ export const upvote = mutation({
 });
 
 export const downVote = mutation({
-    args: {
-      userId: v.string(),
-      groupId: v.string(),
-      postId: v.string(),
-    },
-    handler: async (ctx, args) => {
-      const existingVote = await ctx.db
-        .query("votes")
-        .filter((q) => q.eq(q.field("postId"), args.postId))
-        .filter((q) => q.eq(q.field("userId"), args.userId))
-        .collect();
-      if (existingVote.length > 0 && existingVote[0].voteType === "DOWN") {
-        await ctx.db.delete(existingVote[0]._id);
-        return;
-      }
-      if (existingVote.length > 0 && existingVote[0].voteType === "UP") {
-        await ctx.db.patch(existingVote[0]._id, { voteType: "DOWN" });
-        return;
-      }
-      const vote = await ctx.db.insert("votes", {
-        userId: args.userId as Id<"users">,
-        groupId: args.groupId as Id<"group">,
-        postId: args.postId as Id<"posts">,
-        voteType: "DOWN",
-      });
-  
-      return vote;
-    },
-  });
+  args: {
+    userId: v.string(),
+    groupId: v.string(),
+    postId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existingVote = await ctx.db
+      .query("votes")
+      .filter((q) => q.eq(q.field("postId"), args.postId))
+      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .collect();
+    if (existingVote.length > 0 && existingVote[0].voteType === "DOWN") {
+      await ctx.db.delete(existingVote[0]._id);
+      return;
+    }
+    if (existingVote.length > 0 && existingVote[0].voteType === "UP") {
+      await ctx.db.patch(existingVote[0]._id, { voteType: "DOWN" });
+      return;
+    }
+    const vote = await ctx.db.insert("votes", {
+      userId: args.userId as Id<"users">,
+      groupId: args.groupId as Id<"group">,
+      postId: args.postId as Id<"posts">,
+      voteType: "DOWN",
+    });
+
+    return vote;
+  },
+});

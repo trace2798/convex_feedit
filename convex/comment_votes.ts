@@ -37,7 +37,7 @@ export const upvote = mutation({
     const existingVote = await ctx.db
       .query("comment_vote")
       .withIndex("by_comment", (q) =>
-        q.eq("commentId", args.commentId as Id<"comments">)
+        q.eq("commentId", args.commentId as Id<"comments">),
       )
       .filter((q) => q.eq(q.field("postId"), args.postId))
       .filter((q) => q.eq(q.field("userId"), args.userId))
@@ -75,7 +75,7 @@ export const downVote = mutation({
     const existingVote = await ctx.db
       .query("comment_vote")
       .withIndex("by_comment", (q) =>
-        q.eq("commentId", args.commentId as Id<"comments">)
+        q.eq("commentId", args.commentId as Id<"comments">),
       )
       .filter((q) => q.eq(q.field("postId"), args.postId))
       .filter((q) => q.eq(q.field("userId"), args.userId))

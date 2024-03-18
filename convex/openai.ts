@@ -64,14 +64,14 @@ export const chat = action({
     // Pull the message content out of the response
     try {
       const messageContent = response.choices[0].message?.content;
-        await ctx.runMutation(internal.posts.updateAIcontent, {
-          id: args.postId as Id<"posts">,
-          aiGeneratedBrief: messageContent ?? "",
-          userId: args.userId as Id<"users">,
-        });
-        await ctx.runMutation(internal.users.increaseUserAICount, {
-          userId: args.userId as Id<"users">,
-        });
+      await ctx.runMutation(internal.posts.updateAIcontent, {
+        id: args.postId as Id<"posts">,
+        aiGeneratedBrief: messageContent ?? "",
+        userId: args.userId as Id<"users">,
+      });
+      await ctx.runMutation(internal.users.increaseUserAICount, {
+        userId: args.userId as Id<"users">,
+      });
       //   await ctx.runMutation(internal.aiactivity.create, {
       //     userId: args.userId as Id<"users">,
       //     snippetId: args.snippetId as Id<"snippets">,

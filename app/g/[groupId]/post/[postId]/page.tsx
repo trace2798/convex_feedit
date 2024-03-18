@@ -84,7 +84,6 @@ const SubRedditPostPage = ({ params }: SubRedditPostPageProps) => {
         groupId: group[0]._id,
       });
       toast.success("Post deleted");
-  
     } catch (error) {
       toast.error("Failed to delete post");
     }

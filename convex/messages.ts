@@ -11,9 +11,8 @@ export const sendMessage = mutation({
     conversationId: v.id("conversation"),
   },
   handler: async (ctx, args) => {
-
     const user = await ctx.db.get(args.userId);
-    if(!user){
+    if (!user) {
       throw new Error("User not found");
     }
     const chat = await ctx.db.insert("messages", {
@@ -22,9 +21,9 @@ export const sendMessage = mutation({
       conversationId: args.conversationId,
       isArchived: false,
       lastMessageSentAt: Date.now(),
-      username: user?.username
+      username: user?.username,
     });
-    await ctx.db.patch(args.conversationId, { lastMessageSentAt: Date.now() })
+    await ctx.db.patch(args.conversationId, { lastMessageSentAt: Date.now() });
     return chat;
   },
 });
@@ -38,7 +37,7 @@ export const getByConversationId = query({
     const messages = await ctx.db
       .query("messages")
       .withIndex("by_conversation", (q) =>
-        q.eq("conversationId", args.conversationId as Id<"conversation">)
+        q.eq("conversationId", args.conversationId as Id<"conversation">),
       )
       .order("desc")
       .paginate(args.paginationOpts);
@@ -57,7 +56,7 @@ export const deleteMessage = mutation({
     const existingMessage = await ctx.db
       .query("messages")
       .withIndex("by_conversation", (q) =>
-        q.eq("conversationId", args.conversationId as Id<"conversation">)
+        q.eq("conversationId", args.conversationId as Id<"conversation">),
       )
       .filter((q) => q.eq(q.field("_id"), args.messageId))
       .collect();

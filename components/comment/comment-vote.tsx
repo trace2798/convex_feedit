@@ -46,7 +46,7 @@ const CommentVotes: FC<CommentVotesProps> = ({
   // console.log(votes);
   const { mutate, pending } = useApiMutation(api.comment_votes.upvote);
   const { mutate: downVoteMutation, pending: downVotePending } = useApiMutation(
-    api.comment_votes.downVote
+    api.comment_votes.downVote,
   );
   const handleUpVote = () => {
     if (!userId) {

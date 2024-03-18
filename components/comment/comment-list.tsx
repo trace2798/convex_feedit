@@ -64,13 +64,13 @@ export const CommentList = ({
         className={cn(
           "hidden text-sm font-medium text-muted-foreground/80",
           expanded && "last:block",
-          level === 0 && "hidden"
+          level === 0 && "hidden",
         )}
       >
         No more comments to show.
       </p>
       {comments.map((comment) => (
-        <div key={comment._id} >
+        <div key={comment._id}>
           <Item
             level={level}
             onExpand={() => onExpand(comment._id)}

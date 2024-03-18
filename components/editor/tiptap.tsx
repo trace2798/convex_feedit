@@ -33,10 +33,7 @@ const Tiptap = ({
   return (
     <div className="w-full rounded-lg border">
       {showToolbar && <Toolbar editor={editor} content={content} />}
-      <EditorContent
-        style={{ whiteSpace: "pre-line" }}
-        editor={editor}
-      />
+      <EditorContent style={{ whiteSpace: "pre-line" }} editor={editor} />
     </div>
   );
 };

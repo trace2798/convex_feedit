@@ -40,7 +40,7 @@ const PostVotes: FC<PostVotesProps> = ({ postId, userId, groupId }) => {
   // console.log(votes);
   const { mutate, pending } = useApiMutation(api.votes.upvote);
   const { mutate: downVoteMutation, pending: downVotePending } = useApiMutation(
-    api.votes.downVote
+    api.votes.downVote,
   );
   const handleUpVote = () => {
     if (!userId) {

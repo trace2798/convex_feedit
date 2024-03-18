@@ -23,7 +23,7 @@ const ChatPage: FC<ChatPageProps> = ({}) => {
   });
   // console.log(conversations, "CONVERSATIONS");
   const sortedConversations = conversations?.sort(
-    (a, b) => b.lastMessageSentAt - a.lastMessageSentAt
+    (a, b) => b.lastMessageSentAt - a.lastMessageSentAt,
   );
 
   if (!data) {

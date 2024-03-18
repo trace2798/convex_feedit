@@ -49,7 +49,7 @@ const MemberSelectForm = ({ groupId }: { groupId: string }) => {
   const { results, status, loadMore } = usePaginatedQuery(
     api.users.getSearchByUsername,
     { search: debouncedValue },
-    { initialNumItems: 15 }
+    { initialNumItems: 15 },
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -96,12 +96,12 @@ const MemberSelectForm = ({ groupId }: { groupId: string }) => {
                       role="combobox"
                       className={cn(
                         "w-[200px] justify-between",
-                        !field.value && "text-muted-foreground"
+                        !field.value && "text-muted-foreground",
                       )}
                     >
                       {field.value
                         ? results.find(
-                            (resultUser: any) => resultUser._id === field.value
+                            (resultUser: any) => resultUser._id === field.value,
                           )?.username
                         : "Select User"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -183,7 +183,7 @@ const MemberSelectForm = ({ groupId }: { groupId: string }) => {
                       role="combobox"
                       className={cn(
                         "w-[200px] justify-between capitalize",
-                        !field.value && "text-muted-foreground"
+                        !field.value && "text-muted-foreground",
                       )}
                     >
                       {field.value
@@ -210,7 +210,9 @@ const MemberSelectForm = ({ groupId }: { groupId: string }) => {
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
-                              role === field.value ? "opacity-100" : "opacity-0"
+                              role === field.value
+                                ? "opacity-100"
+                                : "opacity-0",
                             )}
                           />
                           {role}

@@ -27,9 +27,9 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
     redirect("/");
   }
   const currentUser = members?.membersWithUserInfo.find(
-    (member) => member.userId === data.user.id
+    (member) => member.userId === data.user.id,
   );
- 
+
   if (!currentUser) {
     return (
       <div className="flex justify-center h-[40vh] items-center">
@@ -41,7 +41,7 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
       </div>
     );
   }
- 
+
   if (
     currentUser.memberRole !== "Owner" &&
     currentUser.memberRole !== "Admin"
@@ -57,7 +57,6 @@ const GroupIdSettingsPage: FC<GroupIdSettingsPageProps> = ({}) => {
     );
   }
 
- 
   return (
     <>
       <MemberSelectForm groupId={groupId} />

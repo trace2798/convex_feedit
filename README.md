@@ -1,11 +1,13 @@
 # PostIT: Share with your group
-This is a repository for my submission for Zero To One Hackathon by Convex, which took place from January 23 until March 18, 2024 (5:00 pm Pacific Time) 2024. 
+
+This is a repository for my submission for Zero To One Hackathon by Convex, which took place from January 23 until March 18, 2024 (5:00 pm Pacific Time) 2024.
 
 Features:
+
 - Create Public and Private Groups
 - DM other users
 - Nested Comment section on post
-- Bookmark post for future purpose. 
+- Bookmark post for future purpose.
 - Implementaion of functionality to send request to join a private group
 - Personalized feed for authenticated users
 

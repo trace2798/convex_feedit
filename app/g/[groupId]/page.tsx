@@ -117,7 +117,7 @@ const Page = ({ params }: PageProps) => {
             {data && isMember() && (
               <div className="max-w-xl flex ">
                 {["Admin", "Owner"].includes(
-                  checkMembershipAndRole(data.user.id as string)
+                  checkMembershipAndRole(data.user.id as string),
                 ) && (
                   <Link href={`/g/${params.groupId}/settings`}>
                     <Button variant="ghost">
@@ -127,7 +127,7 @@ const Page = ({ params }: PageProps) => {
                 )}
 
                 {["Admin", "Owner"].includes(
-                  checkMembershipAndRole(data.user.id as string)
+                  checkMembershipAndRole(data.user.id as string),
                 ) ? (
                   <Button disabled variant="outline">
                     Leave
@@ -171,7 +171,7 @@ const Page = ({ params }: PageProps) => {
           {data && (
             <div className="max-w-xl flex ">
               {["Admin", "Owner"].includes(
-                checkMembershipAndRole(data.user.id as string)
+                checkMembershipAndRole(data.user.id as string),
               ) && (
                 <Link href={`/g/${params.groupId}/request`}>
                   <Button variant="ghost">
@@ -180,7 +180,7 @@ const Page = ({ params }: PageProps) => {
                 </Link>
               )}
               {["Admin", "Owner"].includes(
-                checkMembershipAndRole(data.user.id as string)
+                checkMembershipAndRole(data.user.id as string),
               ) && (
                 <Link href={`/g/${params.groupId}/settings`}>
                   <Button variant="ghost">
@@ -190,7 +190,7 @@ const Page = ({ params }: PageProps) => {
               )}
 
               {["Admin", "Owner"].includes(
-                checkMembershipAndRole(data.user.id as string)
+                checkMembershipAndRole(data.user.id as string),
               ) ? (
                 <Button disabled variant="outline">
                   Leave
@@ -199,7 +199,7 @@ const Page = ({ params }: PageProps) => {
                 ""
               )}
               {["Member", "Mod"].includes(
-                checkMembershipAndRole(data.user.id as string)
+                checkMembershipAndRole(data.user.id as string),
               ) ? (
                 <Button
                   className=""

@@ -11,7 +11,6 @@ export const create = mutation({
     // parentComment: v.optional(v.id("comments")),
   },
   handler: async (ctx, args) => {
-  
     const comment = await ctx.db.insert("comments", {
       userId: args.userId,
       groupId: args.groupId,
@@ -33,7 +32,6 @@ export const createReply = mutation({
     parentComment: v.id("comments"),
   },
   handler: async (ctx, args) => {
-   
     const comment = await ctx.db.insert("comments", {
       userId: args.userId,
       groupId: args.groupId,
@@ -60,7 +58,7 @@ export const getCommentsByPost = query({
     const comments = await ctx.db
       .query("comments")
       .withIndex("by_post_comment", (q) =>
-        q.eq("postId", args.postId).eq("parentComment", args.parentComment)
+        q.eq("postId", args.postId).eq("parentComment", args.parentComment),
       )
       // .filter((q) => q.eq(q.field("isArchived"), false))
       .order("desc")
@@ -72,7 +70,7 @@ export const getCommentsByPost = query({
           ...comment,
           user: user,
         };
-      })
+      }),
     );
 
     return commentsWithUser;

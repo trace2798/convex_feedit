@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  ChevronDown,
-  ChevronRight
-} from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -25,7 +22,7 @@ export const Item = ({
   currentUserId,
 }: ItemProps) => {
   const handleExpand = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     event.stopPropagation();
     onExpand?.();
@@ -40,7 +37,7 @@ export const Item = ({
         paddingLeft: level ? `${level * 30 + 12}px` : "12px",
       }}
       className={cn(
-        "group min-h-[27px] text-sm w-full pb-1 hover:bg-primary/5 flex flex-col text-muted-foreground font-medium"
+        "group min-h-[27px] text-sm w-full pb-1 hover:bg-primary/5 flex flex-col text-muted-foreground font-medium",
       )}
     >
       <CommentCard comment={comment} currentUserId={currentUserId} />

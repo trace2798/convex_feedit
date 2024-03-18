@@ -25,7 +25,7 @@ const PostBookmark: FC<PostBookmarkProps> = ({ postId, userId, groupId }) => {
 
   useEffect(() => {
     const userBookmark = bookmarks?.bookmarks.find(
-      (bookmark) => bookmark.userId === userId
+      (bookmark) => bookmark.userId === userId,
     );
     if (userBookmark) {
       setBookmarked(true);

@@ -17,7 +17,7 @@ const GeneralFeed = ({ currentUserId }: { currentUserId?: string }) => {
   const { results, status, loadMore } = usePaginatedQuery(
     api.posts.getGeneralFeed,
     { isPublic: true },
-    { initialNumItems: 3 }
+    { initialNumItems: 3 },
   );
 
   useEffect(() => {

@@ -14,7 +14,7 @@ interface IReplyModal {
     currentUserId: string,
     postId: string,
     groupId: string,
-    commentId: string
+    commentId: string,
   ) => void;
   onClose: () => void;
 }

@@ -28,11 +28,11 @@ const RequestPage: FC<RequestPageProps> = ({ params }) => {
   });
 
   const { mutate, pending } = useApiMutation(
-    api.group_join_request.approveJoinRequest
+    api.group_join_request.approveJoinRequest,
   );
 
   const { mutate: rejectMutation, pending: rejectPending } = useApiMutation(
-    api.group_join_request.rejectJoinRequest
+    api.group_join_request.rejectJoinRequest,
   );
 
   const handleApproveRequest = (id: string) => {
@@ -73,7 +73,7 @@ const RequestPage: FC<RequestPageProps> = ({ params }) => {
     redirect("/");
   }
   const currentUser = members?.membersWithUserInfo.find(
-    (member) => member.userId === data.user.id
+    (member) => member.userId === data.user.id,
   );
   // console.log("CURRENT USER, currentUser", currentUser);
   if (!currentUser) {
@@ -123,7 +123,7 @@ const RequestPage: FC<RequestPageProps> = ({ params }) => {
                   </span>{" "}
                   {format(
                     new Date(request._creationTime),
-                    "iiii, do MMMM, yyyy p"
+                    "iiii, do MMMM, yyyy p",
                   )}
                 </p>
                 <p>
@@ -167,7 +167,7 @@ const RequestPage: FC<RequestPageProps> = ({ params }) => {
                   </span>{" "}
                   {format(
                     new Date(request._creationTime),
-                    "iiii, do MMMM, yyyy p"
+                    "iiii, do MMMM, yyyy p",
                   )}
                 </p>
                 <p>

@@ -21,7 +21,7 @@ export const getMemberByGroupId = query({
           ...member,
           userInfo,
         };
-      })
+      }),
     );
 
     return {
@@ -43,7 +43,9 @@ export const getMemberByGroupIdandUserId = query({
       const members = await ctx.db
         .query("group_members")
         .withIndex("by_group_user", (q) =>
-          q.eq("groupId", args.groupId).eq("userId", args.userId as Id<"users">)
+          q
+            .eq("groupId", args.groupId)
+            .eq("userId", args.userId as Id<"users">),
         )
         .order("desc")
         .collect();
@@ -54,7 +56,7 @@ export const getMemberByGroupIdandUserId = query({
             ...member,
             userInfo,
           };
-        })
+        }),
       );
       return {
         group: group[0],
@@ -67,7 +69,9 @@ export const getMemberByGroupIdandUserId = query({
       const members = await ctx.db
         .query("group_members")
         .withIndex("by_group_user", (q) =>
-          q.eq("groupId", args.groupId).eq("userId", args.userId as Id<"users">)
+          q
+            .eq("groupId", args.groupId)
+            .eq("userId", args.userId as Id<"users">),
         )
         .order("desc")
         .collect();
@@ -78,12 +82,14 @@ export const getMemberByGroupIdandUserId = query({
             ...member,
             userInfo,
           };
-        })
+        }),
       );
       const requestInfo = await ctx.db
         .query("group_join_request")
         .withIndex("by_group_user", (q) =>
-          q.eq("groupId", args.groupId).eq("userId", args.userId as Id<"users">)
+          q
+            .eq("groupId", args.groupId)
+            .eq("userId", args.userId as Id<"users">),
         )
         .filter((q) => q.eq(q.field("isArchived"), false))
         .collect();
@@ -112,7 +118,7 @@ export const getMemberByGroupIdandUserId = query({
           ...member,
           userInfo,
         };
-      })
+      }),
     );
 
     return {
@@ -133,7 +139,7 @@ export const joinGroup = mutation({
       .withIndex("by_group_user", (q) =>
         q
           .eq("groupId", args.groupId as Id<"group">)
-          .eq("userId", args.userId as Id<"users">)
+          .eq("userId", args.userId as Id<"users">),
       )
       .collect();
 
@@ -171,7 +177,6 @@ export const addMember = mutation({
     memberRoles: v.string(),
   },
   handler: async (ctx, args) => {
-
     const existingUser = await ctx.db
       .query("group_members")
       .withIndex("by_user", (q) => q.eq("userId", args.userId as Id<"users">))
@@ -187,7 +192,6 @@ export const addMember = mutation({
       memberRole: args.memberRoles as "Member" | "Mod" | "Admin" | "Owner",
     });
 
-   
     return group_member;
   },
 });
@@ -200,7 +204,7 @@ export const removeMember = mutation({
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
     const member = await ctx.db.get(args.memberId);
-   
+
     if (!member) {
       throw new Error("Not found");
     }
@@ -219,7 +223,7 @@ export const updateRole = mutation({
   handler: async (ctx, args) => {
     // const identity = await ctx.auth.getUserIdentity();
     const member = await ctx.db.get(args.id);
-   
+
     if (!member) {
       throw new Error("Not found");
     }

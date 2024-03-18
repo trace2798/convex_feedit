@@ -23,9 +23,9 @@ export const ModalProvider = () => {
       {/* <RenameModal /> */}
       <LoginModal />
       <TagModal />
-      <LoginModal/>
-      <ReplyModal/>
-      <RenameModal/>
+      <LoginModal />
+      <ReplyModal />
+      <RenameModal />
     </>
   );
 };

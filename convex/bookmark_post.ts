@@ -14,10 +14,10 @@ export const bookmark = mutation({
       .withIndex("by_user_post", (q) =>
         q
           .eq("userId", args.userId as Id<"users">)
-          .eq("postId", args.postId as Id<"posts">)
+          .eq("postId", args.postId as Id<"posts">),
       )
       .unique();
-   
+
     if (existingBookmark) {
       await ctx.db.delete(existingBookmark._id);
       return;
@@ -39,7 +39,7 @@ export const getByPostId = query({
       .query("bookmarked_posts")
       .withIndex("by_post", (q) => q.eq("postId", args.postId))
       .collect();
-    
+
     return {
       bookmarks,
     };
@@ -58,7 +58,7 @@ export const getByUserId = query({
         const post = await ctx.db.get(bookmark.postId);
         const group = await ctx.db.get(bookmark.groupId);
         return { ...bookmarks, post, group };
-      })
+      }),
     );
 
     return {

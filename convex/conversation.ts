@@ -14,7 +14,7 @@ export const create = mutation({
       .withIndex("by_both_user", (q) =>
         q
           .eq("user1Id", args.user1Id as Id<"users">)
-          .eq("user2Id", args.user2Id as Id<"users">)
+          .eq("user2Id", args.user2Id as Id<"users">),
       )
       .collect();
 
@@ -23,7 +23,7 @@ export const create = mutation({
       .withIndex("by_both_user", (q) =>
         q
           .eq("user1Id", args.user2Id as Id<"users">)
-          .eq("user2Id", args.user1Id as Id<"users">)
+          .eq("user2Id", args.user1Id as Id<"users">),
       )
       .collect();
 
@@ -49,14 +49,14 @@ export const getConversationByUserId = query({
     const conversationAsUser1 = await ctx.db
       .query("conversation")
       .withIndex("by_user1Id", (q) =>
-        q.eq("user1Id", args.userId as Id<"users">)
+        q.eq("user1Id", args.userId as Id<"users">),
       )
       .collect();
 
     const conversationAsUser2 = await ctx.db
       .query("conversation")
       .withIndex("by_user2Id", (q) =>
-        q.eq("user2Id", args.userId as Id<"users">)
+        q.eq("user2Id", args.userId as Id<"users">),
       )
       .collect();
 
@@ -67,7 +67,7 @@ export const getConversationByUserId = query({
           ...conversation,
           user: user,
         };
-      })
+      }),
     );
 
     const conversationWithUser2 = await Promise.all(
@@ -77,7 +77,7 @@ export const getConversationByUserId = query({
           ...conversation,
           user: user,
         };
-      })
+      }),
     );
 
     const allConversations = [

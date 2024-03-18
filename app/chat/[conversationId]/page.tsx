@@ -54,7 +54,7 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
   const { results, status, loadMore } = usePaginatedQuery(
     api.messages.getByConversationId,
     { conversationId: params.conversationId as Id<"conversation"> },
-    { initialNumItems: 15 }
+    { initialNumItems: 15 },
   );
 
   useEffect(() => {
@@ -84,7 +84,7 @@ const ConversationIdPage: FC<ConversationIdPageProps> = ({ params }) => {
         <div className="flex flex-col w-full">
           <ScrollArea
             className={cn(
-              "border-none h-[70vh] overflow-y-auto px-5 bg-text-muted w-full transition flex text-sm flex-col rounded-2xl "
+              "border-none h-[70vh] overflow-y-auto px-5 bg-text-muted w-full transition flex text-sm flex-col rounded-2xl ",
             )}
           >
             <div className="text-center text-sm hover:cursor-pointer text-muted-foreground">

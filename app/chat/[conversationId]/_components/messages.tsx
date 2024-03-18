@@ -98,7 +98,7 @@ const ChatMessages: FC<ChatMessagesProps> = ({
               ? "Message has been deleted"
               : format(
                   new Date(message._creationTime),
-                  "iiii, do MMMM, yyyy p"
+                  "iiii, do MMMM, yyyy p",
                 )}
           </p>
         </div>

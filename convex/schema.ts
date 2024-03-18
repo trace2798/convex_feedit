@@ -5,13 +5,13 @@ export const memberRoles = v.union(
   v.literal("Member"),
   v.literal("Mod"),
   v.literal("Admin"),
-  v.literal("Owner")
+  v.literal("Owner"),
 );
 
 export const requestOutcome = v.union(
   v.literal("Approved"),
   v.literal("Rejected"),
-  v.literal("Pending")
+  v.literal("Pending"),
 );
 
 export const voteType = v.union(v.literal("UP"), v.literal("DOWN"));

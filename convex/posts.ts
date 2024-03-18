@@ -33,11 +33,11 @@ export const create = mutation({
       onPublicGroup: args.onPublicGroup,
       fileId: args.fileId,
     });
-  
+
     const group = await ctx.db.get(args.groupId as Id<"group">);
-   
+
     const updatedNumberOfPost = (group?.numberOfPost || 0) + 1;
-  
+
     await ctx.db.patch(args.groupId as Id<"group">, {
       numberOfPost: updatedNumberOfPost,
     });
@@ -85,7 +85,7 @@ export const getById = query({
   args: { postId: v.id("posts") },
   handler: async (ctx, args) => {
     const post = await ctx.db.get(args.postId as Id<"posts">);
-  
+
     if (!post) {
       throw new Error("Not found");
     }
@@ -123,7 +123,7 @@ export const getByGroupId = query({
     const posts = await ctx.db
       .query("posts")
       .withIndex("by_public_feed", (q) =>
-        q.eq("isPublic", true).eq("isArchived", false)
+        q.eq("isPublic", true).eq("isArchived", false),
       )
       .filter((q) => q.eq(q.field("groupId"), args.groupId))
       .order("desc")
@@ -175,20 +175,20 @@ export const getGeneralFeed = query({
     const posts = await ctx.db
       .query("posts")
       .withIndex("by_public_onPublicGroup", (q) =>
-        q.eq("onPublicGroup", true).eq("isPublic", true)
+        q.eq("onPublicGroup", true).eq("isPublic", true),
       )
       .filter((q) => q.eq(q.field("isArchived"), false))
       .order("desc")
       .paginate(args.paginationOpts);
-   
+
     const postsWithGroupAndUserDetails = await Promise.all(
       posts.page.map(async (post) => {
         const group = await ctx.db.get(post.groupId);
         const user = await ctx.db.get(post.userId); // fetch user details
         return { ...post, group, user }; // include user details in the post
-      })
+      }),
     );
-    
+
     return {
       page: postsWithGroupAndUserDetails,
       isDone: posts.isDone,
@@ -219,9 +219,9 @@ export const getPersonalizedFeed = query({
       const postsWithGroupAndUserDetails = await Promise.all(
         groupPosts.map(async (post) => {
           const group = await ctx.db.get(post.groupId);
-          const user = await ctx.db.get(post.userId); 
+          const user = await ctx.db.get(post.userId);
           return { ...post, group, user };
-        })
+        }),
       );
 
       allPosts.push(...postsWithGroupAndUserDetails);
@@ -239,7 +239,7 @@ export const deletePost = mutation({
   },
   handler: async (ctx, args) => {
     const post = await ctx.db.get(args.postId);
-    if(!post) {
+    if (!post) {
       throw new Error("Post not found");
     }
     if (post.userId !== args.userId) {
@@ -296,7 +296,6 @@ export const deletePost = mutation({
         await ctx.db.delete(image._id);
         await ctx.storage.delete(image.fileId);
       });
-      
     }
     // Finally, delete the post
     const group = await ctx.db.get(args.groupId);
@@ -316,13 +315,13 @@ export const getDraftByUserId = query({
       .filter((q) => q.eq(q.field("isPublic"), false))
       .order("desc")
       .paginate(args.paginationOpts);
-    
+
     const postsWithGroupAndUserDetails = await Promise.all(
       posts.page.map(async (post) => {
         const group = await ctx.db.get(post.groupId);
-        const user = await ctx.db.get(post.userId); 
-        return { ...post, group, user }; 
-      })
+        const user = await ctx.db.get(post.userId);
+        return { ...post, group, user };
+      }),
     );
     return {
       page: postsWithGroupAndUserDetails,
@@ -372,10 +371,10 @@ export const getSearch = query({
     const posts = await ctx.db
       .query("posts")
       .withSearchIndex("search_title", (q) =>
-        q.search("title", title).eq("isPublic", true).eq("isArchived", false)
+        q.search("title", title).eq("isPublic", true).eq("isArchived", false),
       )
       .paginate(args.paginationOpts);
-  
+
     return posts;
   },
 });

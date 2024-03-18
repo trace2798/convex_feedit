@@ -18,7 +18,7 @@ const DraftFeed: FC<DraftFeedProps> = ({ currentUserId }) => {
   const { results, status, loadMore } = usePaginatedQuery(
     api.posts.getDraftByUserId,
     { userId: currentUserId as Id<"users"> },
-    { initialNumItems: 10 }
+    { initialNumItems: 10 },
   );
 
   useEffect(() => {
@@ -54,7 +54,10 @@ const DraftFeed: FC<DraftFeedProps> = ({ currentUserId }) => {
             <CardTitle className="text-center">Your Draft is empty</CardTitle>
             <CardFooter className="group">
               <Link href="/">
-                <Button variant="ghost" className="mt-10 group-hover:text-indigo-500">
+                <Button
+                  variant="ghost"
+                  className="mt-10 group-hover:text-indigo-500"
+                >
                   Back to Home
                 </Button>
               </Link>
