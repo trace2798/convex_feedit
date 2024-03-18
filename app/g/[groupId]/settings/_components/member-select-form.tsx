@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { usePaginatedQuery } from "convex/react";
 import { useDebounce } from "usehooks-ts";
+import { User } from "@/types";
 
 const formSchema = z.object({
   groupId: z.string().min(2).max(50),
@@ -138,16 +139,18 @@ const MemberSelectForm = ({ groupId }: { groupId: string }) => {
                               {result.username} {result.name}
                             </CommandItem>
                           ))} */}
-                        {results.map((result: any, index) => (
-                          <CommandItem
-                            // value={result._id}
-                            // key={index}
-                            onSelect={() => {
-                              form.setValue("userId", result._id);
-                            }}
-                          >
-                            {result.username}
-                          </CommandItem>
+                        {results?.map((result: User, index) => (
+                          <div key={result._id}>
+                            <CommandItem
+                              // value={result._id}
+                              // key={index}
+                              onSelect={() => {
+                                form.setValue("userId", result._id);
+                              }}
+                            >
+                              {result.username}
+                            </CommandItem>
+                          </div>
                         ))}
                       </CommandGroup>
                     )}
